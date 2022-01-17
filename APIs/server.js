@@ -7,21 +7,10 @@ const db = require("./app/models");
 const fileUpload = require('express-fileupload');
 const app = express();
 const { Server } = require("socket.io");
-
-const Pool = require('pg').Pool
-const pool = new Pool({
-  user: 'doadmin',
-  host: 'medicall-db-postgresql-do-user-10631281-0.b.db.ondigitalocean.com',
-  database: 'defaultdb',
-  password: 'nERrFZiYlYgSGqva',
-  port: 25060,
-  ssl: { rejectUnauthorized: false }
-})
-
+const pool = require("./app/newModels");
 
 pool.query('SELECT NOW()', (err, res) => {
   console.log(err, res)
-  pool.end()
 })
 
 //enable dotenv

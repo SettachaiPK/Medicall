@@ -9,12 +9,9 @@ module.exports = function (app) {
     );
     next();
   });
-  router.post("/signin", authController.signin);
-
-  router.get("/signout", authController.detete_cookie);
-
-  router.get("/testAPI/:val1", authController.testAPI);
-  router.get("/testAPI2/:val1", authController.testAPI2);
+  
+  router.get("/testPostgresql/:name", authController.testPostgresql);
+  router.get("/testPostgresqlSelect", authController.testPostgresqlSelect);
 
   app.use("/apis/auth", router);
 };
