@@ -10,6 +10,7 @@ module.exports = function (app) {
     next();
   });
   
+  router.post("/requestOTP", authController.requestOTP);
   router.get("/testPostgresql/:name", authController.testPostgresql);
   router.get("/testPostgresqlSelect", authController.testPostgresqlSelect);
 

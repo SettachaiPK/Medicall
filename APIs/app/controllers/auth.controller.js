@@ -1,18 +1,15 @@
 const config = require("../config/auth.config.js");
-const db = require("../models");
 const sanitize = require("mongo-sanitize");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const moment = require("moment");
 
-const User = db.user;
-const Test = db.test;
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const twilioApiKey = process.env.TWILIO_API_KEY;
 const twilioApiSecret = process.env.TWILIO_API_SECRET;
 const Twilio = require("twilio");
-const pool = require("../newModels/index.js");
-const Account_Balance = db.account_balance;
+const pool = require("../config/db.config");
+
 const client = new Twilio(twilioApiKey, twilioApiSecret, {
   accountSid: accountSid,
 });
@@ -52,6 +49,13 @@ exports.testPostgresqlSelect = async (req, res) => {
       message: test.rows,
     });
   } catch (err) {
+    console.log(err);
+    return res.status(500).send(err);
+  }
+};
+
+exports.requestOTP = async (req, res) => {
+  try {} catch (err) {
     console.log(err);
     return res.status(500).send(err);
   }

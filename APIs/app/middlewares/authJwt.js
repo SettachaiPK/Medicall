@@ -1,7 +1,5 @@
 const jwt = require("jsonwebtoken");
 const config = require("../config/auth.config.js");
-const db = require("../models");
-const User = db.user;
 
 /** Check token by get access token first.
  * Then return the confirm message.
