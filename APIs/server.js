@@ -9,8 +9,11 @@ const { Server } = require("socket.io");
 const { pool } = require("./app/config/db.config");
 
 pool.query("SELECT NOW()", (err, res) => {
-  console.log("postgret");
-  console.log(err, res);
+  if (res) {
+    console.log("connected to postgresql database");
+  } else {
+    console.log(err);
+  }
 });
 
 //enable dotenv

@@ -11,8 +11,7 @@ module.exports = function (app) {
   });
   
   router.post("/requestOTP", authController.requestOTP);
-  router.get("/testPostgresql/:name", authController.testPostgresql);
-  router.get("/testPostgresqlSelect", authController.testPostgresqlSelect);
+  router.post("/verifyOTP", authController.verifyOTP);
 
   app.use("/apis/auth", router);
 };

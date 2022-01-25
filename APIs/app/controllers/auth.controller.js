@@ -1,33 +1,46 @@
-const config = require("../config/auth.config.js");
-const sanitize = require("mongo-sanitize");
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
+const { pool } = require("../config/db.config");
 const moment = require("moment");
+const otpGenerator = require("otp-generator");
 
-const accountSid = process.env.TWILIO_ACCOUNT_SID;
-const twilioApiKey = process.env.TWILIO_API_KEY;
-const twilioApiSecret = process.env.TWILIO_API_SECRET;
-const Twilio = require("twilio");
-const pool = require("../config/db.config");
 
-const client = new Twilio(twilioApiKey, twilioApiSecret, {
-  accountSid: accountSid,
-});
-
-exports.testPostgresql = async (req, res) => {
-  console.log("testPostgresql");
+exports.requestOTP = async (req, res) => {
   const client = await pool.connect();
   try {
     await client.query("BEGIN");
-    const { rows } = await client.query(
-      "INSERT INTO test (name) VALUES ($1) RETURNING name",
-      [req.params.name]
+    await client.query(
+      ` UPDATE OTP 
+        SET status = 'cancel' 
+        WHERE phoneNumber = ($1) AND status = 'waiting'`,
+      [req.body.phoneNumber]
     );
     await client.query("COMMIT");
-    console.log(rows);
+
+    const nowDate = moment();
+    const expDate = moment().add(1, "minutes");
+
+    const password = otpGenerator.generate(6, {
+      upperCaseAlphabets: false,
+      specialChars: false,
+    });
+    const ref = otpGenerator.generate(12, {
+      upperCaseAlphabets: false,
+      specialChars: false,
+    });
+
+    await client.query("BEGIN");
+    const { rows } = await client.query(
+      ` INSERT INTO OTP (phoneNumber, password, ref, expiredDate, createDate) 
+        VALUES ($1, $2, $3, $4, $5) 
+        RETURNING phoneNumber,ref,expiredDate`,
+      [req.body.phoneNumber, password, ref, expDate, nowDate]
+    );
+    await client.query("COMMIT");
+
 
     return res.status(200).send({
-      message: `Added name: ${rows[0].name}`,
+      phoneNumber: rows[0].phonenumber,
+      ref: rows[0].ref,
+      expiredDate: rows[0].expireddate,
     });
   } catch (err) {
     await client.query("ROLLBACK");
@@ -40,23 +53,51 @@ exports.testPostgresql = async (req, res) => {
   }
 };
 
-exports.testPostgresqlSelect = async (req, res) => {
+exports.verifyOTP = async (req, res) => {
+  const client = await pool.connect();
   try {
-    console.log("testPostgresqlSelect");
-    const test = await pool.query("SELECT name FROM test;");
+    const now = moment();
+
+    await client.query("BEGIN");
+    const { rows } = await client.query(
+      ` SELECT * FROM OTP 
+        WHERE phoneNumber = ($1) 
+        AND status = 'waiting'
+        AND expiredDate > ($2)`,
+      [req.body.phoneNumber, now]
+    );
+    await client.query("COMMIT");
+
+    if (rows.length > 1) {
+      await client.query("BEGIN");
+      await client.query(
+        ` UPDATE OTP 
+          SET status = 'cancel' 
+          WHERE phoneNumber = ($1) AND status = 'waiting'`,
+        [req.body.phoneNumber]
+      );
+      await client.query("COMMIT");
+      return res
+        .status(400)
+        .send({ message: "Wrong password or password has been expired" });
+    }
+
+    if (rows.length == 0 || rows[0].password != req.body.password) {
+      return res
+        .status(400)
+        .send({ message: "Wrong password or password has been expired" });
+    }
 
     return res.status(200).send({
-      message: test.rows,
+      mes: "yes",
     });
   } catch (err) {
-    console.log(err);
-    return res.status(500).send(err);
-  }
-};
+    await client.query("ROLLBACK");
 
-exports.requestOTP = async (req, res) => {
-  try {} catch (err) {
     console.log(err);
+
     return res.status(500).send(err);
+  } finally {
+    client.release();
   }
 };

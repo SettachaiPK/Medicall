@@ -11,7 +11,7 @@ exports.up = async function (knex) {
         password VARCHAR(6),
         ref VARCHAR(30),
         expiredDate TIMESTAMP,
-        status OTPStatus NOT NULL,
+        status OTPStatus NOT NULL DEFAULT 'waiting',
         createDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         phoneNumber VARCHAR(10))`);
 };

@@ -4,7 +4,7 @@
  */
 exports.up = async function (knex) {
   await knex.raw(`CREATE TYPE sex AS ENUM ('female', 'male')`);
-  await knex.raw(`CREATE TYPE userStatus AS ENUM ('active', 'inactive')`);
+  await knex.raw(`CREATE TYPE userStatus AS ENUM ('unsigned', 'active', 'inactive')`);
   await knex.raw(`CREATE TABLE userDetail (
         userID serial not null primary key,
         phoneNumber VARCHAR(10),
@@ -12,8 +12,8 @@ exports.up = async function (knex) {
         lastName VARCHAR(30),
         sex Sex,
         birthDate TIMESTAMP,
-        registeredDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        status UserStatus NOT NULL)`);
+        registeredDate TIMESTAMP,
+        status userStatus NOT NULL DEFAULT 'unsigned')`);
 };
 
 /**
