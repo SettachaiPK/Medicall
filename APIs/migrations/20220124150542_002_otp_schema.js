@@ -8,7 +8,7 @@ exports.up = async function (knex) {
   );
   await knex.raw(`CREATE TABLE OTP (
         otpID serial not null primary key,
-        password VARCHAR(6),
+        password VARCHAR(60),
         ref VARCHAR(30),
         expiredDate TIMESTAMP,
         status OTPStatus NOT NULL DEFAULT 'waiting',
