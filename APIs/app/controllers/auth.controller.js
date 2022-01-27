@@ -7,6 +7,8 @@ const config = require("../config/auth.config.js");
 exports.requestOTP = async (req, res) => {
   const { phoneNumber } = req.body;
   const client = await pool.connect();
+  const nowDate = moment();
+  const expiredDate = moment().add(5, "minutes");
   try {
     await client.query("BEGIN");
     await client.query(
@@ -15,10 +17,6 @@ exports.requestOTP = async (req, res) => {
         WHERE "phoneNumber" = ($1) AND "status" = 'waiting'`,
       [phoneNumber]
     );
-    await client.query("COMMIT");
-
-    const nowDate = moment();
-    const expiredDate = moment().add(5, "minutes");
 
     const password = otpGenerator.generate(6, {
       upperCaseAlphabets: false,
@@ -29,7 +27,6 @@ exports.requestOTP = async (req, res) => {
       specialChars: false,
     });
 
-    await client.query("BEGIN");
     await client.query(
       ` INSERT INTO OTP ("phoneNumber", "password", "ref", "expiredDate", "createDate") 
         VALUES ($1, $2, $3, $4, $5)`,
@@ -58,10 +55,9 @@ exports.verifyOTP = async (req, res) => {
   const { phoneNumber, password } = req.body;
 
   const client = await pool.connect();
+  const now = moment();
 
   try {
-    const now = moment();
-
     await client.query("BEGIN");
     const { rows: otp } = await client.query(
       ` SELECT * FROM OTP 
@@ -70,17 +66,14 @@ exports.verifyOTP = async (req, res) => {
         AND "expiredDate" > ($2)`,
       [req.body.phoneNumber, now]
     );
-    await client.query("COMMIT");
 
     if (otp.length > 1) {
-      await client.query("BEGIN");
       await client.query(
         ` UPDATE OTP 
           SET "status" = 'cancel' 
           WHERE "phoneNumber" = ($1) AND "status" = 'waiting'`,
         [phoneNumber]
       );
-      await client.query("COMMIT");
       return res
         .status(401)
         .send({ message: "Wrong password or password has been expired" });
@@ -99,14 +92,12 @@ exports.verifyOTP = async (req, res) => {
     );
 
     if (user.length == 0) {
-      await client.query("BEGIN");
       const { rows: newUser } = await client.query(
         ` INSERT INTO userDetail ("phoneNumber") 
           VALUES ($1) 
           RETURNING *`,
         [phoneNumber]
       );
-      await client.query("COMMIT");
       user = newUser;
     } else if (user[0].status === "inactive") {
       return res.status(403).send({ message: "User Deactivated!" });
@@ -127,7 +118,6 @@ exports.verifyOTP = async (req, res) => {
       }
     );
 
-    await client.query("BEGIN");
     await client.query(
       ` INSERT INTO RefreshToken ("userID", "refreshToken")
         VALUES ($1, $2)
@@ -135,7 +125,6 @@ exports.verifyOTP = async (req, res) => {
         SET "refreshToken" = excluded."refreshToken" `,
       [user[0].userID, refreshToken]
     );
-    await client.query("COMMIT");
 
     res.cookie("refreshToken", refreshToken, {
       maxAge: process.env.REFRESH_TOKEN_LIFE,
@@ -147,6 +136,7 @@ exports.verifyOTP = async (req, res) => {
       httpOnly: true,
       secure: false,
     });
+    await client.query("COMMIT");
 
     return res.status(200).send(user[0]);
   } catch (err) {
@@ -160,7 +150,7 @@ exports.verifyOTP = async (req, res) => {
   }
 };
 
-exports.signUp = async (req, res) => {
+exports.signUpCustomer = async (req, res) => {
   const {
     userID,
     body: {
@@ -175,11 +165,57 @@ exports.signUp = async (req, res) => {
       drugInUse,
     },
   } = req;
-
+  const now = moment();
+  const birthDateMoment = moment(birthDate);
   const client = await pool.connect();
 
   try {
-    return res.status(200).send({ msg: "hi" });
+    await client.query("BEGIN");
+    const {
+      rows: [customerDetail],
+    } = await client.query(
+      `SELECT * 
+        FROM customerDetail
+        WHERE "userID" = ($1);`,
+      [userID]
+    );
+
+    if (customerDetail) {
+      return res.status(403).send({ message: "You have already signed up!" });
+    }
+
+    await client.query(
+      ` UPDATE userDetail 
+        SET "status" = 'active',
+          "firstName" = ($2),
+          "lastName" = ($3),
+          "sex" = ($4),
+          "birthDate" = ($5),
+          "registeredDate" = ($6)
+        WHERE "userID" = ($1)`,
+      [userID, firstName, lastName, sex, birthDateMoment, now]
+    );
+
+    await client.query(
+      ` INSERT INTO customerDetail ("userID", "height","weight","congenitalDisease","drugAllergy","drugInUse","registerDate")
+        VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+      [userID, height, weight, congenitalDisease, drugAllergy, drugInUse, now]
+    );
+
+    const {
+      rows: [{ roleID }],
+    } = await client.query(
+      ` SELECT "roleID" FROM roles WHERE "roleName" = 'customer'`
+    );
+    console.log(roleID);
+    await client.query(
+      ` INSERT INTO userToRole ("userID", "roleID")
+        VALUES ($1, $2)`,
+      [userID, roleID]
+    );
+
+    await client.query("COMMIT");
+    return res.status(200).send({ msg: "Sign up success" });
   } catch (err) {
     await client.query("ROLLBACK");
 

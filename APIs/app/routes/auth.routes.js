@@ -13,7 +13,7 @@ module.exports = function (app) {
 
   router.post("/requestOTP", authController.requestOTP);
   router.post("/verifyOTP", authController.verifyOTP);
-  router.post("/signUp", authJwt.verifyToken, authController.signUp);
+  router.post("/signUpCustomer", authJwt.verifyToken, authController.signUpCustomer);
 
   app.use("/apis/auth", router);
 };

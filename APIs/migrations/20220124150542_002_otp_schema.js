@@ -12,7 +12,7 @@ exports.up = async function (knex) {
         "ref" VARCHAR(30),
         "expiredDate" TIMESTAMP,
         "status" OTPStatus NOT NULL DEFAULT 'waiting',
-        "createDate" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "createDate" TIMESTAMP,
         "phoneNumber" VARCHAR(10))`);
 };
 
