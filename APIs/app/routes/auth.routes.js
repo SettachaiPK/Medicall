@@ -2,6 +2,7 @@ module.exports = function (app) {
   var router = require("express").Router();
   const authController = require("../controllers/auth.controller");
   const { authJwt } = require("../middlewares");
+  
   app.use(function (req, res, next) {
     res.header(
       "Access-Control-Allow-Headers",
@@ -9,9 +10,10 @@ module.exports = function (app) {
     );
     next();
   });
-  
+
   router.post("/requestOTP", authController.requestOTP);
   router.post("/verifyOTP", authController.verifyOTP);
+  router.post("/signUp", authJwt.verifyToken, authController.signUp);
 
   app.use("/apis/auth", router);
 };

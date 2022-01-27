@@ -5,19 +5,20 @@ const jwt = require("jsonwebtoken");
 const config = require("../config/auth.config.js");
 
 exports.requestOTP = async (req, res) => {
+  const { phoneNumber } = req.body;
   const client = await pool.connect();
   try {
     await client.query("BEGIN");
     await client.query(
       ` UPDATE OTP 
         SET status = 'cancel' 
-        WHERE phoneNumber = ($1) AND status = 'waiting'`,
-      [req.body.phoneNumber]
+        WHERE "phoneNumber" = ($1) AND "status" = 'waiting'`,
+      [phoneNumber]
     );
     await client.query("COMMIT");
 
     const nowDate = moment();
-    const expDate = moment().add(5, "minutes");
+    const expiredDate = moment().add(5, "minutes");
 
     const password = otpGenerator.generate(6, {
       upperCaseAlphabets: false,
@@ -27,20 +28,20 @@ exports.requestOTP = async (req, res) => {
       upperCaseAlphabets: false,
       specialChars: false,
     });
+
     await client.query("BEGIN");
-    const { rows } = await client.query(
-      ` INSERT INTO OTP (phoneNumber, password, ref, expiredDate, createDate) 
-        VALUES ($1, $2, $3, $4, $5) 
-        RETURNING phoneNumber,ref,expiredDate`,
-      [req.body.phoneNumber, password, ref, expDate, nowDate]
+    await client.query(
+      ` INSERT INTO OTP ("phoneNumber", "password", "ref", "expiredDate", "createDate") 
+        VALUES ($1, $2, $3, $4, $5)`,
+      [phoneNumber, password, ref, expiredDate, nowDate]
     );
     await client.query("COMMIT");
 
     return res.status(200).send({
-      phoneNumber: rows[0].phonenumber,
+      phoneNumber,
       password,
-      ref: rows[0].ref,
-      expiredDate: rows[0].expireddate,
+      ref,
+      expiredDate,
     });
   } catch (err) {
     await client.query("ROLLBACK");
@@ -64,9 +65,9 @@ exports.verifyOTP = async (req, res) => {
     await client.query("BEGIN");
     const { rows: otp } = await client.query(
       ` SELECT * FROM OTP 
-        WHERE phoneNumber = ($1) 
-        AND status = 'waiting'
-        AND expiredDate > ($2)`,
+        WHERE "phoneNumber" = ($1) 
+        AND "status" = 'waiting'
+        AND "expiredDate" > ($2)`,
       [req.body.phoneNumber, now]
     );
     await client.query("COMMIT");
@@ -75,8 +76,8 @@ exports.verifyOTP = async (req, res) => {
       await client.query("BEGIN");
       await client.query(
         ` UPDATE OTP 
-          SET status = 'cancel' 
-          WHERE phoneNumber = ($1) AND status = 'waiting'`,
+          SET "status" = 'cancel' 
+          WHERE "phoneNumber" = ($1) AND "status" = 'waiting'`,
         [phoneNumber]
       );
       await client.query("COMMIT");
@@ -91,18 +92,18 @@ exports.verifyOTP = async (req, res) => {
     }
 
     let { rows: user } = await client.query(
-      `SELECT * 
-      FROM userDetail
-      WHERE phoneNumber = ($1);`,
+      ` SELECT * 
+        FROM userDetail
+        WHERE "phoneNumber" = ($1);`,
       [phoneNumber]
     );
 
     if (user.length == 0) {
       await client.query("BEGIN");
       const { rows: newUser } = await client.query(
-        ` INSERT INTO userDetail (phoneNumber) 
-        VALUES ($1) 
-        RETURNING *`,
+        ` INSERT INTO userDetail ("phoneNumber") 
+          VALUES ($1) 
+          RETURNING *`,
         [phoneNumber]
       );
       await client.query("COMMIT");
@@ -112,14 +113,14 @@ exports.verifyOTP = async (req, res) => {
     }
 
     const accessToken = jwt.sign(
-      { id: user[0].userid },
+      { id: user[0].userID },
       config.access_token_secret,
       {
         expiresIn: config.access_token_life,
       }
     );
     const refreshToken = jwt.sign(
-      { id: user[0].userid },
+      { id: user[0].userID },
       config.refresh_token_secret,
       {
         expiresIn: config.refresh_token_life,
@@ -128,10 +129,11 @@ exports.verifyOTP = async (req, res) => {
 
     await client.query("BEGIN");
     await client.query(
-      ` INSERT INTO RefreshToken (userID, refreshToken) 
-      VALUES ($1, $2) 
-      RETURNING *`,
-      [user[0].userid, refreshToken]
+      ` INSERT INTO RefreshToken ("userID", "refreshToken")
+        VALUES ($1, $2)
+        ON CONFLICT ("userID") DO UPDATE
+        SET "refreshToken" = excluded."refreshToken" `,
+      [user[0].userID, refreshToken]
     );
     await client.query("COMMIT");
 
@@ -147,6 +149,37 @@ exports.verifyOTP = async (req, res) => {
     });
 
     return res.status(200).send(user[0]);
+  } catch (err) {
+    await client.query("ROLLBACK");
+
+    console.log(err);
+
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};
+
+exports.signUp = async (req, res) => {
+  const {
+    userID,
+    body: {
+      firstName,
+      lastName,
+      birthDate,
+      sex,
+      weight,
+      height,
+      congenitalDisease,
+      drugAllergy,
+      drugInUse,
+    },
+  } = req;
+
+  const client = await pool.connect();
+
+  try {
+    return res.status(200).send({ msg: "hi" });
   } catch (err) {
     await client.query("ROLLBACK");
 
