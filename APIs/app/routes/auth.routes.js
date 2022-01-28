@@ -14,6 +14,8 @@ module.exports = function (app) {
   router.post("/requestOTP", authController.requestOTP);
   router.post("/verifyOTP", authController.verifyOTP);
   router.post("/signUpCustomer", authJwt.verifyToken, authController.signUpCustomer);
+  router.post("/signUpConsultant", authJwt.verifyToken, authController.signUpConsultant);
+  router.post("/signUpPhamarcy", authJwt.verifyToken, authController.signUpPhamarcy);
 
   app.use("/apis/auth", router);
 };

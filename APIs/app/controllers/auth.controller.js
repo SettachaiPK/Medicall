@@ -136,6 +136,22 @@ exports.verifyOTP = async (req, res) => {
       httpOnly: true,
       secure: false,
     });
+
+    let { rows: roles } = await client.query(
+      ` SELECT "roleName" 
+        FROM userToRole As userRoles
+        INNER JOIN roles
+        ON roles."roleID" = userRoles."roleID"
+        WHERE "userID" = ($1);`,
+      [user[0].userID]
+    );
+
+    roles.forEach((role, index) => {
+      roles[index] = role.roleName;
+    });
+
+    user[0].roles = roles;
+
     await client.query("COMMIT");
 
     return res.status(200).send(user[0]);
@@ -215,7 +231,165 @@ exports.signUpCustomer = async (req, res) => {
     );
 
     await client.query("COMMIT");
-    return res.status(200).send({ msg: "Sign up success" });
+    return res.status(200).send({ message: "Sign up success" });
+  } catch (err) {
+    await client.query("ROLLBACK");
+
+    console.log(err);
+
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};
+
+exports.signUpConsultant = async (req, res) => {
+  const {
+    userID,
+    body: {
+      ocupation,
+      department,
+      infirmary,
+      academy,
+      licenseNumber,
+      personalID,
+    },
+    files,
+  } = req;
+  const now = moment();
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+    const {
+      rows: [consultantDetail],
+    } = await client.query(
+      `SELECT * 
+        FROM consultantDetail
+        WHERE "userID" = ($1);`,
+      [userID]
+    );
+
+    if (consultantDetail) {
+      return res.status(403).send({ message: "You have already signed up!" });
+    }
+
+    await client.query(
+      ` INSERT INTO consultantDetail ("userID", "ocupation","department","infirmary","academy","licenseNumber","personalID","registerDate")
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+      [
+        userID,
+        ocupation,
+        department,
+        infirmary,
+        academy,
+        licenseNumber,
+        personalID,
+        now,
+      ]
+    );
+
+    await client.query(
+      `DELETE FROM consultantDetailMedia
+       WHERE "userID" = ($1)`,
+      [userID]
+    );
+
+    if (files) {
+      const { media } = files;
+      media.forEach(async (image) => {
+        if (!image.name.match(/\.(jpg|jpeg|png)$/i)) {
+          res.status(415).send({ message: "wrong file type" });
+          return;
+        }
+        if (image.truncated) {
+          res.status(413).send({ message: "file too large" });
+          return;
+        }
+        await client.query(
+          `
+          INSERT INTO consultantDetailMedia ("userID", "imageBase64")
+          VALUES ($1, $2)`,
+          [userID, image.data.toString("base64")]
+        );
+      });
+    }
+
+    await client.query("COMMIT");
+    return res
+      .status(200)
+      .send({ message: "Application has been sent! Waiting for approval" });
+  } catch (err) {
+    await client.query("ROLLBACK");
+
+    console.log(err);
+
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};
+
+exports.signUpPhamarcy = async (req, res) => {
+  const {
+    userID,
+    body: { name, location, licenseNumber, personalID },
+    files,
+  } = req;
+  const now = moment();
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+    const {
+      rows: [phamarcyDetail],
+    } = await client.query(
+      `SELECT * 
+        FROM phamarcyDetail
+        WHERE "userID" = ($1);`,
+      [userID]
+    );
+
+    if (phamarcyDetail) {
+      return res.status(403).send({ message: "You have already signed up!" });
+    }
+
+    await client.query(
+      ` INSERT INTO phamarcyDetail ("userID", "name","location","licenseNumber","personalID","registerDate")
+        VALUES ($1, $2, $3, $4, $5, $6)`,
+      [userID, name, location, licenseNumber, personalID, now]
+    );
+
+    await client.query(
+      `DELETE FROM phamarcyDetailMedia
+       WHERE "userID" = ($1)`,
+      [userID]
+    );
+
+    if (files) {
+      const { media } = files;
+      media.forEach(async (image) => {
+        if (!image.name.match(/\.(jpg|jpeg|png)$/i)) {
+          res.status(415).send({ message: "wrong file type" });
+          return;
+        }
+        if (image.truncated) {
+          res.status(413).send({ message: "file too large" });
+          return;
+        }
+        await client.query(
+          `
+          INSERT INTO phamarcyDetailMedia ("userID", "imageBase64")
+          VALUES ($1, $2)`,
+          [userID, image.data.toString("base64")]
+        );
+      });
+    }
+
+    await client.query("COMMIT");
+    return res
+      .status(200)
+      .send({ message: "Application has been sent! Waiting for approval" });
   } catch (err) {
     await client.query("ROLLBACK");
 
