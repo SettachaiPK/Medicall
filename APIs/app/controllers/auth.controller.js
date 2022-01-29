@@ -221,7 +221,8 @@ exports.signUpCustomer = async (req, res) => {
     const {
       rows: [{ roleID }],
     } = await client.query(
-      ` SELECT "roleID" FROM roles WHERE "roleName" = 'customer'`
+      ` SELECT "roleID" FROM roles WHERE "roleName" = ($1)`,
+      [process.env.ROLE_CUSTOMER]
     );
     console.log(roleID);
     await client.query(
@@ -296,25 +297,42 @@ exports.signUpConsultant = async (req, res) => {
     );
 
     if (files) {
-      const { media } = files;
-      media.forEach(async (image) => {
-        if (!image.name.match(/\.(jpg|jpeg|png)$/i)) {
-          res.status(415).send({ message: "wrong file type" });
-          return;
+      const { media } = await files;
+      if (media.length) {
+        for (let index = 0; index < media.length; index++) {
+          const image = await media[index];
+          if (!image.name.match(/\.(jpg|jpeg|png)$/i)) {
+            await client.query("ROLLBACK");
+            return res.status(415).send({ message: "wrong file type" });
+          }
+          if (image.truncated) {
+            await client.query("ROLLBACK");
+            return res.status(413).send({ message: "file too large" });
+          }
+          await client.query(
+            `
+          INSERT INTO consultantDetailMedia ("userID", "imageBase64")
+          VALUES ($1, $2)`,
+            [userID, image.data.toString("base64")]
+          );
         }
-        if (image.truncated) {
-          res.status(413).send({ message: "file too large" });
-          return;
+      } else {
+        if (!media.name.match(/\.(jpg|jpeg|png)$/i)) {
+          await client.query("ROLLBACK");
+          return res.status(415).send({ message: "wrong file type" });
+        }
+        if (media.truncated) {
+          await client.query("ROLLBACK");
+          return res.status(413).send({ message: "file too large" });
         }
         await client.query(
           `
-          INSERT INTO consultantDetailMedia ("userID", "imageBase64")
+          INSERT INTO phamarcyDetailMedia ("userID", "imageBase64")
           VALUES ($1, $2)`,
-          [userID, image.data.toString("base64")]
+          [userID, media.data.toString("base64")]
         );
-      });
+      }
     }
-
     await client.query("COMMIT");
     return res
       .status(200)
@@ -333,8 +351,8 @@ exports.signUpConsultant = async (req, res) => {
 exports.signUpPhamarcy = async (req, res) => {
   const {
     userID,
-    body: { name, location, licenseNumber, personalID },
     files,
+    body: { storeName, location, licenseNumber, personalID },
   } = req;
   const now = moment();
   const client = await pool.connect();
@@ -353,11 +371,10 @@ exports.signUpPhamarcy = async (req, res) => {
     if (phamarcyDetail) {
       return res.status(403).send({ message: "You have already signed up!" });
     }
-
     await client.query(
-      ` INSERT INTO phamarcyDetail ("userID", "name","location","licenseNumber","personalID","registerDate")
+      ` INSERT INTO phamarcyDetail ("userID", "storeName","location","licenseNumber","personalID","registerDate")
         VALUES ($1, $2, $3, $4, $5, $6)`,
-      [userID, name, location, licenseNumber, personalID, now]
+      [userID, storeName, location, licenseNumber, personalID, now]
     );
 
     await client.query(
@@ -367,23 +384,41 @@ exports.signUpPhamarcy = async (req, res) => {
     );
 
     if (files) {
-      const { media } = files;
-      media.forEach(async (image) => {
-        if (!image.name.match(/\.(jpg|jpeg|png)$/i)) {
-          res.status(415).send({ message: "wrong file type" });
-          return;
+      const { media } = await files;
+      if (media.length) {
+        for (let index = 0; index < media.length; index++) {
+          const image = await media[index];
+          if (!image.name.match(/\.(jpg|jpeg|png)$/i)) {
+            await client.query("ROLLBACK");
+            return res.status(415).send({ message: "wrong file type" });
+          }
+          if (image.truncated) {
+            await client.query("ROLLBACK");
+            return res.status(413).send({ message: "file too large" });
+          }
+          await client.query(
+            `
+          INSERT INTO phamarcyDetailMedia ("userID", "imageBase64")
+          VALUES ($1, $2)`,
+            [userID, image.data.toString("base64")]
+          );
         }
-        if (image.truncated) {
-          res.status(413).send({ message: "file too large" });
-          return;
+      } else {
+        if (!media.name.match(/\.(jpg|jpeg|png)$/i)) {
+          await client.query("ROLLBACK");
+          return res.status(415).send({ message: "wrong file type" });
+        }
+        if (media.truncated) {
+          await client.query("ROLLBACK");
+          return res.status(413).send({ message: "file too large" });
         }
         await client.query(
           `
           INSERT INTO phamarcyDetailMedia ("userID", "imageBase64")
           VALUES ($1, $2)`,
-          [userID, image.data.toString("base64")]
+          [userID, media.data.toString("base64")]
         );
-      });
+      }
     }
 
     await client.query("COMMIT");
