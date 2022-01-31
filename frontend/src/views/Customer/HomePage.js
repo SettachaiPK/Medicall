@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 
 import { connect } from "react-redux";
+import SearchConsult from "../../components/SearchConsult";
 
 function HomePage(props) {
   useEffect(() => {
@@ -8,7 +9,7 @@ function HomePage(props) {
 
   return (
     <div>
-      <p>hi</p>
+      <SearchConsult />
     </div>
   );
 }

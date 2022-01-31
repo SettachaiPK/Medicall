@@ -1,0 +1,55 @@
+import * as React from "react";
+import Button from "@mui/material/Button";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import { pink, grey } from "@mui/material/colors";
+import PhoneInput from "react-phone-input-2";
+
+
+function LoginPopup(props) {
+    const handleStepChange= () => {
+        props.handleStepChange(1)
+      }
+  return (
+          <>
+            <h1 className="head-popup">เข้าสู่ระบบ</h1>
+            <DialogContent sx={{ px: 25, py: 3 }}>
+              <PhoneInput
+                sx={{ width: 1 / 2 }}
+                placeholder="หมายเลขโทรศัพท์"
+                inputStyle={{
+                  borderColor: props.touched && props.error && "red",
+                }}
+                {...props}
+              />
+              {props.touched && props.error && (
+                <p
+                  style={{ color: "red" }}
+                  className="MuiFormHelperText-root MuiFormHelperText-contained Mui-error MuiFormHelperText-filled MuiFormHelperText-marginDense"
+                >
+                  {props.error}
+                </p>
+              )}
+            </DialogContent>
+            <DialogActions
+              sx={{ m: "auto", pb: 10, maxWidth: "lg", fullWidth: true }}
+            >
+              <Button
+                sx={{
+                  m: "auto",
+                  background: pink[100],
+                  color: grey[50],
+                  width: 480,
+                  height: 45,
+                  fontWeight: 900,
+                  fontSize: 20,
+                }}
+                onClick={handleStepChange}
+              >
+                เช้าสู่ระบบ
+              </Button>
+            </DialogActions>
+          </>
+  );
+}
+export default LoginPopup;
