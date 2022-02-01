@@ -1,8 +1,4 @@
 const { pool } = require("../config/db.config");
-const moment = require("moment");
-const otpGenerator = require("otp-generator");
-const jwt = require("jsonwebtoken");
-const config = require("../config/auth.config.js");
 require("dotenv").config();
 
 exports.acceptConsultant = async (req, res) => {

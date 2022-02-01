@@ -10,4 +10,6 @@ export const API_URL = `${process.env.REACT_APP_API_URL}apis/`;
 export const server = {
   SIGN_IN: new AxiosModel({ url: `auth/signin` }),
   SIGN_OUT: new AxiosModel({ url: `auth/signout` }),
+  requestOTP: new AxiosModel({ url: `auth/requestOTP` }),
+  verifyOTP: new AxiosModel({ url: `auth/verifyOTP` }),
 };

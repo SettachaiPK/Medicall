@@ -42,6 +42,44 @@ export function signOut() {
   });
 }
 
+export function requestOTP(data) {
+  const Axiosmodel = server.requestOTP;
+
+  return new Promise((resolve, reject) => {
+    httpClient({
+      method: "POST",
+      url: Axiosmodel.url,
+      config: Axiosmodel,
+      data: data,
+    })
+      .then((res) => {
+        resolve(res);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}
+
+export function verifyOTP(data) {
+  const Axiosmodel = server.verifyOTP;
+
+  return new Promise((resolve, reject) => {
+    httpClient({
+      method: "POST",
+      url: Axiosmodel.url,
+      config: Axiosmodel,
+      data: data,
+    })
+      .then((res) => {
+        resolve(res);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}
+
 export function checkRefreshToken() {
   const Axiosmodel = server.CHECK_REFRESH_TOKEN;
 
