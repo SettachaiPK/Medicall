@@ -33,19 +33,20 @@ export const actionVerifyOTP = (payload) => async (dispatch) => {
 
 export const actionVerifyLogIn = () => async (dispatch) => {
   try {
-    let user = await localStorage.getItem(
+    const user = await localStorage.getItem(
       `${process.env.REACT_APP_PREFIX}_USER`
     );
-    console.log(user);
     if (user) {
       await dispatch(reducerSignIn(JSON.parse(user)));
     } else {
-      const { data: user } = await authService.userDetail();
-      await dispatch(reducerSignIn(user));
-      localStorage.setItem(
-        `${process.env.REACT_APP_PREFIX}_USER`,
-        JSON.stringify(user)
-      );
+      const res = await authService.userDetail();
+      if (res.status === 200) {
+        await dispatch(reducerSignIn(res.data));
+        localStorage.setItem(
+          `${process.env.REACT_APP_PREFIX}_USER`,
+          JSON.stringify(res.data)
+        );
+      }
     }
   } catch (error) {
     console.log(error.message);

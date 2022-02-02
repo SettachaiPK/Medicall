@@ -11,7 +11,7 @@ module.exports = function (app) {
     next();
   });
 
-  router.get("/", [authJwt.verifyToken], authController.getUser);
+  router.get("/",  authController.getUser);
   router.post("/requestOTP", authController.requestOTP);
   router.post("/verifyOTP", authController.verifyOTP);
   router.post(

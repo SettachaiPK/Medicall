@@ -437,27 +437,33 @@ exports.signUpPhamarcy = async (req, res) => {
 };
 
 exports.getUser = async (req, res) => {
-  const { userID } = req;
   try {
+    const token = req.cookies.accessToken;
+    if (!token) {
+      return res.status(205).send({ message: "No token provided!" });
+    }
+    const decoded = jwt.verify(token, config.access_token_secret);
     const {
       rows: [userDetail],
     } = await pool.query(
-      `SELECT * 
-        FROM userDetail
-        WHERE "userID" = ($1);`,
-      [userID]
+      ` SELECT *
+      FROM userDetail
+      WHERE "userID" = ($1);`,
+      [decoded.id]
     );
+    console.log(userDetail);
+
     if (userDetail.status != "active") {
-      return res.status(403).send({ message: "User inactivated" });
+      return res.status(205).send({ message: "User inactivated" });
     }
 
-    let { rows: roles } = await pool.query(
+    const { rows: roles } = await pool.query(
       ` SELECT "roleName" 
         FROM userToRole As userRoles
         INNER JOIN roles
         ON roles."roleID" = userRoles."roleID"
         WHERE "userID" = ($1);`,
-      [userID]
+      [decoded.id]
     );
 
     roles.forEach((role, index) => {
