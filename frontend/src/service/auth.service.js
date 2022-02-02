@@ -2,25 +2,6 @@ import qs from "qs";
 import httpClient from "./httpClient.service";
 import { server } from "./constants.service";
 
-export function signOut() {
-  const Axiosmodel = server.SIGN_OUT;
-  return new Promise((resolve, reject) => {
-    httpClient({
-      method: "GET",
-      url: Axiosmodel.url,
-      config: Axiosmodel,
-      withCredentials: true,
-    })
-      .then((res) => {
-        resolve(res.data);
-      })
-      .catch((err) => {
-        console.log(err.response);
-        reject(err);
-      });
-  });
-}
-
 export function requestOTP(data) {
   const Axiosmodel = server.requestOTP;
 
@@ -62,7 +43,7 @@ export function verifyOTP(data) {
 
 export function userDetail() {
   const Axiosmodel = server.userDetail;
-  console.log('userDetail');
+  console.log("userDetail");
 
   return new Promise((resolve, reject) => {
     httpClient({
@@ -96,6 +77,25 @@ export function checkRefreshToken() {
       })
       .catch((err) => {
         // console.log( 'error check refresh : ', err)
+        reject(err);
+      });
+  });
+}
+
+export function signOut() {
+  const Axiosmodel = server.SIGN_OUT;
+  return new Promise((resolve, reject) => {
+    httpClient({
+      method: "GET",
+      url: Axiosmodel.url,
+      config: Axiosmodel,
+      withCredentials: true,
+    })
+      .then((res) => {
+        resolve(res.data);
+      })
+      .catch((err) => {
+        console.log(err.response);
         reject(err);
       });
   });

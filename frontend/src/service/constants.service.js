@@ -11,9 +11,9 @@ export const NOT_CONNECT_NETWORK = "NOT_CONNECT_NETWORK";
 export const API_URL = `${process.env.REACT_APP_API_URL}apis/`;
 
 export const server = {
-  SIGN_IN: new AxiosModel({ url: `auth/signin` }),
-  SIGN_OUT: new AxiosModel({ url: `auth/signout` }),
+  SIGN_OUT: new AxiosModel({ url: `auth/logout` }),
   requestOTP: new AxiosModel({ url: `auth/requestOTP` }),
   verifyOTP: new AxiosModel({ url: `auth/verifyOTP` }),
   userDetail: new AxiosModel({ url: `auth` }),
+  CHECK_REFRESH_TOKEN: new AxiosModel({ url: `auth/checktoken` }),
 };

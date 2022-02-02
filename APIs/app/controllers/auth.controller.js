@@ -478,3 +478,17 @@ exports.getUser = async (req, res) => {
     return res.status(500).send(err);
   }
 };
+
+exports.detete_cookie = (req, res) => {
+  res.cookie("refreshToken", "", {
+    maxAge: 0,
+    httpOnly: true,
+    secure: false,
+  });
+  res.cookie("accessToken", "", {
+    maxAge: 0,
+    httpOnly: true,
+    secure: false,
+  });
+  res.status(200).send({ message: "OK" });
+};

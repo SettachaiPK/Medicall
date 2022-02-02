@@ -29,6 +29,9 @@ module.exports = function (app) {
     authJwt.verifyToken,
     authController.signUpPhamarcy
   );
+  router.get("/logout",
+    authController.detete_cookie
+  );
 
   app.use("/apis/auth", router);
 };

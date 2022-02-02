@@ -1,10 +1,9 @@
 import * as authService from "../service/auth.service";
-import { USER_OTP_UPDATE, USER_SIGNIN } from "./types";
+import { USER_OTP_UPDATE, USER_SIGNIN, USER_SIGNOUT } from "./types";
 
 export const actionRequestOTP = (payload) => async (dispatch) => {
   try {
     const { data } = await authService.requestOTP(payload);
-    await console.log(data);
     await dispatch(reducerUpdateOTP(data));
     return true;
   } catch (error) {
@@ -17,7 +16,6 @@ export const actionVerifyOTP = (payload) => async (dispatch) => {
   try {
     const { data } = await authService.verifyOTP(payload);
     if (data.status === "active") {
-      console.log(data);
       await dispatch(reducerSignIn(data));
       localStorage.setItem(
         `${process.env.REACT_APP_PREFIX}_USER`,
@@ -53,6 +51,16 @@ export const actionVerifyLogIn = () => async (dispatch) => {
   }
 };
 
+export const actionLogout = () => async (dispatch) => {
+  try {
+    const { data } = await authService.signOut();
+    localStorage.removeItem(`${process.env.REACT_APP_PREFIX}_USER`);
+    await dispatch(reducerSignOut());
+  } catch (error) {
+    alert(error.response.data.message || error.message);
+  }
+};
+
 export const handleSignIn = async (data) => {};
 
 export const reducerUpdateOTP = (payload) => ({
@@ -62,4 +70,7 @@ export const reducerUpdateOTP = (payload) => ({
 export const reducerSignIn = (payload) => ({
   type: USER_SIGNIN,
   payload,
+});
+export const reducerSignOut = () => ({
+  type: USER_SIGNOUT,
 });

@@ -1,13 +1,18 @@
 import React from "react";
 import { useState } from "react";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
+import { actionLogout } from "../actions/auth.actions";
 import LoginStep from "./LoginStep";
 function Topnav({ user: { status } }) {
+  const dispatch = useDispatch();
   const [openAdd, setOpenAdd] = useState(false);
 
   const handleOpenAdd = () => setOpenAdd(true);
   const handleCloseAdd = () => {
     setOpenAdd(false);
+  };
+  const handleLogOut = () => {
+    dispatch(actionLogout());
   };
 
   return (
@@ -22,6 +27,7 @@ function Topnav({ user: { status } }) {
           <a href="#hospital">ค้นหาสถานพยาบาล</a>
           <a href="#appointment">ประวัติการนัดหมาย</a>
           {!status && <a onClick={handleOpenAdd}>เข้าสู่ระบบ</a>}
+          {status && <a onClick={handleLogOut}>ออกจากระบบ</a>}
         </div>
       </div>
       <LoginStep open={openAdd} onClose={handleCloseAdd} />
