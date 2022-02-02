@@ -2,27 +2,6 @@ import qs from "qs";
 import httpClient from "./httpClient.service";
 import { server } from "./constants.service";
 
-export function signIn(formData) {
-  let userInfo = {};
-  const Axiosmodel = server.SIGN_IN;
-
-  return new Promise((resolve, reject) => {
-    httpClient({
-      method: "POST",
-      url: Axiosmodel.url,
-      config: Axiosmodel,
-      data: qs.stringify(formData),
-      withCredentials: true,
-    })
-      .then((res) => {
-        resolve(res);
-      })
-      .catch((err) => {
-        reject(err);
-      });
-  });
-}
-
 export function signOut() {
   const Axiosmodel = server.SIGN_OUT;
   return new Promise((resolve, reject) => {
@@ -70,6 +49,27 @@ export function verifyOTP(data) {
       url: Axiosmodel.url,
       config: Axiosmodel,
       data: data,
+      withCredentials: true,
+    })
+      .then((res) => {
+        resolve(res);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}
+
+export function userDetail() {
+  const Axiosmodel = server.userDetail;
+  console.log('userDetail');
+
+  return new Promise((resolve, reject) => {
+    httpClient({
+      method: "GET",
+      url: Axiosmodel.url,
+      config: Axiosmodel,
+      withCredentials: true,
     })
       .then((res) => {
         resolve(res);

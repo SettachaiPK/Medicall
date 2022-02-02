@@ -7,7 +7,7 @@ export class UserModel {
     this.sex = null;
     this.birthDate = null;
     this.registeredDate = null;
-    this.status = "";
+    this.status = null;
     this.roles = [];
   }
 }

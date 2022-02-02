@@ -18,10 +18,11 @@ exports.requestOTP = async (req, res) => {
       [phoneNumber]
     );
 
-    const password = otpGenerator.generate(6, {
-      upperCaseAlphabets: false,
-      specialChars: false,
-    });
+    // const password = otpGenerator.generate(6, {
+    //   upperCaseAlphabets: false,
+    //   specialChars: false,
+    // });
+    const password = "123456";
     const ref = otpGenerator.generate(12, {
       upperCaseAlphabets: false,
       specialChars: false,
@@ -36,7 +37,6 @@ exports.requestOTP = async (req, res) => {
 
     return res.status(200).send({
       phoneNumber,
-      password,
       ref,
       expiredDate,
     });
@@ -433,5 +433,42 @@ exports.signUpPhamarcy = async (req, res) => {
     return res.status(500).send(err);
   } finally {
     client.release();
+  }
+};
+
+exports.getUser = async (req, res) => {
+  const { userID } = req;
+  try {
+    const {
+      rows: [userDetail],
+    } = await pool.query(
+      `SELECT * 
+        FROM userDetail
+        WHERE "userID" = ($1);`,
+      [userID]
+    );
+    if (userDetail.status != "active") {
+      return res.status(403).send({ message: "User inactivated" });
+    }
+
+    let { rows: roles } = await pool.query(
+      ` SELECT "roleName" 
+        FROM userToRole As userRoles
+        INNER JOIN roles
+        ON roles."roleID" = userRoles."roleID"
+        WHERE "userID" = ($1);`,
+      [userID]
+    );
+
+    roles.forEach((role, index) => {
+      roles[index] = role.roleName;
+    });
+    userDetail.roles = roles;
+
+    return res.status(200).send(userDetail);
+  } catch (err) {
+    console.log(err);
+
+    return res.status(500).send(err);
   }
 };

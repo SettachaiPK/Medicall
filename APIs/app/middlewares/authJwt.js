@@ -22,7 +22,6 @@ verifyToken = async (req, res, next) => {
     );
 
     if (status === "inactive") {
-      console.log("out");
       return res.status(403).send({ message: "User Deactivated." });
     }
 
