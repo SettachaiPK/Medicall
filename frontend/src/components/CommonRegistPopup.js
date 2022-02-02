@@ -1,7 +1,11 @@
 import * as React from "react";
+import moment from "moment";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
+import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import DateAdapter from "@mui/lab/AdapterMoment";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -10,10 +14,47 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { pink, grey } from "@mui/material/colors";
 import PhoneInput from "react-phone-input-2";
 import { fontWeight } from "@mui/system";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
 
 function CommonRegistPopup(props) {
-  const handleStepChange = () => {
-    props.handleStepChange(4);
+  const [formValue, setFormValue] = React.useState({
+    firstName: "",
+    lastName: "",
+    birthDate: new Date(),
+    sex: "",
+    weight: 0,
+    height: 0,
+    congenitalDisease: "",
+    drugAllergy: "",
+    drugInUse: "",
+  });
+  const {
+    firstName,
+    lastName,
+    birthDate,
+    sex,
+    weight,
+    height,
+    congenitalDisease,
+    drugAllergy,
+    drugInUse,
+  } = formValue;
+
+  const handleSubmit = () => {
+    props.onSubmit(formValue);
+  };
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormValue((prevState) => {
+      return {
+        ...prevState,
+        [name]: value,
+      };
+    });
   };
   return (
     <>
@@ -32,6 +73,100 @@ function CommonRegistPopup(props) {
               required
               id="outlined-name"
               label="ชื่อ"
+              name="firstName"
+              value={firstName}
+              onChange={handleChange}
+            />
+            <TextField
+              required
+              id="outlined-name"
+              label="นามสกุล"
+              name="lastName"
+              value={lastName}
+              onChange={handleChange}
+            />
+            <LocalizationProvider dateAdapter={DateAdapter}>
+              <DesktopDatePicker
+                label="วันเกิด"
+                value={birthDate}
+                onChange={(newValue) => {
+                  setFormValue({ ...formValue, ["birthDate"]: newValue });
+                }}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </LocalizationProvider>
+            <FormControl>
+              <FormLabel id="demo-controlled-radio-buttons-group">
+                เพศกำเนิด
+              </FormLabel>
+              <RadioGroup
+                row
+                aria-labelledby="demo-controlled-radio-buttons-group"
+                name="controlled-radio-buttons-group"
+                name="sex"
+                value={sex}
+                onChange={handleChange}
+              >
+                <FormControlLabel
+                  value="female"
+                  control={<Radio />}
+                  label="หญิง"
+                />
+                <FormControlLabel
+                  value="male"
+                  control={<Radio />}
+                  label="ชาย"
+                />
+              </RadioGroup>
+            </FormControl>
+            <TextField
+              id="outlined-number"
+              label="น้ำหนัก"
+              type="number"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              name="weight"
+              value={weight}
+              onChange={handleChange}
+            />
+            <TextField
+              id="outlined-number"
+              label="ส่วนสูง"
+              type="number"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              name="height"
+              value={height}
+              onChange={handleChange}
+            />
+            <TextField
+              id="outlined-multiline-static"
+              label="โรคประจำตัว"
+              multiline
+              rows={4}
+              name="congenitalDisease"
+              value={congenitalDisease}
+              onChange={handleChange}
+            />
+            <TextField
+              id="outlined-multiline-static"
+              label="ประวัติการแพ้ยา"
+              multiline
+              rows={4}
+              name="drugAllergy"
+              value={drugAllergy}
+              onChange={handleChange}
+            />
+            <TextField
+              id="outlined-multiline-static"
+              label="ยาที่กำลังทานอยู่"
+              multiline
+              rows={4}
+              name="drugInUse"
+              value={drugInUse}
+              onChange={handleChange}
             />
           </div>
         </Box>
@@ -47,7 +182,7 @@ function CommonRegistPopup(props) {
             fontWeight: 900,
             fontSize: 20,
           }}
-          onClick={handleStepChange}
+          onClick={handleSubmit}
         >
           ยืนยัน
         </Button>

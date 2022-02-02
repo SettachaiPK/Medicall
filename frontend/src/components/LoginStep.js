@@ -13,7 +13,11 @@ import OTPpopup from "./OTPpopup";
 import PolicyPopup from "./PolicyPopup";
 import CommonRegistPopup from "./CommonRegistPopup";
 
-import { actionRequestOTP, actionVerifyOTP } from "../actions/auth.actions";
+import {
+  actionRequestOTP,
+  actionVerifyOTP,
+  actionSignUpCustomer,
+} from "../actions/auth.actions";
 
 function LoginStep(props) {
   const dispatch = useDispatch();
@@ -44,6 +48,15 @@ function LoginStep(props) {
       await handleStepChange(0);
     }
   };
+  const handleAcceptAgreement = () => {
+    handleStepChange(3);
+  };
+  const handleCustomerSignUp = async (data) => {
+    const res = await dispatch(actionSignUpCustomer(data));
+    if (res) {
+       handleClose();
+    }
+  };
 
   return (
     <div>
@@ -60,12 +73,12 @@ function LoginStep(props) {
         )}
         {step === 2 && (
           <>
-            <PolicyPopup handleStepChange={handleStepChange} />
+            <PolicyPopup onSubmit={handleAcceptAgreement} />
           </>
         )}
         {step === 3 && (
           <>
-            <CommonRegistPopup handleStepChange={handleStepChange} />
+            <CommonRegistPopup onSubmit={handleCustomerSignUp} />
           </>
         )}
       </Dialog>

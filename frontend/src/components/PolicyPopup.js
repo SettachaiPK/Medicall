@@ -8,8 +8,13 @@ import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 
 function PolicyPopup(props) {
-  const handleStepChange = () => {
-    props.handleStepChange(3);
+  const [checked, setChecked] = React.useState(false);
+
+  const handleChange = (event) => {
+    setChecked(event.target.checked);
+  };
+  const handleSubmit = () => {
+    props.onSubmit();
   };
   return (
     <>
@@ -55,16 +60,24 @@ function PolicyPopup(props) {
         </Box>
       </DialogContent>
       <DialogActions
-        sx={{ pb: 2,px: 3.5, maxWidth: "lg", fullWidth: true, display: "block" }}
+        sx={{
+          pb: 2,
+          px: 3.5,
+          maxWidth: "lg",
+          fullWidth: true,
+          display: "block",
+        }}
       >
         <FormControlLabel
-          control={<Checkbox />}
+          control={<Checkbox checked={checked} onChange={handleChange} />}
           label="ยอมรับช้อตกลงการให้บริการ"
         />
-        <div style={{
-          display:"flex",
-          justifyContent:"flex-end"
-        }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+          }}
+        >
           <Button
             sx={{
               background: pink[100],
@@ -72,7 +85,8 @@ function PolicyPopup(props) {
               fontWeight: 900,
               fontSize: 20,
             }}
-            onClick={handleStepChange}
+            disabled={!checked}
+            onClick={handleSubmit}
           >
             ยืนยัน
           </Button>

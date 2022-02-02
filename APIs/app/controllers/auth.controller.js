@@ -224,7 +224,6 @@ exports.signUpCustomer = async (req, res) => {
       ` SELECT "roleID" FROM roles WHERE "roleName" = ($1)`,
       [process.env.ROLE_CUSTOMER]
     );
-    console.log(roleID);
     await client.query(
       ` INSERT INTO userToRole ("userID", "roleID")
         VALUES ($1, $2)`,
@@ -451,7 +450,6 @@ exports.getUser = async (req, res) => {
       WHERE "userID" = ($1);`,
       [decoded.id]
     );
-    console.log(userDetail);
 
     if (userDetail.status != "active") {
       return res.status(205).send({ message: "User inactivated" });
