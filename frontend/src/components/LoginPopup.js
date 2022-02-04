@@ -41,6 +41,9 @@ function LoginPopup({ onSubmit }) {
       <DialogActions
         sx={{ m: "auto", pb: 10, maxWidth: "lg", fullWidth: true }}
       >
+        <div style={{
+            paddingBottom:"2rem",
+          }}>
         <Button
           sx={{
             m: "auto",
@@ -55,6 +58,7 @@ function LoginPopup({ onSubmit }) {
         >
           เช้าสู่ระบบ
         </Button>
+        </div>
       </DialogActions>
     </>
   );

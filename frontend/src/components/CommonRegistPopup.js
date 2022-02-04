@@ -58,135 +58,154 @@ function CommonRegistPopup(props) {
   };
   return (
     <>
-      <h2 className="head-popup">ลงทะเบียนผู้ใช้ทั่วไป</h2>
-      <DialogContent sx={{ px: 25, py: 3 }}>
-        <Box
-          component="form"
-          sx={{
-            "& .MuiTextField-root": { m: 1, width: "25ch" },
-          }}
-          noValidate
-          autoComplete="off"
-        >
-          <div>
-            <TextField
-              required
-              id="outlined-name"
-              label="ชื่อ"
-              name="firstName"
-              value={firstName}
-              onChange={handleChange}
-            />
-            <TextField
-              required
-              id="outlined-name"
-              label="นามสกุล"
-              name="lastName"
-              value={lastName}
-              onChange={handleChange}
-            />
-            <LocalizationProvider dateAdapter={DateAdapter}>
-              <DesktopDatePicker
-                label="วันเกิด"
-                value={birthDate}
-                onChange={(newValue) => {
-                  setFormValue({ ...formValue, ["birthDate"]: newValue });
-                }}
-                renderInput={(params) => <TextField {...params} />}
-              />
-            </LocalizationProvider>
-            <FormControl>
-              <FormLabel id="demo-controlled-radio-buttons-group">
-                เพศกำเนิด
-              </FormLabel>
-              <RadioGroup
-                row
-                aria-labelledby="demo-controlled-radio-buttons-group"
-                name="controlled-radio-buttons-group"
-                name="sex"
-                value={sex}
-                onChange={handleChange}
-              >
-                <FormControlLabel
-                  value="female"
-                  control={<Radio />}
-                  label="หญิง"
-                />
-                <FormControlLabel
-                  value="male"
-                  control={<Radio />}
-                  label="ชาย"
-                />
-              </RadioGroup>
-            </FormControl>
-            <TextField
-              id="outlined-number"
-              label="น้ำหนัก"
-              type="number"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              name="weight"
-              value={weight}
-              onChange={handleChange}
-            />
-            <TextField
-              id="outlined-number"
-              label="ส่วนสูง"
-              type="number"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              name="height"
-              value={height}
-              onChange={handleChange}
-            />
-            <TextField
-              id="outlined-multiline-static"
-              label="โรคประจำตัว"
-              multiline
-              rows={4}
-              name="congenitalDisease"
-              value={congenitalDisease}
-              onChange={handleChange}
-            />
-            <TextField
-              id="outlined-multiline-static"
-              label="ประวัติการแพ้ยา"
-              multiline
-              rows={4}
-              name="drugAllergy"
-              value={drugAllergy}
-              onChange={handleChange}
-            />
-            <TextField
-              id="outlined-multiline-static"
-              label="ยาที่กำลังทานอยู่"
-              multiline
-              rows={4}
-              name="drugInUse"
-              value={drugInUse}
-              onChange={handleChange}
-            />
-          </div>
-        </Box>
-      </DialogContent>
-      <DialogActions
-        sx={{ m: "auto", pb: 10, maxWidth: "lg", fullWidth: true }}
+      <div
+        style={{
+          width: "25rem",
+        }}
       >
-        <Button
-          sx={{
-            m: "auto",
-            background: pink[100],
-            color: grey[50],
-            fontWeight: 900,
-            fontSize: 20,
+        <h2
+          className="head-popup"
+          style={{
+            paddingLeft: "6rem",
           }}
-          onClick={handleSubmit}
         >
-          ยืนยัน
-        </Button>
-      </DialogActions>
+          ลงทะเบียนผู้ใช้ทั่วไป
+        </h2>
+        <DialogContent sx={{ px: 8, py: 3 }}>
+          <Box
+            component="form"
+            sx={{
+              "& .MuiTextField-root": { m: 1, width: "25ch" },
+            }}
+            noValidate
+            autoComplete="off"
+          >
+            <div>
+              <TextField
+                required
+                id="outlined-name"
+                label="ชื่อ"
+                name="firstName"
+                value={firstName}
+                onChange={handleChange}
+              />
+              <TextField
+                required
+                id="outlined-name"
+                label="นามสกุล"
+                name="lastName"
+                value={lastName}
+                onChange={handleChange}
+              />
+              <LocalizationProvider dateAdapter={DateAdapter}>
+                <DesktopDatePicker
+                  label="วันเกิด"
+                  value={birthDate}
+                  onChange={(newValue) => {
+                    setFormValue({ ...formValue, ["birthDate"]: newValue });
+                  }}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
+              <FormControl sx={{ pl:1}}>
+                <FormLabel id="demo-controlled-radio-buttons-group">
+                  เพศกำเนิด
+                </FormLabel>
+                <RadioGroup
+                  row
+                  aria-labelledby="demo-controlled-radio-buttons-group"
+                  name="controlled-radio-buttons-group"
+                  name="sex"
+                  value={sex}
+                  onChange={handleChange}
+                >
+                  <FormControlLabel
+                    value="female"
+                    control={<Radio />}
+                    label="หญิง"
+                  />
+                  <FormControlLabel
+                    value="male"
+                    control={<Radio />}
+                    label="ชาย"
+                  />
+                </RadioGroup>
+              </FormControl>
+              <TextField
+                id="outlined-number"
+                label="น้ำหนัก"
+                type="number"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                name="weight"
+                value={weight}
+                onChange={handleChange}
+              />
+              <TextField
+                id="outlined-number"
+                label="ส่วนสูง"
+                type="number"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                name="height"
+                value={height}
+                onChange={handleChange}
+              />
+              <TextField
+                id="outlined-multiline-static"
+                label="โรคประจำตัว"
+                multiline
+                rows={4}
+                name="congenitalDisease"
+                value={congenitalDisease}
+                onChange={handleChange}
+              />
+              <TextField
+                id="outlined-multiline-static"
+                label="ประวัติการแพ้ยา"
+                multiline
+                rows={4}
+                name="drugAllergy"
+                value={drugAllergy}
+                onChange={handleChange}
+              />
+              <TextField
+                id="outlined-multiline-static"
+                label="ยาที่กำลังทานอยู่"
+                multiline
+                rows={4}
+                name="drugInUse"
+                value={drugInUse}
+                onChange={handleChange}
+              />
+            </div>
+          </Box>
+        </DialogContent>
+        <DialogActions
+          sx={{ m: "auto", pb: 3, maxWidth: "lg", fullWidth: true }}
+        >
+          <div style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            paddingRight:"4rem",
+          }}>
+            <Button
+              sx={{
+                m: "auto",
+                background: pink[100],
+                color: grey[50],
+                fontWeight: 900,
+                fontSize: 20,
+              }}
+              onClick={handleSubmit}
+            >
+              ยืนยัน
+            </Button>
+          </div>
+        </DialogActions>
+      </div>
     </>
   );
 }
