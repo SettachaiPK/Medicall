@@ -10,6 +10,8 @@ import ListItemText from "@mui/material/ListItemText";
 import Box from "@mui/material/Box";
 import MenuProfile from "../../components/MenuProfile";
 import MenuConsultantSignUp from "../../components/MenuConsultantSignUp";
+import { pink, grey } from "@mui/material/colors";
+
 
 function UserMenuPage({ user: { roles } }) {
   const dispatch = useDispatch();
@@ -41,24 +43,25 @@ function UserMenuPage({ user: { roles } }) {
 
   return (
     <Box sx={{ display: "flex" }}>
-      <Paper sx={{ width: 320, maxWidth: "100%" }}>
+      <Paper sx={{ width: 320, maxWidth: "100%" ,marginTop:15,background: pink[100]}}>
         <MenuList>
           {menuOptions.map((option) => (
             <Box key={option.value} hidden={option.hidden}>
               <MenuItem
                 onClick={(event) => handleMenuItemClick(event, option.value)}
+                sx={{ height: 70 }}
               >
                 <ListItemText>{option.massage}</ListItemText>
               </MenuItem>
-              <Divider />
+              <Divider sx={{borderColor: "white"}} />
             </Box>
           ))}
-          <MenuItem onClick={handleLogOut}>
+          <MenuItem onClick={handleLogOut} sx={{ height: 70 }}>
             <ListItemText>ออกจากระบบ</ListItemText>
           </MenuItem>
         </MenuList>
       </Paper>
-      <Box>
+      <Box sx={{margin:"4rem"}}>
         {step === "profile" && <MenuProfile />}
         {step === "consultant sign up" && <MenuConsultantSignUp />}
       </Box>

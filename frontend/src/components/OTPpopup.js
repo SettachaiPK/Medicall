@@ -3,14 +3,10 @@ import { useState } from "react";
 import { connect } from "react-redux";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 import { pink, grey } from "@mui/material/colors";
-import PhoneInput from "react-phone-input-2";
-import { fontWeight } from "@mui/system";
+
 
 function OTPpopup({ auth: { phoneNumber, ref }, onSubmit }) {
   const [password, setPassword] = useState("");
@@ -63,9 +59,9 @@ function OTPpopup({ auth: { phoneNumber, ref }, onSubmit }) {
       >
         <label
           style={{
-            "padding-bottom": "25px",
+            paddingbottom: "25px",
             color: "#a7a7a7",
-            "text-decoration": "underline",
+            textdecoration: "underline",
           }}
         >
           ส่งรหัสยืนยันอีกครั้ง{" "}
