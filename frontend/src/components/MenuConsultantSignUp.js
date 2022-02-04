@@ -16,7 +16,7 @@ function MenuConsultantSignUp({ user }) {
     personalID: "",
     media: null,
   });
-  const { infirmary, academy, licenseNumber, personalID, media } = formValue;
+  const { infirmary, academy, licenseNumber, personalID } = formValue;
 
   function sleep(delay = 1e3) {
     return new Promise((resolve) => {

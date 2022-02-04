@@ -490,3 +490,49 @@ exports.detete_cookie = (req, res) => {
   });
   res.status(200).send({ message: "OK" });
 };
+
+exports.checkPendingConsultant = async (req, res) => {
+  const { userID } = req;
+  const client = await pool.connect();
+  try {
+    const { rows: consultantDetail } = await client.query(
+      ` SELECT "userID"
+        FROM consultantDetail
+        WHERE "status" = 'waiting approval'
+        AND "userID" = ($1);`,
+      [userID]
+    );
+    if (consultantDetail.length > 0) {
+      return res.status(200).send({ pending: true });
+    } else {
+      return res.status(200).send({ pending: false });
+    }
+  } catch (err) {
+    console.log(err);
+
+    return res.status(500).send(err);
+  }
+};
+
+exports.checkPendingPhamarcy = async (req, res) => {
+  const { userID } = req;
+  const client = await pool.connect();
+  try {
+    const { rows: phamarcyDetail } = await client.query(
+      ` SELECT "userID"
+        FROM phamarcyDetail
+        WHERE "status" = 'waiting approval'
+        AND "userID" = ($1);`,
+      [userID]
+    );
+    if (phamarcyDetail.length > 0) {
+      return res.status(200).send({ pending: true });
+    } else {
+      return res.status(200).send({ pending: false });
+    }
+  } catch (err) {
+    console.log(err);
+
+    return res.status(500).send(err);
+  }
+};

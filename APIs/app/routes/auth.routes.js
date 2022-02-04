@@ -11,7 +11,7 @@ module.exports = function (app) {
     next();
   });
 
-  router.get("/",  authController.getUser);
+  router.get("/", authController.getUser);
   router.post("/requestOTP", authController.requestOTP);
   router.post("/verifyOTP", authController.verifyOTP);
   router.post(
@@ -29,9 +29,17 @@ module.exports = function (app) {
     authJwt.verifyToken,
     authController.signUpPhamarcy
   );
-  router.get("/logout",
-    authController.detete_cookie
+  router.get(
+    "/pendingConsultant",
+    authJwt.verifyToken,
+    authController.checkPendingConsultant
   );
+  router.get(
+    "/pendingPhamarcy",
+    authJwt.verifyToken,
+    authController.checkPendingPhamarcy
+  );
+  router.get("/logout", authController.detete_cookie);
 
   app.use("/apis/auth", router);
 };
