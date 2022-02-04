@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 //import ProtectedRoute from "./components/ProtectedRoute";
-import { HomePage } from "./views";
+import { HomePage, UserMenuPage } from "./views";
 import Topnav from "./components/Topnav";
 import { actionVerifyLogIn } from "./actions/auth.actions";
 
@@ -20,7 +20,8 @@ function App() {
     <Router>
       <Topnav />
       <Routes>
-        <Route exact path="/" element={<HomePage />} />
+        <Route exact path="/home" element={<HomePage />} />
+        <Route exact path="/menu" element={<UserMenuPage />} />
         {/* <Route exact path="/" element={<ProtectedRoute />}>
           <Route exact path="/protect" element={<HomePage />} />
         </Route> */}

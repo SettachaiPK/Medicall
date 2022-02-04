@@ -17,7 +17,6 @@ const processQueue = () => {
 }
 
 axios.interceptors.request.use( request => {
-    console.log('before request', request)
     let Config = request.config
 
     if (!isAbsoluteURLRegex.test(request.url)) {
