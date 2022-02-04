@@ -1,9 +1,7 @@
 import React from "react";
-import { connect, useDispatch } from "react-redux";
+import { connect } from "react-redux";
 
 function MenuProfile({ user }) {
-  const dispatch = useDispatch();
-
   return (
     <>
       {Object.keys(user).map((property) => (

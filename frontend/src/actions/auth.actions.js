@@ -41,6 +41,18 @@ export const actionSignUpCustomer = (payload) => async (dispatch) => {
   }
 };
 
+export const actionSignUpConsultant = (payload) => async (dispatch) => {
+  try {
+    const { data } = await authService.signUpConsultant(payload);
+    console.log(data);
+    alert(data.message);
+    return data.message;
+  } catch (error) {
+    alert(error.response.data.message || error.message);
+    return false;
+  }
+};
+
 export const actionVerifyLogIn = () => async (dispatch) => {
   try {
     const user = await localStorage.getItem(
