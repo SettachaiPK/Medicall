@@ -23,7 +23,7 @@ function Topnav({ user: { status } }) {
           <label>MEDICALL</label>
         </div>
         <div>
-          <Link to="/home">หน้าหลัก</Link>
+          <Link to="/">หน้าหลัก</Link>
           <Link to="/product">ซื้อเวชภัณฑ์</Link>
           <Link to="/hospital">ค้นหาสถานพยาบาล</Link>
           <Link to="/appointment">ประวัติการนัดหมาย</Link>

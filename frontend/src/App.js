@@ -13,6 +13,7 @@ function App() {
     if (res) {
     }
   };
+
   useEffect(() => {
     handleVerifyLogIn();
   }, []);
@@ -20,8 +21,8 @@ function App() {
     <Router>
       <Topnav />
       <Routes>
-        <Route exact path="/home" element={<HomePage />} />
-        <Route exact path="/menu" element={<UserMenuPage />} />
+        <Route exact path="/" element={<HomePage />} />
+        <Route path="menu" element={<UserMenuPage />} />
         {/* <Route exact path="/" element={<ProtectedRoute />}>
           <Route exact path="/protect" element={<HomePage />} />
         </Route> */}

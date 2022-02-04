@@ -9,17 +9,26 @@ import MenuItem from "@mui/material/MenuItem";
 import ListItemText from "@mui/material/ListItemText";
 import Box from "@mui/material/Box";
 import MenuProfile from "../../components/MenuProfile";
+import MenuConsultantSignUp from "../../components/MenuConsultantSignUp";
 
-function UserMenuPage(props) {
+function UserMenuPage({ user: { roles } }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [step, setStep] = React.useState("ข้อมูลส่วนตัว");
+  const [step, setStep] = React.useState("profile");
 
   const menuOptions = [
-    "ข้อมูลส่วนตัว",
-    "ลงทะเบียนผู้ให้คำปรึกษา",
-    "ลงทะเบียนร้านเวชภัณฑ์",
-    "ร้องเรียน",
+    { value: "profile", massage: "ข้อมูลส่วนตัว" },
+    {
+      value: "consultant sign up",
+      massage: "ลงทะเบียนผู้ให้คำปรึกษา",
+      hidden: roles.includes("consultant"),
+    },
+    {
+      value: "phamarcy sign up",
+      massage: "ลงทะเบียนร้านเวชภัณฑ์",
+      hidden: roles.includes("phamarcy"),
+    },
+    { value: "report", massage: "ร้องเรียน" },
   ];
 
   const handleMenuItemClick = (event, option) => {
@@ -27,7 +36,7 @@ function UserMenuPage(props) {
   };
   const handleLogOut = async () => {
     await dispatch(actionLogout());
-    await navigate("/home");
+    await navigate("/");
   };
 
   return (
@@ -35,9 +44,11 @@ function UserMenuPage(props) {
       <Paper sx={{ width: 320, maxWidth: "100%" }}>
         <MenuList>
           {menuOptions.map((option) => (
-            <Box key={option}>
-              <MenuItem onClick={(event) => handleMenuItemClick(event, option)}>
-                <ListItemText>{option}</ListItemText>
+            <Box key={option.value} hidden={option.hidden}>
+              <MenuItem
+                onClick={(event) => handleMenuItemClick(event, option.value)}
+              >
+                <ListItemText>{option.massage}</ListItemText>
               </MenuItem>
               <Divider />
             </Box>
@@ -48,10 +59,8 @@ function UserMenuPage(props) {
         </MenuList>
       </Paper>
       <Box>
-        {step === "ข้อมูลส่วนตัว" && <MenuProfile />}
-        {step === "ลงทะเบียนผู้ให้คำปรึกษา" && (
-          <div>ลงทะเบียนผู้ให้คำปรึกษา</div>
-        )}
+        {step === "profile" && <MenuProfile />}
+        {step === "consultant sign up" && <MenuConsultantSignUp />}
       </Box>
     </Box>
   );
@@ -60,6 +69,8 @@ function UserMenuPage(props) {
 UserMenuPage.defaultProps = {};
 UserMenuPage.propTypes = {};
 
-const mapStateToProps = (state) => ({});
+const mapStateToProps = (state) => ({
+  user: state.user,
+});
 
 export default connect(mapStateToProps, {})(UserMenuPage);

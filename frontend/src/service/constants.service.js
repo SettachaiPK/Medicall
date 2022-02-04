@@ -15,6 +15,7 @@ export const server = {
   requestOTP: new AxiosModel({ url: `auth/requestOTP` }),
   verifyOTP: new AxiosModel({ url: `auth/verifyOTP` }),
   signUpCustomer: new AxiosModel({ url: `auth/signUpCustomer` }),
+  signUpConsultant: new AxiosModel({ url: `auth/signUpConsultant` }),
   userDetail: new AxiosModel({ url: `auth` }),
   CHECK_REFRESH_TOKEN: new AxiosModel({ url: `auth/checktoken` }),
 };

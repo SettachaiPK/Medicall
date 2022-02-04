@@ -61,6 +61,27 @@ export function signUpCustomer(data) {
   });
 }
 
+export function signUpConsultant(data) {
+  const Axiosmodel = server.signUpConsultant;
+
+  return new Promise((resolve, reject) => {
+    httpClient({
+      method: "POST",
+      url: Axiosmodel.url,
+      config: Axiosmodel,
+      data: data,
+      withCredentials: true,
+    })
+      .then((res) => {
+        resolve(res);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}
+
+
 export function userDetail() {
   const Axiosmodel = server.userDetail;
 
