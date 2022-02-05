@@ -53,3 +53,45 @@ exports.acceptConsultant = async (req, res) => {
     client.release();
   }
 };
+
+exports.rejectConsultant = async (req, res) => {
+  const { userID } = req.body;
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+
+    const { rows: consultantDetail } = await client.query(
+      ` SELECT * FROM consultantDetail 
+        WHERE "userID" = ($1)
+        AND status = 'waiting approval';`,
+      [userID]
+    );
+
+    if (consultantDetail.length === 0) {
+      return res.status(400).send({ message: "No pending application" });
+    }
+
+    await client.query(
+      ` DELETE FROM consultantDetail
+        WHERE "userID" = ($1)
+        AND status = 'waiting approval';`,
+      [userID]
+    );
+
+    await client.query("COMMIT");
+
+    return res.status(200).send({
+      message: "Application deleted",
+      userID,
+    });
+  } catch (err) {
+    await client.query("ROLLBACK");
+
+    console.log(err);
+
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};

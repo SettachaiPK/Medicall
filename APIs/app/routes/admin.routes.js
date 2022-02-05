@@ -12,10 +12,16 @@ module.exports = function (app) {
   });
 
   router.post(
-    "/acceptConsultant",
+    "/accept-consultant",
     [authJwt.verifyToken, authJwt.isAdmin],
     adminController.acceptConsultant
   );
+  router.post(
+    "/reject-consultant",
+    [authJwt.verifyToken, authJwt.isAdmin],
+    adminController.rejectConsultant
+  );
+  ;
 
   app.use("/apis/admin", router);
 };

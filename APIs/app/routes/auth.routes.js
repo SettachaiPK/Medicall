@@ -15,27 +15,27 @@ module.exports = function (app) {
   router.post("/requestOTP", authController.requestOTP);
   router.post("/verifyOTP", authController.verifyOTP);
   router.post(
-    "/signUpCustomer",
+    "/signup/customer",
     authJwt.verifyToken,
     authController.signUpCustomer
   );
   router.post(
-    "/signUpConsultant",
+    "/signup/consultant",
     authJwt.verifyToken,
     authController.signUpConsultant
   );
   router.post(
-    "/signUpPhamarcy",
+    "/signup/phamarcy",
     authJwt.verifyToken,
     authController.signUpPhamarcy
   );
   router.get(
-    "/pendingConsultant",
+    "/pending-consultant",
     authJwt.verifyToken,
     authController.checkPendingConsultant
   );
   router.get(
-    "/pendingPhamarcy",
+    "/pending-phamarcy",
     authJwt.verifyToken,
     authController.checkPendingPhamarcy
   );
