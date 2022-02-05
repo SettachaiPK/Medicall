@@ -45,7 +45,7 @@ isAdmin = async (req, res, next) => {
       AND "roleName" = 'admin';`,
       [userID]
     );
-    
+
     if (adminRows.length > 0) {
       return next();
     } else {

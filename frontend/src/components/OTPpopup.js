@@ -7,7 +7,6 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import { pink, grey } from "@mui/material/colors";
 
-
 function OTPpopup({ auth: { phoneNumber, ref }, onSubmit }) {
   const [password, setPassword] = useState("");
   const handleSubmit = () => {

@@ -11,11 +11,16 @@ export const NOT_CONNECT_NETWORK = "NOT_CONNECT_NETWORK";
 export const API_URL = `${process.env.REACT_APP_API_URL}apis/`;
 
 export const server = {
+  userDetail: new AxiosModel({ url: `auth` }),
   SIGN_OUT: new AxiosModel({ url: `auth/logout` }),
   requestOTP: new AxiosModel({ url: `auth/requestOTP` }),
   verifyOTP: new AxiosModel({ url: `auth/verifyOTP` }),
   signUpCustomer: new AxiosModel({ url: `auth/signUpCustomer` }),
   signUpConsultant: new AxiosModel({ url: `auth/signUpConsultant` }),
-  userDetail: new AxiosModel({ url: `auth` }),
   CHECK_REFRESH_TOKEN: new AxiosModel({ url: `auth/checktoken` }),
+  checkPendingConsultant: new AxiosModel({
+    url: `auth/pendingConsultant`,
+  }),
+  occupation: new AxiosModel({ url: `customer/occupation` }),
+  department: new AxiosModel({ url: `customer/department` }),
 };

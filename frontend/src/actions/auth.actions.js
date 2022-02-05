@@ -85,6 +85,16 @@ export const actionLogout = () => async (dispatch) => {
   }
 };
 
+export const actionCheckPendingConsultant = () => async (dispatch) => {
+  try {
+    const { pending } = await authService.checkPendingConsultant();
+    return pending;
+  } catch (error) {
+    alert(error.response.data.message || error.message);
+    return false;
+  }
+};
+
 export const handleSignIn = async (data) => {};
 
 export const reducerUpdateOTP = (payload) => ({

@@ -3,12 +3,16 @@ const qs = require("qs");
 
 exports.getOccupation = async (req, res) => {
   try {
+    // const { rows: occupations } = await pool.query(
+    //   ` SELECT
+    //     DISTINCT ocupation
+    //     FROM consultantDetail
+    //     WHERE ocupation LIKE '%' || $1 || '%';`,
+    // );
     const { rows: occupations } = await pool.query(
       ` SELECT
         DISTINCT ocupation
-        FROM consultantDetail
-        WHERE ocupation LIKE '%' || $1 || '%';`,
-      [req.query.occupation]
+        FROM consultantDetail;`,
     );
     occupations.forEach((occupation, index) => {
       occupations[index] = {
@@ -31,8 +35,8 @@ exports.getDepartment = async (req, res) => {
       ` SELECT
           DISTINCT department
           FROM consultantDetail
-          WHERE department LIKE '%' || $1 || '%';`,
-      [req.query.department]
+          WHERE ocupation = $1 ;`,
+      [req.query.occupation]
     );
     departments.forEach((department, index) => {
       departments[index] = {

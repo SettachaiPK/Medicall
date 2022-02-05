@@ -34,8 +34,8 @@ function MenuProfile({ user }) {
         name="phoneNumber"
         value={profile.phoneNumber}
       />
-      <TextField margin="normal" label="ชื่อ" name="firstName" value={profile.firstName} />
-      <TextField margin="normal" label="นามสกุล" name="lastName" value={profile.lastName} />
+      <TextField margin="normal" label="ชื่อ" name="firstName" value={profile.firstName} focused/>
+      <TextField margin="normal" label="นามสกุล" name="lastName" value={profile.lastName} focused/>
       <TextField margin="normal" label="วันเกิด" name="birthDate" value={profile.birthDate} />
       <FormControl margin="normal" sx={{ pl: 1 }}>
         <FormLabel id="demo-controlled-radio-buttons-group">

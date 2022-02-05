@@ -137,3 +137,22 @@ export function signOut() {
       });
   });
 }
+
+export function checkPendingConsultant() {
+  const Axiosmodel = server.checkPendingConsultant;
+  return new Promise((resolve, reject) => {
+    httpClient({
+      method: "GET",
+      url: Axiosmodel.url,
+      config: Axiosmodel,
+      withCredentials: true,
+    })
+      .then((res) => {
+        resolve(res.data);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}
+

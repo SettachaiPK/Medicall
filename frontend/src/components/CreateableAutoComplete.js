@@ -1,51 +1,19 @@
 import * as React from "react";
 import TextField from "@mui/material/TextField";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
-import CircularProgress from "@mui/material/CircularProgress";
 
 const filter = createFilterOptions();
-export default function LoadOnOpenAutoComplete({
-  fetchFunc,
-  optionsData,
+
+export default function CreateableAutoComplete({
   value,
   setValue,
+  optionsData,
   label,
   disabled,
 }) {
-  const [open, setOpen] = React.useState(false);
-  const [options, setOptions] = React.useState([]);
-  const loading = open && options.length === 0;
-
-  React.useEffect(() => {
-    let active = true;
-
-    if (!loading) {
-      return undefined;
-    }
-
-    (async () => {
-      await fetchFunc(); // For demo purposes.
-
-      if (active) {
-        setOptions([...optionsData]);
-      }
-    })();
-
-    return () => {
-      active = false;
-    };
-  }, [loading, fetchFunc, optionsData]);
-
-  React.useEffect(() => {
-    if (!open) {
-      setOptions([]);
-    }
-  }, [open]);
-
   return (
     <Autocomplete
       disabled={disabled}
-      freeSolo
       value={value}
       onChange={(event, newValue) => {
         if (typeof newValue === "string") {
@@ -81,15 +49,8 @@ export default function LoadOnOpenAutoComplete({
       selectOnFocus
       clearOnBlur
       handleHomeEndKeys
-      sx={{ width: 300 }}
-      open={open}
-      onOpen={() => {
-        setOpen(true);
-      }}
-      onClose={() => {
-        setOpen(false);
-      }}
-      isOptionEqualToValue={(option, value) => option.title === value.title}
+      id="free-solo-with-text-demo"
+      options={optionsData}
       getOptionLabel={(option) => {
         // Value selected with enter, right from the input
         if (typeof option === "string") {
@@ -103,25 +64,9 @@ export default function LoadOnOpenAutoComplete({
         return option.title;
       }}
       renderOption={(props, option) => <li {...props}>{option.title}</li>}
-      options={options}
-      loading={loading}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          label={label}
-          InputProps={{
-            ...params.InputProps,
-            endAdornment: (
-              <React.Fragment>
-                {loading ? (
-                  <CircularProgress color="inherit" size={20} />
-                ) : null}
-                {params.InputProps.endAdornment}
-              </React.Fragment>
-            ),
-          }}
-        />
-      )}
+      sx={{ width: 300 }}
+      freeSolo
+      renderInput={(params) => <TextField {...params} label={label} />}
     />
   );
 }

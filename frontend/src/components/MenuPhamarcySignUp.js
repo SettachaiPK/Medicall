@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import {
@@ -12,7 +12,7 @@ import {
 } from "../actions/customer.action";
 import CreateableAutoComplete from "./CreateableAutoComplete";
 
-function MenuConsultantSignUp() {
+function MenuPhamarcySignUp({ user }) {
   const dispatch = useDispatch();
   const [loading, setLoading] = React.useState(false);
   const [pendingApplication, setPendingApplication] = React.useState(true);
@@ -151,4 +151,8 @@ function MenuConsultantSignUp() {
     </>
   );
 }
-export default MenuConsultantSignUp;
+const mapStateToProps = (state) => ({
+  user: state.user,
+});
+
+export default connect(mapStateToProps)(MenuPhamarcySignUp);
