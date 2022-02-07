@@ -71,16 +71,16 @@ function MenuConsultantSignUp() {
     setDepartmentOptions(department);
   }, [dispatch, ocupation.title]);
   const checkPendingApplication = React.useCallback(async () => {
+    setLoading(true);
     const pending = await dispatch(actionCheckPendingConsultant());
     setPendingApplication(pending);
+    setLoading(false);
   }, [dispatch]);
 
   useEffect(() => {
-    (async () => {
-      setLoading(true);
-      await checkPendingApplication();
-      await fetchFuncOccupation();
-      setLoading(false);
+    (() => {
+      checkPendingApplication();
+      fetchFuncOccupation();
     })();
   }, [fetchFuncOccupation, checkPendingApplication]);
   useEffect(() => {
@@ -89,11 +89,19 @@ function MenuConsultantSignUp() {
 
   return (
     <>
+    <div style={{ 
+          display: "flex",
+          justifyContent:"space-between"}}>
       {loading && <>loading</>}
       {!loading && (
         <>
           {!pendingApplication && (
             <>
+            <div style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems:"center"
+          }}>
               <CreateableAutoComplete
                 label="อาชีพ"
                 optionsData={ocupationOptions}
@@ -108,6 +116,8 @@ function MenuConsultantSignUp() {
                 disabled={!ocupation}
               />
               <TextField
+              margin="normal"
+              sx={{ width: 300}}
                 required
                 label="สถานพยาบาล/คลินิก"
                 name="infirmary"
@@ -115,6 +125,8 @@ function MenuConsultantSignUp() {
                 onChange={handleChange}
               />
               <TextField
+              margin="normal"
+              sx={{ width: 300}}
                 required
                 label="สถานศึกษา"
                 name="academy"
@@ -122,6 +134,8 @@ function MenuConsultantSignUp() {
                 onChange={handleChange}
               />
               <TextField
+              margin="normal"
+              sx={{ width: 300}}
                 required
                 label="เลขที่ใบอนุญาติ"
                 name="licenseNumber"
@@ -129,12 +143,16 @@ function MenuConsultantSignUp() {
                 onChange={handleChange}
               />
               <TextField
+              margin="normal"
+              sx={{ width: 300}}
                 required
                 label="รหัสประจำตัวประชาชน"
                 name="personalID"
                 value={personalID}
                 onChange={handleChange}
               />
+              </div>
+              <div>
               <input
                 type="file"
                 name="media"
@@ -143,11 +161,13 @@ function MenuConsultantSignUp() {
                 multiple
               />
               <Button onClick={handleSubmit}>สมัคร</Button>
+              </div>
             </>
           )}
           {pendingApplication && <>ใบสมัครอยู่ระหว่างพิจารณา</>}
         </>
       )}
+      </div>
     </>
   );
 }

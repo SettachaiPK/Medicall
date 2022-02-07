@@ -493,15 +493,16 @@ exports.detete_cookie = (req, res) => {
 
 exports.checkPendingConsultant = async (req, res) => {
   const { userID } = req;
-  const client = await pool.connect();
   try {
-    const { rows: consultantDetail } = await client.query(
+    console.log('checking');
+    const { rows: consultantDetail } = await pool.query(
       ` SELECT "userID"
         FROM consultantDetail
         WHERE "status" = 'waiting approval'
         AND "userID" = ($1);`,
       [userID]
     );
+    console.log('finish checking');
     if (consultantDetail.length > 0) {
       return res.status(200).send({ pending: true });
     } else {
@@ -516,9 +517,8 @@ exports.checkPendingConsultant = async (req, res) => {
 
 exports.checkPendingPhamarcy = async (req, res) => {
   const { userID } = req;
-  const client = await pool.connect();
   try {
-    const { rows: phamarcyDetail } = await client.query(
+    const { rows: phamarcyDetail } = await pool.query(
       ` SELECT "userID"
         FROM phamarcyDetail
         WHERE "status" = 'waiting approval'
