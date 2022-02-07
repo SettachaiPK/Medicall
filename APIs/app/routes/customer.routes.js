@@ -22,5 +22,10 @@ module.exports = function (app) {
     customerController.getDepartment
   );
 
+  router.get(
+    "/consult-service/:userid",
+    customerController.getConsultServiceDetail
+  );
+
   app.use("/apis/customer", router);
 };

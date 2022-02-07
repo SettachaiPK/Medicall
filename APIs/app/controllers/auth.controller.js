@@ -494,7 +494,6 @@ exports.detete_cookie = (req, res) => {
 exports.checkPendingConsultant = async (req, res) => {
   const { userID } = req;
   try {
-    console.log('checking');
     const { rows: consultantDetail } = await pool.query(
       ` SELECT "userID"
         FROM consultantDetail
@@ -502,7 +501,6 @@ exports.checkPendingConsultant = async (req, res) => {
         AND "userID" = ($1);`,
       [userID]
     );
-    console.log('finish checking');
     if (consultantDetail.length > 0) {
       return res.status(200).send({ pending: true });
     } else {
