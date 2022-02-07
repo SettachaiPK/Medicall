@@ -44,6 +44,11 @@ function OTPpopup({ auth: { phoneNumber, ref }, onSubmit }) {
           type="password"
           value={password}
           onChange={_handleTextFieldChange}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleSubmit();
+            }
+          }}
         />
       </DialogContent>
       <DialogActions

@@ -2,6 +2,8 @@ import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import AddBoxIcon from '@mui/icons-material/AddBox';
+import { pink, grey } from "@mui/material/colors";
 import {
   actionSignUpConsultant,
   actionCheckPendingConsultant,
@@ -11,6 +13,7 @@ import {
   actionGetDepartment,
 } from "../actions/customer.action";
 import CreateableAutoComplete from "./CreateableAutoComplete";
+import { margin } from "@mui/system";
 
 function MenuConsultantSignUp() {
   const dispatch = useDispatch();
@@ -91,7 +94,7 @@ function MenuConsultantSignUp() {
     <>
     <div style={{ 
           display: "flex",
-          justifyContent:"space-between"}}>
+          justifyContent:"flex-start"}}>
       {loading && <>loading</>}
       {!loading && (
         <>
@@ -152,15 +155,28 @@ function MenuConsultantSignUp() {
                 onChange={handleChange}
               />
               </div>
-              <div>
+              <div style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems:"flex-end",
+            marginLeft:"5%"
+          }} >
+            <label style={{fontSize: "medium",marginRight: "30%",color:"grey"}}>แนบภาพใบประกอบวิชาชีพ :</label>
               <input
+              style={{paddingTop:"5%",paddingBottom:"5%"}}
                 type="file"
                 name="media"
                 accept="image/png, image/jpeg"
                 onChange={handleChangeFiles}
                 multiple
               />
-              <Button onClick={handleSubmit}>สมัคร</Button>
+              <Button onClick={handleSubmit} sx={{
+            marginTop:"145%",
+            background: pink[100],
+            color: grey[50],
+            fontWeight: 900,
+            fontSize: 12
+          }}>สมัคร</Button>
               </div>
             </>
           )}

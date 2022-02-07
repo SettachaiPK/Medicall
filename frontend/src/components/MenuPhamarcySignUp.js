@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import { pink, grey } from "@mui/material/colors";
 import {
   actionSignUpPhamarcy,
   actionCheckPendingPhamarcy,
@@ -65,7 +66,7 @@ function MenuPhamarcySignUp() {
       <div
         style={{
           display: "flex",
-          justifyContent: "space-between",
+          justifyContent:"flex-start"
         }}
       >
         {loading && <>loading</>}
@@ -118,7 +119,23 @@ function MenuPhamarcySignUp() {
                     onChange={handleChange}
                   />
                 </div>
-                <div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-end",
+                    marginLeft: "5%",
+                  }}
+                >
+                  <label
+                    style={{
+                      fontSize: "medium",
+                      marginRight: "30%",
+                      color: "grey",
+                    }}
+                  >
+                    แนบภาพใบประกอบวิชาชีพ :
+                  </label>
                   <input
                     type="file"
                     name="media"
@@ -126,7 +143,18 @@ function MenuPhamarcySignUp() {
                     onChange={handleChangeFiles}
                     multiple
                   />
-                  <Button onClick={handleSubmit}>สมัคร</Button>
+                  <Button
+                    onClick={handleSubmit}
+                    sx={{
+                      marginTop: "100%",
+                      background: pink[100],
+                      color: grey[50],
+                      fontWeight: 900,
+                      fontSize: 12,
+                    }}
+                  >
+                    สมัคร
+                  </Button>
                 </div>
               </>
             )}
