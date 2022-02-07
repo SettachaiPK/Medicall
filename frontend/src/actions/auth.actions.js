@@ -44,7 +44,17 @@ export const actionSignUpCustomer = (payload) => async (dispatch) => {
 export const actionSignUpConsultant = (payload) => async (dispatch) => {
   try {
     const { data } = await authService.signUpConsultant(payload);
-    console.log(data);
+    alert(data.message);
+    return data.message;
+  } catch (error) {
+    alert(error.response.data.message || error.message);
+    return false;
+  }
+};
+
+export const actionSignUpPhamarcy = (payload) => async (dispatch) => {
+  try {
+    const { data } = await authService.signUpPhamarcy(payload);
     alert(data.message);
     return data.message;
   } catch (error) {
@@ -77,7 +87,7 @@ export const actionVerifyLogIn = () => async (dispatch) => {
 
 export const actionLogout = () => async (dispatch) => {
   try {
-    const { data } = await authService.signOut();
+    await authService.signOut();
     localStorage.removeItem(`${process.env.REACT_APP_PREFIX}_USER`);
     await dispatch(reducerSignOut());
   } catch (error) {
@@ -88,6 +98,16 @@ export const actionLogout = () => async (dispatch) => {
 export const actionCheckPendingConsultant = () => async (dispatch) => {
   try {
     const { pending } = await authService.checkPendingConsultant();
+    return pending;
+  } catch (error) {
+    alert(error.response.data.message || error.message);
+    return false;
+  }
+};
+
+export const actionCheckPendingPhamarcy = () => async (dispatch) => {
+  try {
+    const { pending } = await authService.checkPendingPhamarcy();
     return pending;
   } catch (error) {
     alert(error.response.data.message || error.message);

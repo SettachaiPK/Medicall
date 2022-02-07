@@ -1,37 +1,24 @@
 import React, { useEffect } from "react";
-import { connect, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import {
-  actionSignUpConsultant,
-  actionCheckPendingConsultant,
+  actionSignUpPhamarcy,
+  actionCheckPendingPhamarcy,
 } from "../actions/auth.actions";
-import {
-  actionGetOccupations,
-  actionGetDepartment,
-} from "../actions/customer.action";
-import CreateableAutoComplete from "./CreateableAutoComplete";
 
-function MenuPhamarcySignUp({ user }) {
+function MenuPhamarcySignUp() {
   const dispatch = useDispatch();
   const [loading, setLoading] = React.useState(false);
   const [pendingApplication, setPendingApplication] = React.useState(true);
-  const [ocupation, setOcupation] = React.useState({ title: "", value: "" });
-  const [department, setDepartment] = React.useState({ title: "", value: "" });
-  const [ocupationOptions, setOcupationOptions] = React.useState([
-    { title: "", value: "" },
-  ]);
-  const [departmentOptions, setDepartmentOptions] = React.useState([
-    { title: "", value: "" },
-  ]);
   const [formValue, setFormValue] = React.useState({
-    infirmary: "",
-    academy: "",
+    storeName: "",
+    location: "",
     licenseNumber: "",
     personalID: "",
     media: null,
   });
-  const { infirmary, academy, licenseNumber, personalID } = formValue;
+  const { storeName, location, licenseNumber, personalID } = formValue;
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -56,103 +43,98 @@ function MenuPhamarcySignUp({ user }) {
     Object.keys(formValue).forEach((key) => {
       formData.append(key, formValue[key]);
     });
-    formData.append("ocupation", ocupation.title);
-    formData.append("department", department.title);
-    const res = await dispatch(actionSignUpConsultant(formData));
+    const res = await dispatch(actionSignUpPhamarcy(formData));
     setPendingApplication(res === false ? false : true);
   };
 
-  const fetchFuncOccupation = React.useCallback(async () => {
-    const occupations = await dispatch(actionGetOccupations());
-    setOcupationOptions(occupations);
-  }, [dispatch]);
-  const fetchFuncDepartment = React.useCallback(async () => {
-    const department = await dispatch(actionGetDepartment(ocupation.title));
-    setDepartmentOptions(department);
-  }, [dispatch, ocupation.title]);
   const checkPendingApplication = React.useCallback(async () => {
-    const pending = await dispatch(actionCheckPendingConsultant());
+    setLoading(true);
+    const pending = await dispatch(actionCheckPendingPhamarcy());
     setPendingApplication(pending);
+    setLoading(false);
   }, [dispatch]);
 
   useEffect(() => {
-    (async () => {
-      setLoading(true);
-      await checkPendingApplication();
-      await fetchFuncOccupation();
-      setLoading(false);
+    (() => {
+      checkPendingApplication();
     })();
-  }, [fetchFuncOccupation, checkPendingApplication]);
-  useEffect(() => {
-    fetchFuncDepartment();
-  }, [ocupation, fetchFuncDepartment]);
+  }, [checkPendingApplication]);
 
   return (
     <>
-      {loading && <>loading</>}
-      {!loading && (
-        <>
-          {!pendingApplication && (
-            <>
-              <CreateableAutoComplete
-                label="อาชีพ"
-                optionsData={ocupationOptions}
-                value={ocupation}
-                setValue={setOcupation}
-              />
-              <CreateableAutoComplete
-                label="แผนก"
-                optionsData={departmentOptions}
-                value={department}
-                setValue={setDepartment}
-                disabled={!ocupation}
-              />
-              <TextField
-                required
-                label="สถานพยาบาล/คลินิก"
-                name="infirmary"
-                value={infirmary}
-                onChange={handleChange}
-              />
-              <TextField
-                required
-                label="สถานศึกษา"
-                name="academy"
-                value={academy}
-                onChange={handleChange}
-              />
-              <TextField
-                required
-                label="เลขที่ใบอนุญาติ"
-                name="licenseNumber"
-                value={licenseNumber}
-                onChange={handleChange}
-              />
-              <TextField
-                required
-                label="รหัสประจำตัวประชาชน"
-                name="personalID"
-                value={personalID}
-                onChange={handleChange}
-              />
-              <input
-                type="file"
-                name="media"
-                accept="image/png, image/jpeg"
-                onChange={handleChangeFiles}
-                multiple
-              />
-              <Button onClick={handleSubmit}>สมัคร</Button>
-            </>
-          )}
-          {pendingApplication && <>ใบสมัครอยู่ระหว่างพิจารณา</>}
-        </>
-      )}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
+        {loading && <>loading</>}
+        {!loading && (
+          <>
+            {!pendingApplication && (
+              <>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <TextField
+                    margin="normal"
+                    sx={{ width: 300 }}
+                    required
+                    label="ชื่อร้านค้า"
+                    name="storeName"
+                    value={storeName}
+                    onChange={handleChange}
+                  />
+                  <TextField
+                    margin="normal"
+                    sx={{ width: 300 }}
+                    multiline
+                    required
+                    label="สถานที่ตั้ง"
+                    name="location"
+                    value={location}
+                    onChange={handleChange}
+                  />
+                  <TextField
+                    margin="normal"
+                    sx={{ width: 300 }}
+                    required
+                    label="เลขที่ใบอนุญาติ"
+                    name="licenseNumber"
+                    value={licenseNumber}
+                    onChange={handleChange}
+                  />
+                  <TextField
+                    margin="normal"
+                    sx={{ width: 300 }}
+                    required
+                    label="รหัสประจำตัวประชาชน"
+                    name="personalID"
+                    value={personalID}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div>
+                  <input
+                    type="file"
+                    name="media"
+                    accept="image/png, image/jpeg"
+                    onChange={handleChangeFiles}
+                    multiple
+                  />
+                  <Button onClick={handleSubmit}>สมัคร</Button>
+                </div>
+              </>
+            )}
+            {pendingApplication && <>ใบสมัครอยู่ระหว่างพิจารณา</>}
+          </>
+        )}
+      </div>
     </>
   );
 }
-const mapStateToProps = (state) => ({
-  user: state.user,
-});
-
-export default connect(mapStateToProps)(MenuPhamarcySignUp);
+export default MenuPhamarcySignUp;

@@ -18,41 +18,63 @@ function MenuProfile({ user }) {
 
   return (
     <>
-    <div style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems:"center"
-          }}>
-      <Avatar src="/broken-image.jpg" />
-      <Button>แก้ไขรูปภาพ</Button>
-      <div style={{
-            display: "grid"
-          }}>
-      <TextField
-      margin="normal"
-        label="เบอร์โทรศัพท์"
-        name="phoneNumber"
-        value={profile.phoneNumber}
-      />
-      <TextField margin="normal" label="ชื่อ" name="firstName" value={profile.firstName} focused/>
-      <TextField margin="normal" label="นามสกุล" name="lastName" value={profile.lastName} focused/>
-      <TextField margin="normal" label="วันเกิด" name="birthDate" value={profile.birthDate} />
-      <FormControl margin="normal" sx={{ pl: 1 }}>
-        <FormLabel id="demo-controlled-radio-buttons-group">
-          เพศกำเนิด
-        </FormLabel>
-        <RadioGroup
-          row
-          aria-labelledby="demo-controlled-radio-buttons-group"
-          name="controlled-radio-buttons-group"
-          name="sex"
-          value={profile.sex}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Avatar src="/broken-image.jpg" />
+        <Button>แก้ไขรูปภาพ</Button>
+        <div
+          style={{
+            display: "grid",
+          }}
         >
-          <FormControlLabel value="female" control={<Radio />} label="หญิง" />
-          <FormControlLabel value="male" control={<Radio />} label="ชาย" />
-        </RadioGroup>
-      </FormControl>
-      </div>
+          <TextField
+            margin="normal"
+            label="เบอร์โทรศัพท์"
+            name="phoneNumber"
+            value={profile.phoneNumber || ""}
+          />
+          <TextField
+            margin="normal"
+            label="ชื่อ"
+            name="firstName"
+            value={profile.firstName || ""}
+          />
+          <TextField
+            margin="normal"
+            label="นามสกุล"
+            name="lastName"
+            value={profile.lastName || ""}
+          />
+          <TextField
+            margin="normal"
+            label="วันเกิด"
+            name="birthDate"
+            value={profile.birthDate || ""}
+          />
+          <FormControl margin="normal" sx={{ pl: 1 }}>
+            <FormLabel id="demo-controlled-radio-buttons-group">
+              เพศกำเนิด
+            </FormLabel>
+            <RadioGroup
+              row
+              aria-labelledby="demo-controlled-radio-buttons-group"
+              name="sex"
+              value={profile.sex}
+            >
+              <FormControlLabel
+                value="female"
+                control={<Radio />}
+                label="หญิง"
+              />
+              <FormControlLabel value="male" control={<Radio />} label="ชาย" />
+            </RadioGroup>
+          </FormControl>
+        </div>
       </div>
     </>
   );

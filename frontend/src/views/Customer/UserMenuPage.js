@@ -10,8 +10,8 @@ import ListItemText from "@mui/material/ListItemText";
 import Box from "@mui/material/Box";
 import MenuProfile from "../../components/MenuProfile";
 import MenuConsultantSignUp from "../../components/MenuConsultantSignUp";
-import { pink, grey } from "@mui/material/colors";
-
+import { pink } from "@mui/material/colors";
+import MenuPhamarcySignUp from "../../components/MenuPhamarcySignUp";
 
 function UserMenuPage({ user: { roles } }) {
   const dispatch = useDispatch();
@@ -43,17 +43,24 @@ function UserMenuPage({ user: { roles } }) {
 
   return (
     <Box sx={{ display: "flex" }}>
-      <Paper sx={{ width: 350, maxWidth: "100%" ,marginTop:15,background: pink[100],height:"fit-content"}}>
+      <Paper
+        sx={{
+          width: 350,
+          maxWidth: "100%",
+          marginTop: 15,
+          background: pink[100],
+          height: "fit-content",
+        }}
+      >
         <MenuList>
           {menuOptions.map((option) => (
             <Box key={option.value} hidden={option.hidden}>
               <MenuItem
                 onClick={(event) => handleMenuItemClick(event, option.value)}
-                
               >
                 <ListItemText>{option.massage}</ListItemText>
               </MenuItem>
-              <Divider sx={{borderColor: "white"}} />
+              <Divider sx={{ borderColor: "white" }} />
             </Box>
           ))}
           <MenuItem onClick={handleLogOut}>
@@ -61,9 +68,10 @@ function UserMenuPage({ user: { roles } }) {
           </MenuItem>
         </MenuList>
       </Paper>
-      <Box sx={{width:"100%",margin:5}}>
+      <Box sx={{ width: "100%", margin: 5 }}>
         {step === "profile" && <MenuProfile />}
         {step === "consultant sign up" && <MenuConsultantSignUp />}
+        {step === "phamarcy sign up" && <MenuPhamarcySignUp />}
       </Box>
     </Box>
   );

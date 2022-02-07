@@ -17,9 +17,13 @@ export const server = {
   verifyOTP: new AxiosModel({ url: `auth/verifyOTP` }),
   signUpCustomer: new AxiosModel({ url: `auth/signup/customer` }),
   signUpConsultant: new AxiosModel({ url: `auth/signup/consultant` }),
+  signUpPhamarcy: new AxiosModel({ url: `auth/signup/phamarcy` }),
   CHECK_REFRESH_TOKEN: new AxiosModel({ url: `auth/checktoken` }),
   checkPendingConsultant: new AxiosModel({
     url: `auth/pending-consultant`,
+  }),
+  checkPendingPhamarcy: new AxiosModel({
+    url: `auth/pending-phamarcy`,
   }),
   occupation: new AxiosModel({ url: `customer/occupation` }),
   department: new AxiosModel({ url: `customer/department` }),
