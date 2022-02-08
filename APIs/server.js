@@ -51,6 +51,7 @@ app.use(cookieParser());
 require("./app/routes/auth.routes")(app);
 require("./app/routes/admin.routes")(app);
 require("./app/routes/customer.routes")(app);
+require("./app/routes/consultant.routes")(app);
 
 // set port, listen for requests
 const port = process.env.SERVER_PORT;
