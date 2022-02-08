@@ -11,26 +11,17 @@ module.exports = function (app) {
     next();
   });
 
-  router.get(
-    "/occupation",
-    [authJwt.verifyToken],
-    customerController.getOccupation
-  );
-  router.get(
-    "/department",
-    [authJwt.verifyToken],
-    customerController.getDepartment
-  );
+  router.get("/occupation", customerController.getOccupation);
+  router.get("/department", customerController.getDepartment);
 
   router.get(
     "/consult-service/:userid",
     customerController.getConsultServiceDetail
   );
 
-  router.get(
-    "/consult-service",
-    customerController.getConsultServiceList
-  );
+  router.get("/consult-service", customerController.getConsultServiceList);
+
+  router.get("/consult-tags", customerController.getConsultTags);
 
   app.use("/apis/customer", router);
 };

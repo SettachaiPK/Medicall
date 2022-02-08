@@ -162,3 +162,32 @@ exports.getConsultServiceList = async (req, res) => {
     client.release();
   }
 };
+
+exports.getConsultTags = async (req, res) => {
+  const client = await pool.connect();
+  try {
+    const { rows: tags } = await client.query(
+      ` SELECT "tagName"
+          FROM ConsultTags;`
+    );
+
+    tags.forEach((tag, index) => {
+      tags[index] = {
+        title: tag.tagName,
+        value: tag.tagName,
+      };
+    });
+
+    await client.query("COMMIT");
+
+    return res.status(200).send(tags);
+  } catch (err) {
+    await client.query("ROLLBACK");
+
+    console.log(err);
+
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};
