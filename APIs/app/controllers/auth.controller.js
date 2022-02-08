@@ -445,13 +445,14 @@ exports.getUser = async (req, res) => {
     const {
       rows: [userDetail],
     } = await pool.query(
-      ` SELECT *
+      ` SELECT userDetail."userID","phoneNumber","firstName","lastName","sex",userDetail."status","height","weight","congenitalDisease","drugAllergy","drugInUse"
       FROM userDetail
-      WHERE "userID" = ($1);`,
+      INNER JOIN customerDetail
+      ON userDetail."userID" = customerDetail."userID"
+      WHERE userDetail."userID" = ($1);`,
       [decoded.id]
     );
-
-    if (userDetail.status != "active") {
+    if (!userDetail || userDetail.status != "active") {
       return res.status(205).send({ message: "User inactivated" });
     }
 

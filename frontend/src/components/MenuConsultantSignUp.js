@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import AddBoxIcon from '@mui/icons-material/AddBox';
 import { pink, grey } from "@mui/material/colors";
 import {
   actionSignUpConsultant,
@@ -13,7 +12,6 @@ import {
   actionGetDepartment,
 } from "../actions/customer.action";
 import CreateableAutoComplete from "./CreateableAutoComplete";
-import { margin } from "@mui/system";
 
 function MenuConsultantSignUp() {
   const dispatch = useDispatch();
@@ -92,97 +90,117 @@ function MenuConsultantSignUp() {
 
   return (
     <>
-    <div style={{ 
+      <div
+        style={{
           display: "flex",
-          justifyContent:"flex-start"}}>
-      {loading && <>loading</>}
-      {!loading && (
-        <>
-          {!pendingApplication && (
-            <>
-            <div style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems:"center"
-          }}>
-              <CreateableAutoComplete
-                label="อาชีพ"
-                optionsData={ocupationOptions}
-                value={ocupation}
-                setValue={setOcupation}
-              />
-              <CreateableAutoComplete
-                label="แผนก"
-                optionsData={departmentOptions}
-                value={department}
-                setValue={setDepartment}
-                disabled={!ocupation}
-              />
-              <TextField
-              margin="normal"
-              sx={{ width: 300}}
-                required
-                label="สถานพยาบาล/คลินิก"
-                name="infirmary"
-                value={infirmary}
-                onChange={handleChange}
-              />
-              <TextField
-              margin="normal"
-              sx={{ width: 300}}
-                required
-                label="สถานศึกษา"
-                name="academy"
-                value={academy}
-                onChange={handleChange}
-              />
-              <TextField
-              margin="normal"
-              sx={{ width: 300}}
-                required
-                label="เลขที่ใบอนุญาติ"
-                name="licenseNumber"
-                value={licenseNumber}
-                onChange={handleChange}
-              />
-              <TextField
-              margin="normal"
-              sx={{ width: 300}}
-                required
-                label="รหัสประจำตัวประชาชน"
-                name="personalID"
-                value={personalID}
-                onChange={handleChange}
-              />
-              </div>
-              <div style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems:"flex-end",
-            marginLeft:"5%"
-          }} >
-            <label style={{fontSize: "medium",marginRight: "30%",color:"grey"}}>แนบภาพใบประกอบวิชาชีพ :</label>
-              <input
-              style={{paddingTop:"5%",paddingBottom:"5%"}}
-                type="file"
-                name="media"
-                accept="image/png, image/jpeg"
-                onChange={handleChangeFiles}
-                multiple
-              />
-              <Button onClick={handleSubmit} sx={{
-            marginTop:"145%",
-            background: pink[100],
-            color: grey[50],
-            fontWeight: 900,
-            fontSize: 12
-          }}>สมัคร</Button>
-              </div>
-            </>
-          )}
-          {pendingApplication && <>ใบสมัครอยู่ระหว่างพิจารณา</>}
-        </>
-      )}
+          justifyContent: "flex-start",
+        }}
+      >
+        {loading && <>loading</>}
+        {!loading && (
+          <>
+            {!pendingApplication && (
+              <>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <CreateableAutoComplete
+                    label="อาชีพ"
+                    optionsData={ocupationOptions}
+                    value={ocupation}
+                    setValue={setOcupation}
+                  />
+                  <CreateableAutoComplete
+                    label="แผนก"
+                    optionsData={departmentOptions}
+                    value={department}
+                    setValue={setDepartment}
+                    disabled={!ocupation}
+                  />
+                  <TextField
+                    margin="normal"
+                    sx={{ width: 300 }}
+                    required
+                    label="สถานพยาบาล/คลินิก"
+                    name="infirmary"
+                    value={infirmary}
+                    onChange={handleChange}
+                  />
+                  <TextField
+                    margin="normal"
+                    sx={{ width: 300 }}
+                    required
+                    label="สถานศึกษา"
+                    name="academy"
+                    value={academy}
+                    onChange={handleChange}
+                  />
+                  <TextField
+                    margin="normal"
+                    sx={{ width: 300 }}
+                    required
+                    label="เลขที่ใบอนุญาติ"
+                    name="licenseNumber"
+                    value={licenseNumber}
+                    onChange={handleChange}
+                  />
+                  <TextField
+                    margin="normal"
+                    sx={{ width: 300 }}
+                    required
+                    label="รหัสประจำตัวประชาชน"
+                    name="personalID"
+                    value={personalID}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-end",
+                    marginLeft: "5%",
+                  }}
+                >
+                  <label
+                    style={{
+                      fontSize: "medium",
+                      marginRight: "30%",
+                      color: "grey",
+                    }}
+                  >
+                    แนบภาพใบประกอบวิชาชีพ :
+                  </label>
+                  <input
+                    style={{ paddingTop: "5%", paddingBottom: "5%" }}
+                    type="file"
+                    name="media"
+                    accept="image/png, image/jpeg"
+                    onChange={handleChangeFiles}
+                    multiple
+                  />
+                  <Button
+                    onClick={handleSubmit}
+                    sx={{
+                      marginTop: "145%",
+                      background: pink[100],
+                      color: grey[50],
+                      fontWeight: 900,
+                      fontSize: 12,
+                    }}
+                  >
+                    สมัคร
+                  </Button>
+                </div>
+              </>
+            )}
+            {pendingApplication && <>ใบสมัครอยู่ระหว่างพิจารณา</>}
+          </>
+        )}
       </div>
     </>
   );

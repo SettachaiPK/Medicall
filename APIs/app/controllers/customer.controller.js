@@ -36,9 +36,10 @@ exports.getDepartment = async (req, res) => {
       ` SELECT
           DISTINCT department
           FROM consultantDetail
-          WHERE ocupation = $1 ;`,
+          WHERE ocupation = $1;`,
       [occupation]
     );
+    console.log(departments);
     departments.forEach((department, index) => {
       departments[index] = {
         title: department.department,
@@ -89,6 +90,68 @@ exports.getConsultServiceDetail = async (req, res) => {
     await client.query("COMMIT");
 
     return res.status(200).send(detail);
+  } catch (err) {
+    await client.query("ROLLBACK");
+
+    console.log(err);
+
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};
+
+exports.getConsultServiceList = async (req, res) => {
+  const { occupation, department, tags, orderby, limit, offset } = req.query;
+  const client = await pool.connect();
+  try {
+    console.log(tags);
+    let occupationParam = occupation ? occupation : "all";
+    let departmentParam = department ? department : "all";
+    let tagsParam = tags ? tags : "all";
+    let queryText = ` SELECT  
+        DISTINCT ON (service."userID") 
+          service."userID",
+          "detail",
+          "messagePrice",
+          "voiceCallPrice",
+          "videoCallPrice",
+          "onlineStatus",
+          "ocupation",
+          "department",
+          "infirmary",
+          "academy"
+        FROM consultantService AS service
+        INNER JOIN 
+          (SELECT * FROM consultantDetail 
+            WHERE ${occupation ? "ocupation = $1" : "'all' = $1"} 
+            AND ${department ? "department = $2" : "'all' = $2"}) 
+          AS detail
+        ON service."userID" = detail."userID"
+        INNER JOIN 
+          (SELECT * FROM serviceToConsultTags) 
+          AS serviceToConsultTags
+        ON service."userID" = serviceToConsultTags."userID"
+        INNER JOIN 
+          (SELECT * FROM ConsultTags 
+            WHERE ${tags ? `"tagName" = ANY($3::VARCHAR[])` : "'all' = $3"}) 
+          AS tags 
+        ON tags."tagID" = serviceToConsultTags."tagID"
+        ORDER BY ${orderby === "userID" ? '"userID"' : '"userID"'} DESC
+        LIMIT $4
+        OFFSET $5;`;
+
+    const { rows: details } = await client.query(queryText, [
+      occupationParam,
+      departmentParam,
+      tagsParam,
+      limit,
+      offset,
+    ]);
+
+    await client.query("COMMIT");
+
+    return res.status(200).send(details);
   } catch (err) {
     await client.query("ROLLBACK");
 

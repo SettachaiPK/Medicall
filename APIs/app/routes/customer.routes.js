@@ -27,5 +27,10 @@ module.exports = function (app) {
     customerController.getConsultServiceDetail
   );
 
+  router.get(
+    "/consult-service",
+    customerController.getConsultServiceList
+  );
+
   app.use("/apis/customer", router);
 };
