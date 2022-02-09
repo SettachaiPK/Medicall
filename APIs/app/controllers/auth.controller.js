@@ -3,6 +3,7 @@ const moment = require("moment");
 const otpGenerator = require("otp-generator");
 const jwt = require("jsonwebtoken");
 const config = require("../config/auth.config.js");
+const bcrypt = require("bcryptjs");
 
 exports.requestOTP = async (req, res) => {
   const { phoneNumber } = req.body;
@@ -23,6 +24,9 @@ exports.requestOTP = async (req, res) => {
     //   specialChars: false,
     // });
     const password = "123456";
+
+    const hashPassword = bcrypt.hashSync(password, 10);
+    
     const ref = otpGenerator.generate(12, {
       upperCaseAlphabets: false,
       specialChars: false,
@@ -31,7 +35,7 @@ exports.requestOTP = async (req, res) => {
     await client.query(
       ` INSERT INTO OTP ("phoneNumber", "password", "ref", "expiredDate", "createDate") 
         VALUES ($1, $2, $3, $4, $5)`,
-      [phoneNumber, password, ref, expiredDate, nowDate]
+      [phoneNumber, hashPassword, ref, expiredDate, nowDate]
     );
     await client.query("COMMIT");
 
@@ -78,11 +82,17 @@ exports.verifyOTP = async (req, res) => {
         .status(401)
         .send({ message: "Wrong password or password has been expired" });
     }
-    if (otp.length == 0 || otp[0].password != password) {
+    if (otp.length == 0 || !bcrypt.compareSync(password, otp[0].password)) {
       return res
         .status(401)
         .send({ message: "Wrong password or password has been expired" });
     }
+    await client.query(
+      ` UPDATE OTP 
+        SET "status" = 'success' 
+        WHERE "phoneNumber" = ($1) AND "status" = 'waiting'`,
+      [phoneNumber]
+    );
 
     let { rows: user } = await client.query(
       ` SELECT * 
