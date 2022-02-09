@@ -16,7 +16,10 @@ import CreateableAutoComplete from "./CreateableAutoComplete";
 function MenuConsultantSignUp() {
   const dispatch = useDispatch();
   const [loading, setLoading] = React.useState(false);
-  const [pendingApplication, setPendingApplication] = React.useState(true);
+  const [pendingApplication, setPendingApplication] = React.useState({
+    pending: false,
+    status: "",
+  });
   const [ocupation, setOcupation] = React.useState({ title: "", value: "" });
   const [department, setDepartment] = React.useState({ title: "", value: "" });
   const [ocupationOptions, setOcupationOptions] = React.useState([
@@ -60,7 +63,17 @@ function MenuConsultantSignUp() {
     formData.append("ocupation", ocupation.title);
     formData.append("department", department.title);
     const res = await dispatch(actionSignUpConsultant(formData));
-    setPendingApplication(res === false ? false : true);
+    setPendingApplication(
+      res === false
+        ? {
+            pending: false,
+            status: "",
+          }
+        : {
+            pending: true,
+            status: "waiting approval",
+          }
+    );
   };
 
   const fetchFuncOccupation = React.useCallback(async () => {
@@ -73,8 +86,9 @@ function MenuConsultantSignUp() {
   }, [dispatch, ocupation.title]);
   const checkPendingApplication = React.useCallback(async () => {
     setLoading(true);
-    const pending = await dispatch(actionCheckPendingConsultant());
-    setPendingApplication(pending);
+    const data = await dispatch(actionCheckPendingConsultant());
+    await console.log(data);
+    await setPendingApplication(data);
     setLoading(false);
   }, [dispatch]);
 
@@ -99,7 +113,7 @@ function MenuConsultantSignUp() {
         {loading && <>loading</>}
         {!loading && (
           <>
-            {!pendingApplication && (
+            {!pendingApplication.pending && (
               <>
                 <div
                   style={{
@@ -198,7 +212,16 @@ function MenuConsultantSignUp() {
                 </div>
               </>
             )}
-            {pendingApplication && <>ใบสมัครอยู่ระหว่างพิจารณา</>}
+            {pendingApplication.pending &&
+              pendingApplication.status == "active" && (
+                <>ได้รับการอนุมัติแล้ว</>
+              )}
+            {pendingApplication.pending &&
+              pendingApplication.status == "waiting approval" && (
+                <>ใบสมัครอยู่ระหว่างพิจารณา</>
+              )}
+            {pendingApplication.pending &&
+              pendingApplication.status == "inactive" && <>บัญชีถูกระงับ</>}
           </>
         )}
       </div>
