@@ -15,13 +15,14 @@ exports.acceptConsultant = async (req, res) => {
     );
 
     await client.query(
-      ` INSERT INTO consultantService ("userID","messagePrice","voiceCallPrice","videoCallPrice")
-          VALUES ($1, $2, $3, $4)`,
+      ` INSERT INTO consultantService ("userID","messagePrice","voiceCallPrice","videoCallPrice","consultantAvatar")
+          VALUES ($1, $2, $3, $4, $5)`,
       [
         userID,
         process.env.BASE_MESSAGE_PRICE,
         process.env.BASE_VOICE_PRICE,
         process.env.BASE_VIDEO_PRICE,
+        process.env.BASE_CONSULTANT_AVATAR,
       ]
     );
 

@@ -4,7 +4,7 @@ import { connect, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { actionLogout } from "../actions/auth.actions";
 import LoginStep from "./LoginStep";
-function Topnav({ user: { status } }) {
+function Topnav({ user: { status, roles } }) {
   const dispatch = useDispatch();
   const [openAdd, setOpenAdd] = useState(false);
 
@@ -24,7 +24,7 @@ function Topnav({ user: { status } }) {
         </div>
         <div>
           <Link to="/">หน้าหลัก</Link>
-          <Link to="/dashboard">กระดาน</Link>
+          {roles.includes("consultant") && <Link to="/dashboard">กระดาน</Link>}
           <Link to="/product">ซื้อเวชภัณฑ์</Link>
           <Link to="/hospital">ค้นหาสถานพยาบาล</Link>
           <Link to="/appointment">ประวัติการนัดหมาย</Link>

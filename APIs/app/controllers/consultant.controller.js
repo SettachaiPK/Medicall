@@ -65,3 +65,50 @@ exports.editConsultantService = async (req, res) => {
     client.release();
   }
 };
+
+exports.getConsultService = async (req, res) => {
+  const { userID } = req;
+  const client = await pool.connect();
+  try {
+    let {
+      rows: [detail],
+    } = await client.query(
+      ` SELECT *
+        FROM consultantService AS service
+        INNER JOIN (SELECT "userID", "ocupation", "department", "infirmary", "academy" FROM consultantDetail) AS detail
+        ON service."userID" = detail."userID"
+        WHERE detail."userID" = $1 ;`,
+      [userID]
+    );
+
+    const { rows: tags } = await client.query(
+      ` SELECT *
+        FROM consultTags AS tags
+        INNER JOIN serviceToConsultTags
+        ON tags."tagID" = serviceToConsultTags."tagID"
+        WHERE "userID" = $1 ;`,
+      [userID]
+    );
+    if (!detail) {
+      return res.status(400).send({ message: "Consultant not found" });
+    }
+    tags.forEach((tag, index) => {
+      tags[index] = tag.tagName;
+    });
+
+    detail.tags = tags;
+    detail.consultantAvatar = detail.consultantAvatar.toString("base64");
+
+    await client.query("COMMIT");
+
+    return res.status(200).send(detail);
+  } catch (err) {
+    await client.query("ROLLBACK");
+
+    console.log(err);
+
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};

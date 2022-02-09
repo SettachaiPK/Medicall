@@ -132,7 +132,7 @@ exports.getConsultServiceList = async (req, res) => {
           (SELECT * FROM serviceToConsultTags) 
           AS serviceToConsultTags
         ON service."userID" = serviceToConsultTags."userID"
-        INNER JOIN 
+        FULL JOIN 
           (SELECT * FROM ConsultTags 
             WHERE ${tags ? `"tagName" = ANY($3::VARCHAR[])` : "'all' = $3"}) 
           AS tags 
@@ -140,7 +140,7 @@ exports.getConsultServiceList = async (req, res) => {
         ORDER BY ${orderby === "userID" ? '"userID"' : '"userID"'} DESC
         LIMIT $4
         OFFSET $5;`;
-
+    
     const { rows: details } = await client.query(queryText, [
       occupationParam,
       departmentParam,

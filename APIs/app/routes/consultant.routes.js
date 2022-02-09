@@ -23,5 +23,11 @@ module.exports = function (app) {
     consultantController.editConsultantService
   );
 
+  router.get(
+    "/service",
+    [authJwt.verifyToken, authJwt.isConsultant],
+    consultantController.getConsultService
+  );
+
   app.use("/apis/consultant", router);
 };
