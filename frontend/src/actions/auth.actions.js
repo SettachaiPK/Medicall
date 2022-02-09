@@ -97,7 +97,7 @@ export const actionLogout = () => async (dispatch) => {
 
 export const actionCheckPendingConsultant = () => async (dispatch) => {
   try {
-    const data  = await authService.checkPendingConsultant();
+    const data = await authService.checkPendingConsultant();
     return data;
   } catch (error) {
     alert(error.response.data.message || error.message);

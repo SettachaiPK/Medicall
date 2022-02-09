@@ -87,7 +87,6 @@ function MenuConsultantSignUp() {
   const checkPendingApplication = React.useCallback(async () => {
     setLoading(true);
     const data = await dispatch(actionCheckPendingConsultant());
-    await console.log(data);
     await setPendingApplication(data);
     setLoading(false);
   }, [dispatch]);

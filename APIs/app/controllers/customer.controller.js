@@ -39,7 +39,7 @@ exports.getDepartment = async (req, res) => {
           WHERE ocupation = $1;`,
       [occupation]
     );
-    console.log(departments);
+
     departments.forEach((department, index) => {
       departments[index] = {
         title: department.department,
@@ -108,7 +108,7 @@ exports.getConsultServiceList = async (req, res) => {
   const { occupation, department, tags, orderby, limit, offset } = req.query;
   const client = await pool.connect();
   try {
-    console.log(tags);
+    
     let occupationParam = occupation ? occupation : "all";
     let departmentParam = department ? department : "all";
     let tagsParam = tags ? tags : "all";
