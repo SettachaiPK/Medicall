@@ -77,6 +77,8 @@ exports.getConsultService = async (req, res) => {
         FROM consultantService AS service
         INNER JOIN (SELECT "userID", "ocupation", "department", "infirmary", "academy" FROM consultantDetail) AS detail
         ON service."userID" = detail."userID"
+        INNER JOIN (SELECT "userID", "firstName", "lastName", "sex" FROM userDetail) AS userdetail 
+        ON detail."userID" = userdetail."userID"
         WHERE detail."userID" = $1 ;`,
       [userID]
     );

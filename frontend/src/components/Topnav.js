@@ -1,19 +1,14 @@
 import React from "react";
 import { useState } from "react";
-import { connect, useDispatch } from "react-redux";
+import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import { actionLogout } from "../actions/auth.actions";
 import LoginStep from "./LoginStep";
 function Topnav({ user: { status, roles } }) {
-  const dispatch = useDispatch();
   const [openAdd, setOpenAdd] = useState(false);
 
   const handleOpenAdd = () => setOpenAdd(true);
   const handleCloseAdd = () => {
     setOpenAdd(false);
-  };
-  const handleLogOut = () => {
-    dispatch(actionLogout());
   };
 
   return (
@@ -28,7 +23,7 @@ function Topnav({ user: { status, roles } }) {
           <Link to="/product">ซื้อเวชภัณฑ์</Link>
           <Link to="/hospital">ค้นหาสถานพยาบาล</Link>
           <Link to="/appointment">ประวัติการนัดหมาย</Link>
-          {!status && <a onClick={handleOpenAdd}>เข้าสู่ระบบ</a>}
+          {!status && <a href onClick={handleOpenAdd}>เข้าสู่ระบบ</a>}
           {status && <Link to="/menu">เมนู</Link>}
         </div>
       </div>

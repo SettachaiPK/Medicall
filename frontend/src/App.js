@@ -2,9 +2,10 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 //import ProtectedRoute from "./components/ProtectedRoute";
-import { HomePage, UserMenuPage,DashBoard } from "./views";
+import { HomePage, UserMenuPage, DashBoard } from "./views";
 import Topnav from "./components/Topnav";
 import { actionVerifyLogIn } from "./actions/auth.actions";
+import ConsultantDetailPage from "./views/Customer/ConsultantDetailPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -24,6 +25,7 @@ function App() {
         <Route exact path="/" element={<HomePage />} />
         <Route path="menu" element={<UserMenuPage />} />
         <Route path="dashboard" element={<DashBoard />} />
+        <Route path="consultant/:id" element={<ConsultantDetailPage />} />
         {/* <Route exact path="/" element={<ProtectedRoute />}>
           <Route exact path="/protect" element={<HomePage />} />
         </Route> */}

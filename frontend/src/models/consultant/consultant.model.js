@@ -1,6 +1,9 @@
 export class ConsultantDetailModel {
   constructor() {
     this.userID = null;
+    this.firstName = "";
+    this.lastName = "";
+    this.sex = "";
     this.detail = "";
     this.messagePrice = 0;
     this.voiceCallPrice = 0;

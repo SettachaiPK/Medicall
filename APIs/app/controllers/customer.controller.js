@@ -66,7 +66,9 @@ exports.getConsultServiceDetail = async (req, res) => {
         FROM consultantService AS service
         INNER JOIN (SELECT "userID", "ocupation", "department", "infirmary", "academy" FROM consultantDetail) AS detail
         ON service."userID" = detail."userID"
-        WHERE detail."userID" = $1 ;`,
+        INNER JOIN (SELECT "userID", "firstName", "lastName", "sex" FROM userDetail) AS userdetail 
+        ON detail."userID" = userdetail."userID"
+        WHERE service."userID" = $1 ;`,
       [userid]
     );
 
@@ -86,6 +88,7 @@ exports.getConsultServiceDetail = async (req, res) => {
     });
 
     detail.tags = tags;
+    detail.consultantAvatar = detail.consultantAvatar.toString("base64");
 
     await client.query("COMMIT");
 
@@ -140,7 +143,7 @@ exports.getConsultServiceList = async (req, res) => {
         ORDER BY ${orderby === "userID" ? '"userID"' : '"userID"'} DESC
         LIMIT $4
         OFFSET $5;`;
-    
+
     const { rows: details } = await client.query(queryText, [
       occupationParam,
       departmentParam,

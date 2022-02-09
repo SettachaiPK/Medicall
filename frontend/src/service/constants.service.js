@@ -27,6 +27,9 @@ export const server = {
   }),
   occupation: new AxiosModel({ url: `customer/occupation` }),
   department: new AxiosModel({ url: `customer/department` }),
+  customerConsultantService: new AxiosModel({
+    url: `customer/consult-service`,
+  }),
   consultantService: new AxiosModel({ url: `consultant/service` }),
   editConsultantStatus: new AxiosModel({ url: `consultant/online-status` }),
 };
