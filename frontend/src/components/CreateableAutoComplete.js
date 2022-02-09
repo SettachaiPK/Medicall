@@ -10,6 +10,7 @@ export default function CreateableAutoComplete({
   optionsData,
   label,
   disabled,
+  variant,
 }) {
   return (
     <Autocomplete
@@ -64,9 +65,13 @@ export default function CreateableAutoComplete({
         return option.title;
       }}
       renderOption={(props, option) => <li {...props}>{option.title}</li>}
-      sx={{ width: 300, padding:1.5 }}
+      sx={{ width: 300, padding: 1.5 }}
       freeSolo
-      renderInput={(params) => <TextField {...params} label={label} />}
+      renderInput={(params) => (
+        <TextField {...params} label={label} variant={variant} />
+      )}
     />
   );
 }
+
+CreateableAutoComplete.defaultProps = { variant: "outlined" };

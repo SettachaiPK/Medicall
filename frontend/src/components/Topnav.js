@@ -24,6 +24,7 @@ function Topnav({ user: { status } }) {
         </div>
         <div>
           <Link to="/">หน้าหลัก</Link>
+          <Link to="/dashboard">กระดาน</Link>
           <Link to="/product">ซื้อเวชภัณฑ์</Link>
           <Link to="/hospital">ค้นหาสถานพยาบาล</Link>
           <Link to="/appointment">ประวัติการนัดหมาย</Link>
