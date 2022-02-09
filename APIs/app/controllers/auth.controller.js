@@ -26,7 +26,7 @@ exports.requestOTP = async (req, res) => {
     const password = "123456";
 
     const hashPassword = bcrypt.hashSync(password, 10);
-    
+
     const ref = otpGenerator.generate(12, {
       upperCaseAlphabets: false,
       specialChars: false,
@@ -506,14 +506,15 @@ exports.checkPendingConsultant = async (req, res) => {
   const { userID } = req;
   try {
     const { rows: consultantDetail } = await pool.query(
-      ` SELECT "userID"
+      ` SELECT "userID", "status"
         FROM consultantDetail
-        WHERE "status" = 'waiting approval'
-        AND "userID" = ($1);`,
+        WHERE "userID" = ($1);`,
       [userID]
     );
     if (consultantDetail.length > 0) {
-      return res.status(200).send({ pending: true });
+      return res
+        .status(200)
+        .send({ pending: true, status: consultantDetail[0].status });
     } else {
       return res.status(200).send({ pending: false });
     }
