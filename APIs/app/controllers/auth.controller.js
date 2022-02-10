@@ -62,6 +62,7 @@ exports.verifyOTP = async (req, res) => {
   const now = moment();
 
   try {
+    console.log("ip:", req.ip);
     await client.query("BEGIN");
     const { rows: otp } = await client.query(
       ` SELECT * FROM OTP 
@@ -120,23 +121,26 @@ exports.verifyOTP = async (req, res) => {
         expiresIn: config.access_token_life,
       }
     );
-    const refreshToken = jwt.sign(
+    const nowDate = Date.now();
+    /*const refreshToken = jwt.sign(
       { id: user[0].userID },
       config.refresh_token_secret,
       {
         expiresIn: config.refresh_token_life,
       }
-    );
+    );*/
+    const refreshToken = user[0].userID.toString() + nowDate.toString();
+    const refreshTokenHash = bcrypt.hashSync(refreshToken, 10);
 
     await client.query(
       ` INSERT INTO RefreshToken ("userID", "refreshToken")
         VALUES ($1, $2)
         ON CONFLICT ("userID") DO UPDATE
         SET "refreshToken" = excluded."refreshToken" `,
-      [user[0].userID, refreshToken]
+      [user[0].userID, refreshTokenHash]
     );
 
-    res.cookie("refreshToken", refreshToken, {
+    res.cookie("refreshToken", refreshTokenHash, {
       maxAge: process.env.REFRESH_TOKEN_LIFE,
       httpOnly: false,
       secure: false,
