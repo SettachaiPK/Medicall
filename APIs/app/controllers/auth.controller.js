@@ -62,7 +62,6 @@ exports.verifyOTP = async (req, res) => {
   const now = moment();
 
   try {
-    console.log("ip:", req.ip);
     await client.query("BEGIN");
     const { rows: otp } = await client.query(
       ` SELECT * FROM OTP 
@@ -113,7 +112,7 @@ exports.verifyOTP = async (req, res) => {
     } else if (user[0].status === "inactive") {
       return res.status(403).send({ message: "User Deactivated!" });
     }
-
+    
     const accessToken = jwt.sign(
       { id: user[0].userID },
       config.access_token_secret,
@@ -129,7 +128,11 @@ exports.verifyOTP = async (req, res) => {
         expiresIn: config.refresh_token_life,
       }
     );*/
-    const refreshToken = user[0].userID.toString() + nowDate.toString();
+
+    const refreshToken =
+      user[0].userID.toString() +
+      nowDate.toString() +
+      process.env.REFRESH_TOKEN_SECRET;
     const refreshTokenHash = bcrypt.hashSync(refreshToken, 10);
 
     await client.query(
