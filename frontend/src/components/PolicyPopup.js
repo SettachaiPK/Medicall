@@ -20,8 +20,8 @@ function PolicyPopup(props) {
     <>
       <label
         style={{
-          paddingtop: "15px",
-          paddingleft: "25px",
+          paddingTop: "15px",
+          paddingLeft: "25px",
           color: "#616161",
         }}
       >
