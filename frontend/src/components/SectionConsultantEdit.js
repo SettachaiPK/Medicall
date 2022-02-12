@@ -13,6 +13,8 @@ import TextField from "@mui/material/TextField";
 import Switch from "@mui/material/Switch";
 import Button from "@mui/material/Button";
 import Rating from "@mui/material/Rating";
+import Paper from "@mui/material/Paper";
+import Chip from "@mui/material/Chip";
 import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
 import SentimentDissatisfiedIcon from "@mui/icons-material/SentimentDissatisfied";
 import SentimentSatisfiedIcon from "@mui/icons-material/SentimentSatisfied";
@@ -23,6 +25,7 @@ function SectionConsultantEdit({ consultant }) {
   const dispatch = useDispatch();
   const [loading, setLoading] = React.useState(false);
   const [checked, setChecked] = React.useState(true);
+  const [addTag, setAddTag] = React.useState("");
 
   const [department, setDepartment] = React.useState({
     title: consultant.department,
@@ -33,7 +36,8 @@ function SectionConsultantEdit({ consultant }) {
   ]);
 
   const [formValue, setFormValue] = React.useState({ ...consultant });
-  const { detail, messagePrice, voiceCallPrice, videoCallPrice } = formValue;
+  const { detail, messagePrice, voiceCallPrice, videoCallPrice, tags } =
+    formValue;
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -65,8 +69,25 @@ function SectionConsultantEdit({ consultant }) {
         messagePrice,
         voiceCallPrice,
         videoCallPrice,
+        tags
       })
     );
+  };
+  const handleDeleteTag = (chipToDelete) => () => {
+    setFormValue((prevState) => {
+      return {
+        ...prevState,
+        ["tags"]: prevState.tags.filter((chip) => chip !== chipToDelete),
+      };
+    });
+  };
+  const handleAddTag = () => {
+    setFormValue((prevState) => {
+      return {
+        ...prevState,
+        ["tags"]: prevState.tags.concat([addTag]),
+      };
+    });
   };
 
   const fetchServiceDetail = React.useCallback(async () => {
@@ -155,6 +176,32 @@ function SectionConsultantEdit({ consultant }) {
           multiline
           rows={4}
         />
+        tags
+        <Paper
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            flexWrap: "wrap",
+            listStyle: "none",
+            p: 0.5,
+            m: 0,
+          }}
+          component="ul"
+        >
+          {tags.map((data, index) => {
+            return (
+              <Chip key={index} label={data} onDelete={handleDeleteTag(data)} />
+            );
+          })}
+        </Paper>
+        <TextField
+          label="เพิ่ม tags"
+          value={addTag}
+          onChange={(event) => setAddTag(event.target.value)}
+          InputProps={{
+            endAdornment: <Button onClick={handleAddTag}>เพิ่ม</Button>,
+          }}
+        />
         <TextField
           variant="standard"
           margin="normal"
@@ -185,11 +232,11 @@ function SectionConsultantEdit({ consultant }) {
           onChange={handleChange}
           type="number"
         />
-
         {(formValue.detail != consultant.detail ||
           formValue.messagePrice != consultant.messagePrice ||
           formValue.voiceCallPrice != consultant.voiceCallPrice ||
-          formValue.videoCallPrice != consultant.videoCallPrice) && (
+          formValue.videoCallPrice != consultant.videoCallPrice ||
+          formValue.tags != consultant.tags) && (
           <Button
             sx={{
               m: "auto",

@@ -33,7 +33,8 @@ exports.editOnlineStatus = async (req, res) => {
 };
 
 exports.editConsultantService = async (req, res) => {
-  const { detail, messagePrice, voiceCallPrice, videoCallPrice } = req.body;
+  const { detail, messagePrice, voiceCallPrice, videoCallPrice, tags } =
+    req.body;
   const { userID } = req;
   const client = await pool.connect();
 
@@ -48,6 +49,31 @@ exports.editConsultantService = async (req, res) => {
         RETURNING "detail","messagePrice","voiceCallPrice","videoCallPrice";`,
       [userID, detail, messagePrice, voiceCallPrice, videoCallPrice]
     );
+
+    await client.query(
+      ` DELETE FROM serviceToConsultTags
+        WHERE "userID" = $1`,
+      [userID]
+    );
+
+    tags.forEach(async (tag) => {
+      const {
+        rows: [{ tagID }],
+      } = await client.query(
+        ` INSERT INTO consultTags ("tagName")
+          VALUES ($1)
+          ON CONFLICT ("tagName") DO UPDATE SET 
+          "tagName"=EXCLUDED."tagName" 
+          RETURNING  "tagID" `,
+        [tag]
+      );
+      client.query(
+        ` INSERT INTO serviceToConsultTags ("tagID","userID")
+          VALUES ($1, $2)
+          ON CONFLICT DO NOTHING`,
+        [tagID, userID]
+      );
+    });
 
     await client.query("COMMIT");
 
