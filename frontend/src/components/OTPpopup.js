@@ -63,9 +63,9 @@ function OTPpopup({ auth: { phoneNumber, ref }, onSubmit }) {
       >
         <label
           style={{
-            paddingbottom: "25px",
+            paddingBottom: "4%",
             color: "#a7a7a7",
-            textdecoration: "underline",
+            textDecoration: "underline",
           }}
         >
           ส่งรหัสยืนยันอีกครั้ง{" "}

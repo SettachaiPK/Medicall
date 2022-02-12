@@ -18,64 +18,92 @@ function MenuProfile({ user }) {
 
   return (
     <>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <Avatar src="/broken-image.jpg" />
-        <Button>แก้ไขรูปภาพ</Button>
-        <div
-          style={{
-            display: "grid",
-          }}
-        >
+      <div style={{display: "flex", flexDirection: "column"}}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <Avatar src="/broken-image.jpg" />
+            <Button>แก้ไขรูปภาพ</Button>
+          </div>
+          <div style={{display: "flex", flexDirection: "row",margin:"auto"}}>
+          <div
+            style={{
+              display: "grid",
+            }}
+          >
+            <TextField
+              margin="normal"
+              label="เบอร์โทรศัพท์"
+              name="phoneNumber"
+              value={profile.phoneNumber || ""}
+            />
+            <TextField
+              margin="normal"
+              label="ชื่อ"
+              name="firstName"
+              value={profile.firstName || ""}
+            />
+            <TextField
+              margin="normal"
+              label="นามสกุล"
+              name="lastName"
+              value={profile.lastName || ""}
+            />
+            <TextField
+              margin="normal"
+              label="วันเกิด"
+              name="birthDate"
+              value={profile.birthDate || ""}
+            />
+            <FormControl margin="normal" sx={{ pl: 1 }}>
+              <FormLabel id="demo-controlled-radio-buttons-group">
+                เพศกำเนิด
+              </FormLabel>
+              <RadioGroup
+                row
+                aria-labelledby="demo-controlled-radio-buttons-group"
+                name="sex"
+                value={profile.sex}
+              >
+                <FormControlLabel
+                  value="female"
+                  control={<Radio />}
+                  label="หญิง"
+                />
+                <FormControlLabel
+                  value="male"
+                  control={<Radio />}
+                  label="ชาย"
+                />
+              </RadioGroup>
+            </FormControl>
+          </div>
+        <div style={{display: "flex", flexDirection: "column", marginLeft:"5%"}}>
           <TextField
             margin="normal"
-            label="เบอร์โทรศัพท์"
-            name="phoneNumber"
-            value={profile.phoneNumber || ""}
+            label="โรคประจำตัว"
+            name="congenitalDisease"
+            value={profile.congenitalDisease || ""}
           />
           <TextField
             margin="normal"
-            label="ชื่อ"
-            name="firstName"
-            value={profile.firstName || ""}
+            label="ประวัติการแพ้ยา"
+            name="drugAllergy"
+            value={profile.drugAllergy || ""}
           />
           <TextField
             margin="normal"
-            label="นามสกุล"
-            name="lastName"
-            value={profile.lastName || ""}
+            label="ยาที่ทานอยู่"
+            name="drugInUse"
+            value={profile.drugInUse || ""}
           />
-          <TextField
-            margin="normal"
-            label="วันเกิด"
-            name="birthDate"
-            value={profile.birthDate || ""}
-          />
-          <FormControl margin="normal" sx={{ pl: 1 }}>
-            <FormLabel id="demo-controlled-radio-buttons-group">
-              เพศกำเนิด
-            </FormLabel>
-            <RadioGroup
-              row
-              aria-labelledby="demo-controlled-radio-buttons-group"
-              name="sex"
-              value={profile.sex}
-            >
-              <FormControlLabel
-                value="female"
-                control={<Radio />}
-                label="หญิง"
-              />
-              <FormControlLabel value="male" control={<Radio />} label="ชาย" />
-            </RadioGroup>
-          </FormControl>
         </div>
-      </div>
+        </div>
+        </div>
     </>
   );
 }
