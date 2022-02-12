@@ -27,7 +27,7 @@ exports.requestOTP = async (req, res) => {
 
     const hashPassword = bcrypt.hashSync(password, 10);
 
-    const ref = otpGenerator.generate(12, {
+    const ref = otpGenerator.generate(6, {
       upperCaseAlphabets: false,
       specialChars: false,
     });
