@@ -125,7 +125,7 @@ exports.getConsultService = async (req, res) => {
     });
 
     detail.tags = tags;
-    detail.consultantAvatar = detail.consultantAvatar.toString("base64");
+    //detail.consultantAvatar = detail.consultantAvatar.toString("base64");
 
     await client.query("COMMIT");
 

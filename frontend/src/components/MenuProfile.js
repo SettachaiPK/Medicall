@@ -13,23 +13,24 @@ function MenuProfile({ user }) {
   const [profile, setProfile] = React.useState({ ...user });
 
   useEffect(() => {
+    console.log(user);
     setProfile({ ...user });
   }, [user]);
 
   return (
     <>
-      <div style={{display: "flex", flexDirection: "column"}}>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <Avatar src="/broken-image.jpg" />
-            <Button>แก้ไขรูปภาพ</Button>
-          </div>
-          <div style={{display: "flex", flexDirection: "row",margin:"auto"}}>
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Avatar src={`data:image/png;base64, ${profile.avatar}`} />
+          <Button>แก้ไขรูปภาพ</Button>
+        </div>
+        <div style={{ display: "flex", flexDirection: "row", margin: "auto" }}>
           <div
             style={{
               display: "grid",
@@ -82,28 +83,34 @@ function MenuProfile({ user }) {
               </RadioGroup>
             </FormControl>
           </div>
-        <div style={{display: "flex", flexDirection: "column", marginLeft:"5%"}}>
-          <TextField
-            margin="normal"
-            label="โรคประจำตัว"
-            name="congenitalDisease"
-            value={profile.congenitalDisease || ""}
-          />
-          <TextField
-            margin="normal"
-            label="ประวัติการแพ้ยา"
-            name="drugAllergy"
-            value={profile.drugAllergy || ""}
-          />
-          <TextField
-            margin="normal"
-            label="ยาที่ทานอยู่"
-            name="drugInUse"
-            value={profile.drugInUse || ""}
-          />
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              marginLeft: "5%",
+            }}
+          >
+            <TextField
+              margin="normal"
+              label="โรคประจำตัว"
+              name="congenitalDisease"
+              value={profile.congenitalDisease || ""}
+            />
+            <TextField
+              margin="normal"
+              label="ประวัติการแพ้ยา"
+              name="drugAllergy"
+              value={profile.drugAllergy || ""}
+            />
+            <TextField
+              margin="normal"
+              label="ยาที่ทานอยู่"
+              name="drugInUse"
+              value={profile.drugInUse || ""}
+            />
+          </div>
         </div>
-        </div>
-        </div>
+      </div>
     </>
   );
 }

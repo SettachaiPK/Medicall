@@ -69,7 +69,7 @@ function SectionConsultantEdit({ consultant }) {
         messagePrice,
         voiceCallPrice,
         videoCallPrice,
-        tags
+        tags,
       })
     );
   };
@@ -176,7 +176,6 @@ function SectionConsultantEdit({ consultant }) {
           multiline
           rows={4}
         />
-        tags
         <Paper
           sx={{
             display: "flex",

@@ -112,7 +112,7 @@ exports.verifyOTP = async (req, res) => {
     } else if (user[0].status === "inactive") {
       return res.status(403).send({ message: "User Deactivated!" });
     }
-    
+
     const accessToken = jwt.sign(
       { id: user[0].userID },
       config.access_token_secret,
@@ -459,10 +459,10 @@ exports.getUser = async (req, res) => {
       return res.status(205).send({ message: "No token provided!" });
     }
     const decoded = jwt.verify(token, config.access_token_secret);
-    const {
+    let {
       rows: [userDetail],
     } = await pool.query(
-      ` SELECT userDetail."userID","phoneNumber","firstName","lastName","sex",userDetail."status","height","weight","congenitalDisease","drugAllergy","drugInUse"
+      ` SELECT userDetail."userID","phoneNumber","firstName","lastName","sex",userDetail."status","height","weight","congenitalDisease","drugAllergy","drugInUse", "avatar"
       FROM userDetail
       INNER JOIN customerDetail
       ON userDetail."userID" = customerDetail."userID"

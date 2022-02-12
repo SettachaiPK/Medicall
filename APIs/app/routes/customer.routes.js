@@ -23,5 +23,7 @@ module.exports = function (app) {
 
   router.get("/consult-tags", customerController.getConsultTags);
 
+  router.post("/avatar", [authJwt.verifyToken], customerController.editAvatar);
+
   app.use("/apis/customer", router);
 };

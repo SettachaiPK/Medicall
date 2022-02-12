@@ -88,7 +88,7 @@ exports.getConsultServiceDetail = async (req, res) => {
     });
 
     detail.tags = tags;
-    detail.consultantAvatar = detail.consultantAvatar.toString("base64");
+    //detail.consultantAvatar = detail.consultantAvatar.toString("base64");
 
     await client.query("COMMIT");
 
@@ -108,7 +108,6 @@ exports.getConsultServiceList = async (req, res) => {
   const { occupation, department, tags, orderby, limit, offset } = req.query;
   const client = await pool.connect();
   try {
-    
     let occupationParam = occupation ? occupation : "all";
     let departmentParam = department ? department : "all";
     let tagsParam = tags ? tags : "all";
@@ -184,6 +183,48 @@ exports.getConsultTags = async (req, res) => {
     await client.query("COMMIT");
 
     return res.status(200).send(tags);
+  } catch (err) {
+    await client.query("ROLLBACK");
+
+    console.log(err);
+
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};
+
+exports.editAvatar = async (req, res) => {
+  const { userID, files } = req;
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+    if (files) {
+      const { media } = await files;
+      var image;
+      if (media.length) {
+        image = media[0];
+      } else {
+        image = media;
+      }
+      if (!image.name.match(/\.(jpg|jpeg|png)$/i)) {
+        await client.query("ROLLBACK");
+        return res.status(415).send({ message: "wrong file type" });
+      }
+      if (image.truncated) {
+        await client.query("ROLLBACK");
+        return res.status(413).send({ message: "file too large" });
+      }
+      await client.query(
+        `
+        INSERT INTO consultantDetailMedia ("userID", "imageBase64")
+        VALUES ($1, $2)`,
+        [userID, image.data.toString("base64")]
+      );
+    }
+
+    return res.status(200).send(departments);
   } catch (err) {
     await client.query("ROLLBACK");
 

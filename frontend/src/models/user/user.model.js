@@ -9,5 +9,6 @@ export class UserModel {
     this.registeredDate = null;
     this.status = null;
     this.roles = [];
+    this.avatar = "";
   }
 }
