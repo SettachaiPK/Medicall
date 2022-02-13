@@ -2,6 +2,7 @@ import { useEffect, useCallback, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ConsultantDetailModel } from "../../models";
 import { getConsultantDetail } from "../../service/customer.service";
+import { Avatar } from "@mui/material";
 
 function ConsultantDetailPage() {
   const { id } = useParams();
@@ -18,6 +19,7 @@ function ConsultantDetailPage() {
     department,
     infirmary,
     academy,
+    avatar,
   } = consultant;
 
   const fetchDetail = useCallback(async () => {
@@ -31,7 +33,7 @@ function ConsultantDetailPage() {
 
   return (
     <div>
-      {consultantAvatar}
+      <Avatar src={`data:image/png;base64, ${avatar}`} />
       <div className="flex">
         {firstName} {lastName}
       </div>
@@ -40,7 +42,7 @@ function ConsultantDetailPage() {
       <br />
       <div>department: {department}</div>
       <div>infirmary: {infirmary}</div>
-      <div>academy: {academy}</div> 
+      <div>academy: {academy}</div>
       <br />
       <div>detail: {detail}</div>
       <div>messagePrice: {messagePrice}</div>

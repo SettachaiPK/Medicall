@@ -9,7 +9,7 @@ export class ConsultantDetailModel {
     this.voiceCallPrice = 0;
     this.videoCallPrice = 0;
     this.onlineStatus = "online";
-    this.consultantAvatar = "";
+    this.avatar = "";
     this.ocupation = "";
     this.department = "";
     this.infirmary = "";

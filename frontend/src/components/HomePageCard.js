@@ -24,6 +24,7 @@ function HomePageCard({
     detail,
     onlineStatus,
     userID,
+    avatar,
   },
 }) {
   const navigate = useNavigate();
@@ -52,13 +53,21 @@ function HomePageCard({
             justifyContent: "space-between",
           }}
         >
-          <IconButton aria-label="Example">
+          <IconButton
+            aria-label="Example"
+            onClick={() => {
+              console.log("like");
+            }}
+          >
             <SvgIcon component={FavoriteIcon} />
           </IconButton>
           <label>{videoCallPrice} B/ 15 min</label>
         </Box>
 
-        <Avatar sx={{ width: 60, height: 60 }} src="/broken-image.jpg" />
+        <Avatar
+          sx={{ width: 60, height: 60 }}
+          src={`data:image/png;base64, ${avatar}`}
+        />
         <typography>
           {firstName} {lastName}
         </typography>
