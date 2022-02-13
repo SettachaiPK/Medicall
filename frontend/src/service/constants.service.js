@@ -32,4 +32,5 @@ export const server = {
   }),
   consultantService: new AxiosModel({ url: `consultant/service` }),
   editConsultantStatus: new AxiosModel({ url: `consultant/online-status` }),
+  avatar: new AxiosModel({ url: `user/avatar` }),
 };

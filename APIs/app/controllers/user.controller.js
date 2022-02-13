@@ -25,17 +25,17 @@ exports.editAvatar = async (req, res) => {
       await client.query("ROLLBACK");
       return res.status(413).send({ message: "file too large" });
     }
-    console.log(image.data.toString("base64"));
+    const imageBase64 = image.data.toString("base64");
     await client.query(
       `
         UPDATE userDetail 
         SET "avatar" = ($2)
         WHERE "userID" = ($1)`,
-      [userID, image.data.toString("base64")]
+      [userID, imageBase64]
     );
 
     await client.query("COMMIT");
-    return res.status(200).send({ message: "ok" });
+    return res.status(200).send({ message: "ok", image: imageBase64 });
   } catch (err) {
     await client.query("ROLLBACK");
 

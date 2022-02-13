@@ -1,5 +1,6 @@
-import React, { useEffect } from "react";
-import { connect } from "react-redux";
+import { useEffect, useState, useRef } from "react";
+import { connect, useDispatch } from "react-redux";
+import { actionChangeAvatar } from "../actions/auth.actions";
 import TextField from "@mui/material/TextField";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
@@ -10,10 +11,18 @@ import { Avatar } from "@mui/material";
 import { Button } from "@mui/material";
 
 function MenuProfile({ user }) {
-  const [profile, setProfile] = React.useState({ ...user });
+  const dispatch = useDispatch();
+  const [profile, setProfile] = useState({ ...user });
+  const hiddenFileInput = useRef(null);
+
+  const handleChangeAvatar = async (event) => {
+    const fileUploaded = event.target.files[0];
+    const formData = new FormData();
+    formData.append("media", fileUploaded);
+    await dispatch(actionChangeAvatar(formData));
+  };
 
   useEffect(() => {
-    console.log(user);
     setProfile({ ...user });
   }, [user]);
 
@@ -28,7 +37,22 @@ function MenuProfile({ user }) {
           }}
         >
           <Avatar src={`data:image/png;base64, ${profile.avatar}`} />
-          <Button>แก้ไขรูปภาพ</Button>
+
+          <input
+            type="file"
+            name="media"
+            accept="image/png, image/jpeg"
+            ref={hiddenFileInput}
+            onChange={handleChangeAvatar}
+            hidden
+          />
+          <Button
+            onClick={() => {
+              hiddenFileInput.current.click();
+            }}
+          >
+            แก้ไขรูปภาพ
+          </Button>
         </div>
         <div style={{ display: "flex", flexDirection: "row", margin: "auto" }}>
           <div
