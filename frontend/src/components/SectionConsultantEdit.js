@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useDispatch, connect } from "react-redux";
 import PropTypes from "prop-types";
 import {
@@ -6,6 +6,7 @@ import {
   actionEditServiceDetail,
   actionEditServiceStatus,
 } from "../actions/consultant.action";
+import { actionChangeAvatar } from "../actions/auth.actions";
 import CreateableAutoComplete from "./CreateableAutoComplete";
 import { pink } from "@mui/material/colors";
 import { styled } from "@mui/material/styles";
@@ -15,29 +16,39 @@ import Button from "@mui/material/Button";
 import Rating from "@mui/material/Rating";
 import Paper from "@mui/material/Paper";
 import Chip from "@mui/material/Chip";
+import { Avatar } from "@mui/material";
 import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
 import SentimentDissatisfiedIcon from "@mui/icons-material/SentimentDissatisfied";
 import SentimentSatisfiedIcon from "@mui/icons-material/SentimentSatisfied";
 import SentimentSatisfiedAltIcon from "@mui/icons-material/SentimentSatisfiedAltOutlined";
 import SentimentVerySatisfiedIcon from "@mui/icons-material/SentimentVerySatisfied";
 
-function SectionConsultantEdit({ consultant }) {
+function SectionConsultantEdit({ consultant, user }) {
   const dispatch = useDispatch();
-  const [loading, setLoading] = React.useState(false);
-  const [checked, setChecked] = React.useState(true);
-  const [addTag, setAddTag] = React.useState("");
+  const [loading, setLoading] = useState(false);
+  const [checked, setChecked] = useState(true);
+  const [addTag, setAddTag] = useState("");
 
-  const [department, setDepartment] = React.useState({
+  const [department, setDepartment] = useState({
     title: consultant.department,
     value: consultant.department,
   });
-  const [departmentOptions, setDepartmentOptions] = React.useState([
+  const [departmentOptions, setDepartmentOptions] = useState([
     { title: "", value: "" },
   ]);
 
-  const [formValue, setFormValue] = React.useState({ ...consultant });
+  const [formValue, setFormValue] = useState({ ...consultant });
   const { detail, messagePrice, voiceCallPrice, videoCallPrice, tags } =
     formValue;
+
+  const hiddenFileInput = useRef(null);
+
+  const handleChangeAvatar = async (event) => {
+    const fileUploaded = event.target.files[0];
+    const formData = new FormData();
+    formData.append("media", fileUploaded);
+    await dispatch(actionChangeAvatar(formData));
+  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -90,7 +101,7 @@ function SectionConsultantEdit({ consultant }) {
     });
   };
 
-  const fetchServiceDetail = React.useCallback(async () => {
+  const fetchServiceDetail = useCallback(async () => {
     setLoading(true);
     await dispatch(actionGetServiceDetail());
     setLoading(false);
@@ -115,6 +126,22 @@ function SectionConsultantEdit({ consultant }) {
 
   return (
     <>
+      <Avatar src={`data:image/png;base64, ${user.avatar}`} />
+      <input
+        type="file"
+        name="media"
+        accept="image/png, image/jpeg"
+        ref={hiddenFileInput}
+        onChange={handleChangeAvatar}
+        hidden
+      />
+      <Button
+        onClick={() => {
+          hiddenFileInput.current.click();
+        }}
+      >
+        แก้ไขรูปภาพ
+      </Button>
       <div style={{ display: "flex" }}>
         <label>คะแนนรีวิวเฉลี่ย :</label>
         <StyledRating
@@ -255,6 +282,7 @@ function SectionConsultantEdit({ consultant }) {
 
 const mapStateToProps = (state) => ({
   consultant: state.consultant,
+  user: state.user,
 });
 
 export default connect(mapStateToProps)(SectionConsultantEdit);

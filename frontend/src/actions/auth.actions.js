@@ -1,5 +1,10 @@
 import * as authService from "../service/auth.service";
-import { USER_OTP_UPDATE, USER_SIGNIN, USER_SIGNOUT } from "./types";
+import {
+  USER_OTP_UPDATE,
+  USER_SIGNIN,
+  USER_SIGNOUT,
+  USER_FETCH_AVATAR,
+} from "./types";
 
 export const actionRequestOTP = (payload) => async (dispatch) => {
   try {
@@ -115,6 +120,23 @@ export const actionCheckPendingPhamarcy = () => async (dispatch) => {
   }
 };
 
+export const actionChangeAvatar = (payload) => async (dispatch) => {
+  try {
+    const { image } = await authService.changeAvatar(payload);
+    let localstor = JSON.parse(
+      localStorage.getItem(`${process.env.REACT_APP_PREFIX}_USER`)
+    );
+    localstor.avatar = image;
+    localStorage.setItem(
+      `${process.env.REACT_APP_PREFIX}_USER`,
+      JSON.stringify(localstor)
+    );
+    await dispatch(reducerChangeAvatar(image));
+  } catch (error) {
+    alert(error.response.data.message || error.message);
+  }
+};
+
 export const handleSignIn = async (data) => {};
 
 export const reducerUpdateOTP = (payload) => ({
@@ -127,4 +149,8 @@ export const reducerSignIn = (payload) => ({
 });
 export const reducerSignOut = () => ({
   type: USER_SIGNOUT,
+});
+export const reducerChangeAvatar = (payload) => ({
+  type: USER_FETCH_AVATAR,
+  payload,
 });

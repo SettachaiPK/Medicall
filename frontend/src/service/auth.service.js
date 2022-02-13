@@ -191,3 +191,22 @@ export function checkPendingPhamarcy() {
       });
   });
 }
+
+export function changeAvatar(data) {
+  const Axiosmodel = server.avatar;
+  return new Promise((resolve, reject) => {
+    httpClient({
+      method: "POST",
+      url: Axiosmodel.url,
+      config: Axiosmodel,
+      withCredentials: true,
+      data,
+    })
+      .then((res) => {
+        resolve(res.data);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}
