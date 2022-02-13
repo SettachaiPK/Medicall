@@ -40,6 +40,25 @@ export function getDepartment(occupation) {
   });
 }
 
+export function getConsultantList() {
+  const Axiosmodel = server.customerConsultantService;
+
+  return new Promise((resolve, reject) => {
+    httpClient({
+      method: "GET",
+      url: Axiosmodel.url,
+      withCredentials: true,
+      config: Axiosmodel,
+    })
+      .then((res) => {
+        resolve(res);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}
+
 export function getConsultantDetail(id) {
   const Axiosmodel = server.customerConsultantService;
 

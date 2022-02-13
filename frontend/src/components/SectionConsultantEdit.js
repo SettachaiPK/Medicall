@@ -25,7 +25,7 @@ import SentimentVerySatisfiedIcon from "@mui/icons-material/SentimentVerySatisfi
 
 function SectionConsultantEdit({ consultant, user }) {
   const dispatch = useDispatch();
-  const [loading, setLoading] = useState(false);
+  //const [loading, setLoading] = useState(false);
   const [checked, setChecked] = useState(true);
   const [addTag, setAddTag] = useState("");
 
@@ -102,9 +102,9 @@ function SectionConsultantEdit({ consultant, user }) {
   };
 
   const fetchServiceDetail = useCallback(async () => {
-    setLoading(true);
+    //setLoading(true);
     await dispatch(actionGetServiceDetail());
-    setLoading(false);
+    //setLoading(false);
   }, [dispatch]);
 
   useEffect(() => {
