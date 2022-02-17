@@ -2,6 +2,7 @@ import { useEffect, useCallback, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ConsultantDetailModel } from "../../models";
 import { getConsultantDetail } from "../../service/customer.service";
+import { Box } from "@mui/system";
 
 function ConsultantDetailPage() {
   const { id } = useParams();
@@ -38,9 +39,14 @@ function ConsultantDetailPage() {
       <br />
       <div>status: {onlineStatus}</div>
       <br />
+      <Box sx={{ border: 1, maxWidth: "fit-content",padding: "2%" }}>
+      <div>
       <div>department: {department}</div>
       <div>infirmary: {infirmary}</div>
       <div>academy: {academy}</div> 
+      </div>
+      <div>Review</div>
+      </Box>
       <br />
       <div>detail: {detail}</div>
       <div>messagePrice: {messagePrice}</div>
