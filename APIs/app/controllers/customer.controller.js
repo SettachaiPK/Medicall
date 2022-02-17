@@ -66,7 +66,7 @@ exports.getConsultServiceDetail = async (req, res) => {
         FROM consultantService AS service
         INNER JOIN (SELECT "userID", "ocupation", "department", "infirmary", "academy" FROM consultantDetail) AS detail
         ON service."userID" = detail."userID"
-        INNER JOIN (SELECT "userID", "firstName", "lastName", "sex" FROM userDetail) AS userdetail 
+        INNER JOIN (SELECT "userID", "firstName", "lastName", "sex","avatar" FROM userDetail) AS userdetail 
         ON detail."userID" = userdetail."userID"
         WHERE service."userID" = $1 ;`,
       [userid]
@@ -122,7 +122,10 @@ exports.getConsultServiceList = async (req, res) => {
           "ocupation",
           "department",
           "infirmary",
-          "academy"
+          "academy",
+          "firstName",
+          "lastName",
+          "avatar"
         FROM consultantService AS service
         INNER JOIN 
           (SELECT * FROM consultantDetail 
@@ -134,6 +137,10 @@ exports.getConsultServiceList = async (req, res) => {
           (SELECT * FROM serviceToConsultTags) 
           AS serviceToConsultTags
         ON service."userID" = serviceToConsultTags."userID"
+        INNER JOIN 
+          (SELECT * FROM userDetail) 
+          AS userDetail
+        ON service."userID" = userDetail."userID"
         FULL JOIN 
           (SELECT * FROM ConsultTags 
             WHERE ${tags ? `"tagName" = ANY($3::VARCHAR[])` : "'all' = $3"}) 
