@@ -77,3 +77,9 @@ body {
   border-style: groove;
   padding-bottom: 2%;
 }
+
+.flex_column_center{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
