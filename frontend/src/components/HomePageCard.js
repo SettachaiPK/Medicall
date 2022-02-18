@@ -12,6 +12,8 @@ import { Box, typography } from "@mui/system";
 import ShowReview from "./ShowReview";
 import { TextField } from "@mui/material";
 import { Button, Chip, Container } from "@mui/material";
+import ConsultNowDetailsPopUp from "./ConsultNowDetailsPopUp";
+import { useState } from "react";
 
 function HomePageCard({
   consultant: {
@@ -28,6 +30,17 @@ function HomePageCard({
   },
 }) {
   const navigate = useNavigate();
+
+  const [openAdd, setOpenAdd] = useState(false);
+
+  const handleOpenAdd = (event) => {
+    setOpenAdd(true);
+    event.stopPropagation();
+  };
+  const handleCloseAdd = () => {
+    setOpenAdd(false);
+  };
+
   return (
     <>
       <Box
@@ -103,8 +116,9 @@ function HomePageCard({
         />
 
         <Button>จองล่วงหน้า</Button>
-        <Button>ปรึกษาทันที</Button>
+        <Button onClick={handleOpenAdd}>ปรึกษาทันที</Button>
       </Box>
+      <ConsultNowDetailsPopUp open={openAdd} onClose={handleCloseAdd} />
     </>
   );
 }
