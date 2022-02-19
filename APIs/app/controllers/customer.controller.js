@@ -1,4 +1,5 @@
 const { pool } = require("../config/db.config");
+const moment = require("moment");
 const qs = require("qs");
 
 exports.getOccupation = async (req, res) => {
@@ -232,6 +233,129 @@ exports.editAvatar = async (req, res) => {
     }
 
     return res.status(200).send(departments);
+  } catch (err) {
+    await client.query("ROLLBACK");
+
+    console.log(err);
+
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};
+
+exports.createConsultJob = async (req, res) => {
+  const {
+    userID,
+    body: {
+      schduleDate,
+      reservePeriod_m,
+      symptomDetail,
+      communicationChannel,
+      consultantID,
+      expectedPrice,
+      paymentChannel,
+    },
+    files,
+  } = req;
+
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+    if (!["voice", "video"].includes(communicationChannel)) {
+      return res.status(400).send({ message: "Invalid communication channel" });
+    }
+    const {
+      rows: [{ basePrice, onlineStatus }],
+    } = await client.query(
+      `
+    SELECT ${
+      communicationChannel === "message"
+        ? '"messagePrice"'
+        : communicationChannel === "voice"
+        ? '"voiceCallPrice"'
+        : '"videoCallPrice"'
+    } AS "basePrice" , "onlineStatus" 
+    FROM consultantService 
+    WHERE "userID" = $1`,
+      [consultantID]
+    );
+    if ((reservePeriod_m / 15) * basePrice != expectedPrice) {
+      return res
+        .status(400)
+        .send({ message: "Price have been changed.Please try again" });
+    }
+    const {
+      rows: [paymentDetail],
+    } = await client.query(
+      `
+    INSERT INTO payment ("channel", "price","ref1","ref2","createDate","expireDate")
+    VALUES ($1, $2, $3, $4, $5, $6)
+    RETURNING *`,
+      [
+        paymentChannel,
+        expectedPrice,
+        "ref1",
+        "ref2",
+        moment(),
+        moment().add(5, "minutes"),
+      ]
+    );
+
+    if (!schduleDate) {
+      if (onlineStatus != "online") {
+        return res.status(400).send({ message: "Consultant not online" });
+      }
+    }
+
+    const {
+      rows: [jobDetail],
+    } = await client.query(
+      `
+    INSERT INTO consultJob 
+      ("schduleDate", "reservePeriod_m","symptomDetail","communicationChannel","consultantID","customerID","paymentID")
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
+    RETURNING *`,
+      [
+        schduleDate,
+        reservePeriod_m,
+        symptomDetail,
+        communicationChannel,
+        consultantID,
+        userID,
+        paymentDetail.paymentID,
+      ]
+    );
+
+    if (files) {
+      const { media } = await files;
+      var images = [];
+      if (media.length) {
+        images = media;
+      } else {
+        images = [media];
+      }
+      images.forEach(async (image) => {
+        if (!image.name.match(/\.(jpg|jpeg|png)$/i)) {
+          await client.query("ROLLBACK");
+          return res.status(415).send({ message: "wrong file type" });
+        }
+        if (image.truncated) {
+          await client.query("ROLLBACK");
+          return res.status(413).send({ message: "file too large" });
+        }
+        await client.query(
+          `
+        INSERT INTO symptomMedia ("jobID", "imageBase64")
+        VALUES ($1, $2)`,
+          [jobDetail.jobID, image.data.toString("base64")]
+        );
+      });
+    }
+
+    await client.query("COMMIT");
+    return res.status(200).send({ jobDetail, paymentDetail });
   } catch (err) {
     await client.query("ROLLBACK");
 

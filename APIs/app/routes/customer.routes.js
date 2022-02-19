@@ -24,6 +24,7 @@ module.exports = function (app) {
   router.get("/consult-tags", customerController.getConsultTags);
 
   router.post("/avatar", [authJwt.verifyToken], customerController.editAvatar);
+  router.post("/consult-job", [authJwt.verifyToken], customerController.createConsultJob);
 
   app.use("/apis/customer", router);
 };
