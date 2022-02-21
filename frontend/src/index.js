@@ -1,17 +1,20 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import { Provider } from 'react-redux';
-import store from './store';
+import React from "react";
+import ReactDOM from "react-dom";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import { Provider } from "react-redux";
+import ContextProvider from "./helpers/Context";
+import store from "./store";
 
 const AppWithRouter = () => (
   <Provider store={store}>
-    <App />
+    <ContextProvider>
+      <App />
+    </ContextProvider>
   </Provider>
-)
+);
 
-ReactDOM.render(<AppWithRouter />, document.getElementById('root'));
+ReactDOM.render(<AppWithRouter />, document.getElementById("root"));
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
