@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 //import ProtectedRoute from "./components/ProtectedRoute";
-import { HomePage, UserMenuPage, DashBoard } from "./views";
+import { HomePage, UserMenuPage, DashBoard, TestMeetingPage } from "./views";
 import Topnav from "./components/Topnav";
 import { actionVerifyLogIn } from "./actions/auth.actions";
 import ConsultantDetailPage from "./views/Customer/ConsultantDetailPage";
@@ -26,6 +26,7 @@ function App() {
         <Route path="menu" element={<UserMenuPage />} />
         <Route path="dashboard" element={<DashBoard />} />
         <Route path="consultant/:id" element={<ConsultantDetailPage />} />
+        <Route path="test-meeting" element={<TestMeetingPage />} />
         {/* <Route exact path="/" element={<ProtectedRoute />}>
           <Route exact path="/protect" element={<HomePage />} />
         </Route> */}

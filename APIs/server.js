@@ -53,11 +53,15 @@ require("./app/routes/admin.routes")(app);
 require("./app/routes/customer.routes")(app);
 require("./app/routes/consultant.routes")(app);
 require("./app/routes/user.routes")(app);
+require("./app/routes/external.routes")(app);
 
 // set port, listen for requests
 const port = process.env.SERVER_PORT;
 server = app.listen(port, () => console.log("server running on port " + port));
+
 //connect to socketIO
+
+const socketController = require("./app/controllers/socket.controller");
 
 const io = new Server(server, {
   cors: {
@@ -66,6 +70,8 @@ const io = new Server(server, {
     credentials: true,
   },
 });
+
+global.io = io; //added
 // connection error
 io.engine.on("connection_error", (err) => {
   console.log(err.req); // the request object
@@ -74,14 +80,29 @@ io.engine.on("connection_error", (err) => {
   console.log(err.context); // some additional error context
 });
 io.on("connection", (socket) => {
-  console.log("socket connected");
-  socket.on("join", (data) => {
-    socket.join(data.roomId);
-    console.log(`User join to room ${data.roomId}`);
+  socket.emit("me", socket.id);
+
+  socket.on("user", ({ userID }) => {
+    socketController.userConnect(userID, socket.id);
   });
 
   socket.on("disconnect", (data) => {
+    socketController.userDisconnect(socket.id);
     socket.leave(data.roomId);
+  });
+
+  socket.on("callUser", ({ userToCall, signalData, from, name }) => {
+    console.log("calling", userToCall);
+    io.to(userToCall).emit("callUser", { signal: signalData, from, name });
+  });
+
+  socket.on("answerCall", (data) => {
+    io.to(data.to).emit("callAccepted", data.signal);
+  });
+
+  socket.on("join", (data) => {
+    socket.join(data.roomId);
+    console.log(`User join to room ${data.roomId}`);
   });
 
   socket.on("send-message", (data) => {
