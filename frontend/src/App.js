@@ -6,6 +6,7 @@ import { HomePage, UserMenuPage, DashBoard } from "./views";
 import Topnav from "./components/Topnav";
 import { actionVerifyLogIn } from "./actions/auth.actions";
 import ConsultantDetailPage from "./views/Customer/ConsultantDetailPage";
+import Call from "./views/Customer/Call";
 
 function App() {
   const dispatch = useDispatch();
@@ -26,6 +27,7 @@ function App() {
         <Route path="menu" element={<UserMenuPage />} />
         <Route path="dashboard" element={<DashBoard />} />
         <Route path="consultant/:id" element={<ConsultantDetailPage />} />
+        <Route path="call" element={<Call />} />
         {/* <Route exact path="/" element={<ProtectedRoute />}>
           <Route exact path="/protect" element={<HomePage />} />
         </Route> */}
