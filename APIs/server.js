@@ -92,11 +92,12 @@ io.on("connection", (socket) => {
   });
 
   socket.on("callUser", ({ userToCall, signalData, from, name }) => {
-    console.log("calling", userToCall);
+    console.log("calling", userToCall, from,name);
     io.to(userToCall).emit("callUser", { signal: signalData, from, name });
   });
 
   socket.on("answerCall", (data) => {
+    console.log('answerCall', data.to);
     io.to(data.to).emit("callAccepted", data.signal);
   });
 
