@@ -85,12 +85,19 @@ exports.makeCall = async (jobID) => {
         WHERE "jobID" = ($1)`,
       [jobID]
     );
-    global.io.to(customerSocketID).emit("makeCall", {
-      id: consultantSocketID,
+    global.io.to(customerSocketID).emit("invite", {
+      destinationSocket: consultantSocketID,
+      destinationName: `${consultantFirstName} ${consultantLastName}`,
       type: communicationChannel,
       jobID,
-      customerName: `${customerFirstName} ${customerLastName}`,
-      consultantName: `${consultantFirstName} ${consultantLastName}`,
+      role: "customer",
+    });
+    global.io.to(consultantSocketID).emit("invite", {
+      destinationSocket: customerSocketID,
+      destinationName: `${customerFirstName} ${customerLastName}`,
+      type: communicationChannel,
+      jobID,
+      role: "consultant",
     });
     await client.query("COMMIT");
   } catch (err) {

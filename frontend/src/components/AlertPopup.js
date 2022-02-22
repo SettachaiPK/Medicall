@@ -10,7 +10,6 @@ import { CircularProgress, Button, Box, Paper, Grid } from "@mui/material";
 function AlertPopup(props) {
   const {
     name,
-    callAccepted,
     myVideo,
     userVideo,
     callEnded,
@@ -22,6 +21,7 @@ function AlertPopup(props) {
     leaveCall,
     callUser,
     getMediaDevice,
+    isReceivingCall,
   } = useContext(SocketContext);
   const navigate = useNavigate();
   const loading = false;
@@ -38,12 +38,6 @@ function AlertPopup(props) {
   //   }
   //   return '';
   // };
-
-  useEffect(() => {
-    if (call.isReceivingCall) {
-      getMediaDevice();
-    }
-  }, [call.isReceivingCall]);
   return (
     <>
       <div className={`blind-fold ${loading ? "active" : ""}`}>
@@ -53,19 +47,14 @@ function AlertPopup(props) {
       </div>
       <div
         className={`blind-fold ${
-          call.isReceivingCall && !callAccepted ? "active" : ""
+          isReceivingCall && !call.callAccepted ? "active" : ""
         }`}
       >
         <div className="wrapper">
           <div style={{ display: "flex", justifyContent: "space-around" }}>
             <Box>
               <Paper>
-                <h1>{call.name} is calling:</h1>
-                <Paper>
-                  <Grid item xs={12} md={6}>
-                    <video playsInline muted ref={myVideo} autoPlay />
-                  </Grid>
-                </Paper>
+                <h1>Meeting is ready!</h1>
                 <Button
                   variant="contained"
                   color="primary"
@@ -74,7 +63,7 @@ function AlertPopup(props) {
                     answerCall();
                   }}
                 >
-                  Answer
+                  ACCEPT
                 </Button>
               </Paper>
             </Box>

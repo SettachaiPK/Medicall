@@ -14,7 +14,6 @@ import {
 function TestMeetingPage({ user: { roles } }) {
   const {
     name,
-    callAccepted,
     myVideo,
     userVideo,
     callEnded,
@@ -27,8 +26,16 @@ function TestMeetingPage({ user: { roles } }) {
   } = useContext(SocketContext);
 
   const [idToCall, setIdToCall] = useState("");
-  const turnOffCam = () => {
-    myVideo.current.srcObject.getVideoTracks()[0].stop();
+  const toggleCam = () => {
+    if (myVideo.current.srcObject.getVideoTracks()[0].enabled === true) {
+      myVideo.current.srcObject.getVideoTracks().forEach((element) => {
+        element.enabled = false;
+      });
+    } else {
+      myVideo.current.srcObject.getVideoTracks().forEach((element) => {
+        element.enabled = true;
+      });
+    }
   };
 
   return (
@@ -44,7 +51,7 @@ function TestMeetingPage({ user: { roles } }) {
             </Grid>
           </Paper>
         )}
-        {callAccepted && !callEnded && (
+        {call.callAccepted && !callEnded && (
           <Paper>
             <Grid item xs={12} md={6}>
               <Typography variant="h5" gutterBottom>
@@ -80,7 +87,7 @@ function TestMeetingPage({ user: { roles } }) {
                   onChange={(e) => setIdToCall(e.target.value)}
                   fullWidth
                 />
-                {callAccepted && !callEnded ? (
+                {call.callAccepted && !callEnded ? (
                   <Button
                     variant="contained"
                     color="secondary"
@@ -103,9 +110,9 @@ function TestMeetingPage({ user: { roles } }) {
                   variant="contained"
                   color="primary"
                   fullWidth
-                  onClick={() => turnOffCam()}
+                  onClick={() => toggleCam()}
                 >
-                  turn off cam
+                  toggle cam
                 </Button>
               </Grid>
             </Grid>
