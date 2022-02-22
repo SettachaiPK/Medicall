@@ -10,7 +10,6 @@ import { CircularProgress, Button, Box, Paper, Grid } from "@mui/material";
 function AlertPopup(props) {
   const {
     name,
-    myVideo,
     userVideo,
     callEnded,
     stream,

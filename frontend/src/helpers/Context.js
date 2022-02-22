@@ -61,26 +61,6 @@ const ContextProvider = ({ user: { userID }, children }) => {
       }
     );
 
-    socket.on("callUser", ({ from, signalData }) => {
-      console.log("incoming call");
-      setCall({ ...call, callAccepted: true });
-
-      const peer = new Peer({ initiator: false, trickle: false, stream });
-
-      peer.on("signal", (data) => {
-        socket.emit("answerCall", { signal: data, to: from });
-      });
-
-      peer.on("stream", (currentStream) => {
-        console.log("currentStream", currentStream);
-        userVideo.current.srcObject = currentStream;
-      });
-
-      peer.signal(signalData);
-
-      connectionRef.current = peer;
-    });
-
     // socket.on(
     //   "makeCall",
     //   ({ id, type, jobID, customerName, consultantName }) => {
@@ -112,43 +92,45 @@ const ContextProvider = ({ user: { userID }, children }) => {
     }
   }, [userID]);
 
-  // useEffect(() => {
-  //   console.log(call);
-  // }, [call]);
-
   useEffect(() => {
-    if (stream && call.destinationReady && call.role === "customer") {
-      const peer = new Peer({ initiator: true, trickle: false, stream });
-
-      peer.on("signal", (data) => {
-        socket.emit("callUser", {
-          userToCall: call.destinationSocket,
-          signalData: data,
-          from: me,
-        });
-      });
-
-      peer.on("stream", (currentStream) => {
-        console.log("currentStream", currentStream);
-        userVideo.current.srcObject = currentStream;
-      });
-
-      socket.on("callAccepted", (signal) => {
-        console.log("call accepted", signal);
+    if (stream) {
+      socket.on("callUser", ({ from, signalData }) => {
+        console.log("firing stream", stream);
+        console.log("incoming call", signalData);
         setCall({ ...call, callAccepted: true });
 
-        peer.signal(signal);
-      });
+        const peer = new Peer({ initiator: false, trickle: false, stream });
 
-      connectionRef.current = peer;
+        peer.on("signal", (data) => {
+          socket.emit("answerCall", { signal: data, to: from });
+        });
+
+        peer.on("stream", (currentStream) => {
+          console.log("currentStream", currentStream);
+          userVideo.current.srcObject = currentStream;
+        });
+
+        peer.signal(signalData);
+
+        connectionRef.current = peer;
+      });
+    }
+  }, [stream]);
+
+  useEffect(() => {
+    console.log("call.destinationReady", call.destinationReady);
+    if (stream && call.destinationReady && call.role === "customer") {
+      console.log("callUser", call.destinationReady);
+      callUser();
     }
   }, [call.destinationReady, stream]);
 
-  // useEffect(() => {
-  //   if (stream) {
-  //     setDeviceReady(true);
-  //   }
-  // }, [stream]);
+  useEffect(() => {
+    if (stream && call.callAccepted) {
+      console.log("firing user ready");
+      socket.emit("userReady", { to: call.destinationSocket });
+    }
+  }, [stream]);
 
   const answerCall = () => {
     setCall({
@@ -160,30 +142,31 @@ const ContextProvider = ({ user: { userID }, children }) => {
       .getUserMedia({ video: true, audio: true })
       .then((currentStream) => {
         setStream(currentStream);
+        console.log("setting stream");
         myVideo.current.srcObject = currentStream;
-        socket.emit("userReady", { to: call.destinationSocket });
       });
   };
 
-  const callUser = (id) => {
+  const callUser = () => {
+    console.log("firing stream here", stream);
     const peer = new Peer({ initiator: true, trickle: false, stream });
-
 
     peer.on("signal", (data) => {
       socket.emit("callUser", {
-        userToCall: id,
+        userToCall: call.destinationSocket,
         signalData: data,
         from: me,
-        name,
       });
     });
 
     peer.on("stream", (currentStream) => {
+      console.log("currentStream", currentStream);
       userVideo.current.srcObject = currentStream;
     });
 
     socket.on("callAccepted", (signal) => {
-      setCallAccepted(true);
+      console.log("call accepted", signal);
+      setCall({ ...call, callAccepted: true });
 
       peer.signal(signal);
     });
