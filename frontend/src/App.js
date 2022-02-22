@@ -4,6 +4,7 @@ import { useEffect } from "react";
 //import ProtectedRoute from "./components/ProtectedRoute";
 import { HomePage, UserMenuPage, DashBoard, TestMeetingPage } from "./views";
 import Topnav from "./components/Topnav";
+import AlertPopup from './components/AlertPopup';
 import { actionVerifyLogIn } from "./actions/auth.actions";
 import ConsultantDetailPage from "./views/Customer/ConsultantDetailPage";
 import Call from "./views/Customer/Call";
@@ -27,12 +28,13 @@ function App() {
         <Route path="menu" element={<UserMenuPage />} />
         <Route path="dashboard" element={<DashBoard />} />
         <Route path="consultant/:id" element={<ConsultantDetailPage />} />
-        <Route path="call" element={<Call />} />
+        <Route path="calling" element={<Call />} />
         <Route path="test-meeting" element={<TestMeetingPage />} />
         {/* <Route exact path="/" element={<ProtectedRoute />}>
           <Route exact path="/protect" element={<HomePage />} />
         </Route> */}
       </Routes>
+      <AlertPopup />
     </Router>
   );
 }

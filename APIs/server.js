@@ -91,13 +91,13 @@ io.on("connection", (socket) => {
     socket.leave(data.roomId);
   });
 
-  socket.on("callUser", ({ userToCall, signalData, from, name }) => {
-    console.log("calling", userToCall, from,name);
-    io.to(userToCall).emit("callUser", { signal: signalData, from, name });
+  socket.on("callUser", ({ userToCall, from, name, type }) => {
+    console.log("calling", userToCall, from, name);
+    io.to(userToCall).emit("callUser", { from, name, type });
   });
 
   socket.on("answerCall", (data) => {
-    console.log('answerCall', data.to);
+    console.log("answerCall", data.to);
     io.to(data.to).emit("callAccepted", data.signal);
   });
 

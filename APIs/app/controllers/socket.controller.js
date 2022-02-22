@@ -51,24 +51,47 @@ exports.userDisconnect = async (socketID) => {
 };
 
 exports.makeCall = async (jobID) => {
-    console.log('making call');
+  console.log("making call");
   const client = await pool.connect();
 
   try {
     await client.query("BEGIN");
     const {
-      rows: [{ consultantSocketID, customerSocketID }],
+      rows: [
+        {
+          consultantSocketID,
+          customerSocketID,
+          communicationChannel,
+          consultantFirstName,
+          consultantLastName,
+          customerFirstName,
+          customerLastName,
+        },
+      ],
     } = await client.query(
-      ` SELECT consultantSocket."socketID" AS "consultantSocketID" , customerSocket."socketID" AS "customerSocketID"
+      ` SELECT 
+          consultantSocket."socketID" AS "consultantSocketID" , 
+          customerSocket."socketID" AS "customerSocketID", 
+          "communicationChannel",
+          consultantSocket."firstName" AS "consultantFirstName" , 
+          consultantSocket."lastName" AS "consultantLastName" , 
+          customerSocket."firstName" AS "customerFirstName" , 
+          customerSocket."lastName" AS "customerLastName"
         FROM consultJob 
-        INNER JOIN (SELECT "userID", "socketID" FROM userDetail) AS consultantSocket
+        INNER JOIN (SELECT "userID", "socketID", "firstName", "lastName" FROM userDetail) AS consultantSocket
             ON consultantSocket."userID" = consultJob."consultantID"
-        INNER JOIN (SELECT "userID", "socketID" FROM userDetail) AS customerSocket
+        INNER JOIN (SELECT "userID", "socketID", "firstName", "lastName" FROM userDetail) AS customerSocket
             ON customerSocket."userID" = consultJob."customerID"
         WHERE "jobID" = ($1)`,
       [jobID]
     );
-    global.io.to(customerSocketID).emit("makeCall", { id: consultantSocketID });
+    global.io.to(customerSocketID).emit("makeCall", {
+      id: consultantSocketID,
+      type: communicationChannel,
+      jobID,
+      customerName: `${customerFirstName} ${customerLastName}`,
+      consultantName: `${consultantFirstName} ${consultantLastName}`,
+    });
     await client.query("COMMIT");
   } catch (err) {
     await client.query("ROLLBACK");

@@ -24,9 +24,12 @@ function TestMeetingPage({ user: { roles } }) {
     setName,
     me,
     leaveCall,
-    callUser,
   } = useContext(SocketContext);
+
   const [idToCall, setIdToCall] = useState("");
+  const turnOffCam = () => {
+    myVideo.current.srcObject.getVideoTracks()[0].stop();
+  };
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -91,22 +94,30 @@ function TestMeetingPage({ user: { roles } }) {
                     variant="contained"
                     color="primary"
                     fullWidth
-                    onClick={() => callUser(idToCall)}
+                    onClick={() => {}}
                   >
                     Call
                   </Button>
                 )}
+                <Button
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  onClick={() => turnOffCam()}
+                >
+                  turn off cam
+                </Button>
               </Grid>
             </Grid>
           </form>
-          {call.isReceivingCall && !callAccepted && (
+          {/* {call.isReceivingCall && !callAccepted && (
             <div style={{ display: "flex", justifyContent: "space-around" }}>
               <h1>{call.name} is calling:</h1>
               <Button variant="contained" color="primary" onClick={answerCall}>
                 Answer
               </Button>
             </div>
-          )}
+          )} */}
         </Paper>
         {me}
       </Container>
