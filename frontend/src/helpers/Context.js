@@ -83,7 +83,7 @@ const ContextProvider = ({ user: { userID }, children }) => {
       console.log("got leave signal", isReceivingCall);
       if (isReceivingCall) {
         console.log("click leave" ,leaveCallRef.current);
-        leaveCallRef.click();
+        leaveCallRef.current.click();
       }
     });
   }, [isReceivingCall]);
@@ -271,7 +271,7 @@ const ContextProvider = ({ user: { userID }, children }) => {
         me,
         leaveCall,
         isReceivingCall,
-        callAccepted,
+        callAccepted,leaveCallRef
       }}
     >
       {children}
