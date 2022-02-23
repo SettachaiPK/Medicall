@@ -9,18 +9,16 @@ import { CircularProgress, Button, Box, Paper, Grid } from "@mui/material";
 
 function AlertPopup(props) {
   const {
-    name,
     userVideo,
-    callEnded,
     stream,
     call,
     answerCall,
-    setName,
     me,
     leaveCall,
     callUser,
     getMediaDevice,
     isReceivingCall,
+    callAccepted,
   } = useContext(SocketContext);
   const navigate = useNavigate();
   const loading = false;
@@ -46,7 +44,7 @@ function AlertPopup(props) {
       </div>
       <div
         className={`blind-fold ${
-          isReceivingCall && !call.callAccepted ? "active" : ""
+          isReceivingCall && !callAccepted ? "active" : ""
         }`}
       >
         <div className="wrapper">
@@ -58,7 +56,7 @@ function AlertPopup(props) {
                   variant="contained"
                   color="primary"
                   onClick={() => {
-                    navigate(`/test-meeting`);
+                    navigate(`/test-meeting/${call.jobID}`);
                     answerCall();
                   }}
                 >

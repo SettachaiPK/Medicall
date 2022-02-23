@@ -1,4 +1,5 @@
 const { pool } = require("../config/db.config");
+const moment = require("moment");
 
 exports.userConnect = async (userID, socketID) => {
   const client = await pool.connect();
@@ -99,6 +100,74 @@ exports.makeCall = async (jobID) => {
       jobID,
       role: "consultant",
     });
+    await client.query("COMMIT");
+  } catch (err) {
+    await client.query("ROLLBACK");
+
+    console.log(err);
+  } finally {
+    client.release();
+  }
+};
+
+exports.userClear = async () => {
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+    await client.query(
+      ` UPDATE userDetail 
+            SET "socketID" = NULL`
+    );
+
+    await client.query("COMMIT");
+  } catch (err) {
+    await client.query("ROLLBACK");
+
+    console.log(err);
+  } finally {
+    client.release();
+  }
+};
+
+exports.jobMeetingStart = async (jobID) => {
+  const client = await pool.connect();
+  const now = moment();
+  try {
+    await client.query("BEGIN");
+    await client.query(
+      ` UPDATE consultJob 
+            SET "jobStatus" = 'meeting',
+            "meetStartDate" = $2
+        WHERE "jobID" = $1
+        AND "jobStatus" = 'paid';`,
+      [jobID, now]
+    );
+
+    await client.query("COMMIT");
+  } catch (err) {
+    await client.query("ROLLBACK");
+
+    console.log(err);
+  } finally {
+    client.release();
+  }
+};
+
+exports.jobMeetingEnd = async (jobID) => {
+  const client = await pool.connect();
+  const now = moment();
+  try {
+    await client.query("BEGIN");
+    await client.query(
+      ` UPDATE consultJob 
+            SET "jobStatus" = 'hanged up',
+            "meetEndDate" = $2
+        WHERE "jobID" = $1
+        AND "jobStatus" = 'meeting';`,
+      [jobID, now]
+    );
+
     await client.query("COMMIT");
   } catch (err) {
     await client.query("ROLLBACK");

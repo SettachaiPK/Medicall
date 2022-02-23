@@ -62,6 +62,7 @@ server = app.listen(port, () => console.log("server running on port " + port));
 //connect to socketIO
 
 const socketController = require("./app/controllers/socket.controller");
+socketController.userClear();
 
 const io = new Server(server, {
   cors: {
@@ -101,8 +102,13 @@ io.on("connection", (socket) => {
   });
 
   socket.on("answerCall", (data) => {
+    socketController.jobMeetingStart(data.jobID);
     console.log("answerCall", data.to);
     io.to(data.to).emit("callAccepted", data.signal);
+  });
+  socket.on("leaveCall", (data) => {
+    socketController.jobMeetingEnd(data.jobID);
+    io.to(data.to).emit("leaveCall",{});
   });
 
   socket.on("join", (data) => {

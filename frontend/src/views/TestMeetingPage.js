@@ -1,5 +1,6 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { connect } from "react-redux";
+import { useParams, useNavigate } from "react-router-dom";
 import { SocketContext } from "../helpers/Context";
 import Box from "@mui/material/Box";
 import {
@@ -12,20 +13,23 @@ import {
 } from "@material-ui/core";
 
 function TestMeetingPage({ user: { roles } }) {
+  const navigate = useNavigate();
+  const { jobID } = useParams();
   const {
-    name,
     myVideo,
     userVideo,
-    callEnded,
     stream,
     call,
     answerCall,
-    setName,
     me,
     leaveCall,
+    isReceivingCall,
+    leaveCallRef,
+    callAccepted,
+    destinationReady,
   } = useContext(SocketContext);
+  const [step, setStep] = useState(0);
 
-  const [idToCall, setIdToCall] = useState("");
   const toggleCam = () => {
     if (myVideo.current.srcObject.getVideoTracks()[0].enabled === true) {
       myVideo.current.srcObject.getVideoTracks().forEach((element) => {
@@ -38,96 +42,84 @@ function TestMeetingPage({ user: { roles } }) {
     }
   };
 
+  useEffect(() => {
+    console.log("isReceivingCall", isReceivingCall);
+    if (isReceivingCall) {
+      setStep(0);
+    }
+  }, [isReceivingCall]);
+  useEffect(() => {
+    console.log("callAccepted", callAccepted);
+  }, [callAccepted]);
+
+  useEffect(() => {
+    if (callAccepted && destinationReady) {
+    }
+  }, [callAccepted, destinationReady]);
+
   return (
     <Box sx={{ display: "flex" }}>
-      <Grid container>
-        {stream && (
-          <Paper>
-            <Grid item xs={12} md={6}>
-              <Typography variant="h5" gutterBottom>
-                {name || "Name"}
-              </Typography>
-              <video playsInline muted ref={myVideo} autoPlay />
-            </Grid>
-          </Paper>
-        )}
-        {call.callAccepted && !callEnded && (
-          <Paper>
-            <Grid item xs={12} md={6}>
-              <Typography variant="h5" gutterBottom>
-                {call.name || "Name"}
-              </Typography>
-              <video playsInline ref={userVideo} autoPlay />
-            </Grid>
-          </Paper>
-        )}
-      </Grid>
-      <Container>
-        <Paper elevation={10}>
-          <form noValidate autoComplete="off">
-            <Grid container>
-              <Grid item xs={12} md={6}>
-                <Typography gutterBottom variant="h6">
-                  Account Info
-                </Typography>
-                <TextField
-                  label="Name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Typography gutterBottom variant="h6">
-                  Make a call
-                </Typography>
-                <TextField
-                  label="ID to call"
-                  value={idToCall}
-                  onChange={(e) => setIdToCall(e.target.value)}
-                  fullWidth
-                />
-                {call.callAccepted && !callEnded ? (
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    fullWidth
-                    onClick={leaveCall}
-                  >
-                    Hang Up
-                  </Button>
-                ) : (
+      {step === 0 && (
+        <>
+          {call.role === "customer" && (
+            <>Consultant name {call.destinationName}</>
+          )}
+          <Grid container>
+            {callAccepted && isReceivingCall && (
+              <Paper>
+                <Grid item xs={6} md={4}>
+                  <video
+                    playsInline
+                    ref={userVideo}
+                    autoPlay
+                    hidden={call.type != "video"}
+                    style={{ maxWidth: 400 }}
+                  />
+                </Grid>
+              </Paper>
+            )}
+            {stream && (
+              <Paper>
+                <Grid item xs={4} md={3}>
+                  <video
+                    playsInline
+                    muted
+                    ref={myVideo}
+                    autoPlay
+                    hidden={call.type != "video"}
+                    style={{ maxWidth: 200 }}
+                  />
+                </Grid>
+                {call.type != "video" && (
                   <Button
                     variant="contained"
                     color="primary"
                     fullWidth
-                    onClick={() => {}}
+                    onClick={() => toggleCam()}
                   >
-                    Call
+                    toggle cam
                   </Button>
                 )}
-                <Button
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                  onClick={() => toggleCam()}
-                >
-                  toggle cam
-                </Button>
-              </Grid>
-            </Grid>
-          </form>
-          {/* {call.isReceivingCall && !callAccepted && (
-            <div style={{ display: "flex", justifyContent: "space-around" }}>
-              <h1>{call.name} is calling:</h1>
-              <Button variant="contained" color="primary" onClick={answerCall}>
-                Answer
-              </Button>
-            </div>
-          )} */}
-        </Paper>
-        {me}
-      </Container>
+
+                {call.type === "voice" && <>voice call</>}
+              </Paper>
+            )}
+          </Grid>
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            ref={leaveCallRef}
+            onClick={() => {
+              leaveCall();
+              setStep(1);
+            }}
+          >
+            end call
+          </Button>
+        </>
+      )}
+      {step === 1 && <>summary page</>}
     </Box>
   );
 }

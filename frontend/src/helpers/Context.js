@@ -2,6 +2,7 @@ import { createContext, useState, useRef, useEffect, useCallback } from "react";
 import { connect } from "react-redux";
 import { io } from "socket.io-client";
 import Peer from "simple-peer";
+import { CallModel } from "../models";
 
 const SocketContext = createContext();
 
@@ -9,27 +10,16 @@ const socket = io(`${process.env.REACT_APP_API_URL}`);
 
 const ContextProvider = ({ user: { userID }, children }) => {
   const [isReceivingCall, setIsReceivingCall] = useState(false);
-  const [call, setCall] = useState({
-    callAccepted: false,
-    destinationSocket: null,
-    destinationName: "",
-    destinationReady: false,
-    signal: null,
-    type: null,
-    jobID: null,
-    role: null,
-  });
+  const [callAccepted, setCallAccepted] = useState(false);
+  const [destinationReady, setDestinationReady] = useState(false);
+  const [call, setCall] = useState(new CallModel());
   const [me, setMe] = useState("");
   const [stream, setStream] = useState();
 
   const myVideo = useRef();
   const userVideo = useRef();
   const connectionRef = useRef();
-
-  const [callEnded, setCallEnded] = useState(false);
-  const [name, setName] = useState("");
-
-  const [initiator, setInitiator] = useState(false);
+  const leaveCallRef = useRef();
 
   useEffect(() => {
     socket.on("me", (id) => {
@@ -38,15 +28,13 @@ const ContextProvider = ({ user: { userID }, children }) => {
 
     socket.on("userReady", () => {
       console.log("destination ready");
-      setCall((prev) => {
-        return { ...prev, destinationReady: true };
-      });
+      setDestinationReady(true);
     });
 
     socket.on(
       "invite",
       ({ jobID, role, type, destinationName, destinationSocket }) => {
-        if (!call.isReceivingCall) {
+        if (!isReceivingCall) {
           setCall({
             ...call,
             jobID: jobID,
@@ -54,7 +42,6 @@ const ContextProvider = ({ user: { userID }, children }) => {
             type: type,
             destinationName: destinationName,
             destinationSocket: destinationSocket,
-            isReceivingCall: true,
           });
           setIsReceivingCall(true);
         }
@@ -91,18 +78,34 @@ const ContextProvider = ({ user: { userID }, children }) => {
       socket.emit("user", { userID: userID });
     }
   }, [userID]);
+  useEffect(() => {
+    socket.on("leaveCall", () => {
+      console.log("got leave signal", isReceivingCall);
+      if (isReceivingCall) {
+        console.log("click leave" ,leaveCallRef.current);
+        leaveCallRef.click();
+      }
+    });
+  }, [isReceivingCall]);
+  useEffect(() => {
+    console.log(leaveCallRef.current)
+  }, [leaveCallRef]);
 
   useEffect(() => {
     if (stream) {
       socket.on("callUser", ({ from, signalData }) => {
         console.log("firing stream", stream);
         console.log("incoming call", signalData);
-        setCall({ ...call, callAccepted: true });
+        setCallAccepted(true);
 
         const peer = new Peer({ initiator: false, trickle: false, stream });
 
         peer.on("signal", (data) => {
-          socket.emit("answerCall", { signal: data, to: from });
+          socket.emit("answerCall", {
+            signal: data,
+            to: from,
+            jobID: call.jobID,
+          });
         });
 
         peer.on("stream", (currentStream) => {
@@ -118,28 +121,27 @@ const ContextProvider = ({ user: { userID }, children }) => {
   }, [stream]);
 
   useEffect(() => {
-    console.log("call.destinationReady", call.destinationReady);
-    if (stream && call.destinationReady && call.role === "customer") {
-      console.log("callUser", call.destinationReady);
+    if (stream && destinationReady && call.role === "customer") {
+      console.log("callUser", destinationReady);
       callUser();
     }
-  }, [call.destinationReady, stream]);
+  }, [destinationReady, stream]);
 
   useEffect(() => {
-    if (stream && call.callAccepted) {
+    if (stream && callAccepted) {
       console.log("firing user ready");
       socket.emit("userReady", { to: call.destinationSocket });
     }
   }, [stream]);
 
   const answerCall = () => {
-    setCall({
-      ...call,
-      callAccepted: true,
-    });
+    setCallAccepted(true);
     console.log("answer call", call);
     navigator.mediaDevices
-      .getUserMedia({ video: true, audio: true })
+      .getUserMedia({
+        video: call.type === "video" ? true : false,
+        audio: true,
+      })
       .then((currentStream) => {
         setStream(currentStream);
         console.log("setting stream");
@@ -160,13 +162,14 @@ const ContextProvider = ({ user: { userID }, children }) => {
     });
 
     peer.on("stream", (currentStream) => {
+      console.log("userVideo", userVideo.current);
       console.log("currentStream", currentStream);
       userVideo.current.srcObject = currentStream;
     });
 
     socket.on("callAccepted", (signal) => {
       console.log("call accepted", signal);
-      setCall({ ...call, callAccepted: true });
+      setCallAccepted(true);
 
       peer.signal(signal);
     });
@@ -202,28 +205,6 @@ const ContextProvider = ({ user: { userID }, children }) => {
   //     connectionRef.current = peer;
   //   }
   // }, [destinationID]);
-
-  const acceptCall = async () => {
-    const peer = await new Peer({ initiator, trickle: false, stream });
-    await console.log("answerCall", peer);
-
-    await peer.on("signal", (data) => {
-      console.log("emit signal");
-      socket.emit("answerCall", { signal: data, to: call.destination });
-    });
-
-    await peer.on("stream", (currentStream) => {
-      userVideo.current.srcObject = currentStream;
-    });
-
-    await socket.on("callAccepted", (signal) => {
-      console.log("callAccepted");
-
-      peer.signal(signal);
-    });
-
-    connectionRef.current = await peer;
-  };
 
   // const callUser = useCallback(
   //   (id) => {
@@ -261,12 +242,22 @@ const ContextProvider = ({ user: { userID }, children }) => {
   // );
 
   const leaveCall = () => {
-    setCallEnded(true);
-    setInitiator(false);
+    socket.emit("leaveCall", {
+      to: call.destinationSocket,
+      jobID: call.jobID,
+    });
+    setIsReceivingCall(false);
+    setCall(new CallModel());
 
     connectionRef.current.destroy();
+    setStream(null);
+    myVideo.current.srcObject.getTracks().forEach((tracks) => {
+      tracks.stop();
+    });
 
-    window.location.reload();
+    // window.location.reload().then(() => {
+    //   console.log("after reload");
+    // });
   };
 
   return (
@@ -277,12 +268,10 @@ const ContextProvider = ({ user: { userID }, children }) => {
         myVideo,
         userVideo,
         stream,
-        name,
-        setName,
-        callEnded,
         me,
         leaveCall,
         isReceivingCall,
+        callAccepted,
       }}
     >
       {children}
