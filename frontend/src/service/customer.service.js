@@ -77,3 +77,44 @@ export function getConsultantDetail(id) {
       });
   });
 }
+
+export function createConsultJob(data) {
+  const Axiosmodel = server.createConsultJob;
+
+  return new Promise((resolve, reject) => {
+    httpClient({
+      method: "POST",
+      url: Axiosmodel.url,
+      withCredentials: true,
+      config: Axiosmodel,
+      data,
+    })
+      .then((res) => {
+        resolve(res);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}
+
+export function confirmPayment(data) {
+  const Axiosmodel = server.confirmPayment;
+  console.log("don't forget to delete");
+
+  return new Promise((resolve, reject) => {
+    httpClient({
+      method: "POST",
+      url: Axiosmodel.url,
+      withCredentials: true,
+      config: Axiosmodel,
+      data,
+    })
+      .then((res) => {
+        resolve(res);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}

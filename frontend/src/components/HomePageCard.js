@@ -17,6 +17,8 @@ import { useState } from "react";
 
 function HomePageCard({
   consultant: {
+    messagePrice,
+    voiceCallPrice,
     videoCallPrice,
     firstName,
     lastName,
@@ -115,16 +117,25 @@ function HomePageCard({
           disabled
         />
 
-        <Button>จองล่วงหน้า</Button>
-        <Button onClick={handleOpenAdd}>ปรึกษาทันที</Button>
+        <Button disabled>จองล่วงหน้า</Button>
+        <Button onClick={handleOpenAdd} disabled={onlineStatus != "online"}>
+          ปรึกษาทันที
+        </Button>
       </Box>
-      <ConsultNowDetailsPopUp open={openAdd} onClose={handleCloseAdd} />
+      <ConsultNowDetailsPopUp
+        open={openAdd}
+        onClose={handleCloseAdd}
+        price={{ messagePrice, voiceCallPrice, videoCallPrice }}
+        consultantID={userID}
+      />
     </>
   );
 }
 
 HomePageCard.defaultProps = {
   consultant: {
+    messagePrice: 0,
+    voiceCallPrice: 0,
     videoCallPrice: 0,
     department: "Tag name",
     infirmary: "SomeWhere",

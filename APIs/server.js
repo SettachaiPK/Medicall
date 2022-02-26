@@ -12,7 +12,7 @@ pool.query("SELECT NOW()", (err, res) => {
   if (res) {
     console.log("connected to postgresql database");
   } else {
-    console.log(err);
+    console.log("Can not connect to postgresql database ", err);
   }
 });
 
@@ -108,7 +108,7 @@ io.on("connection", (socket) => {
   });
   socket.on("leaveCall", (data) => {
     socketController.jobMeetingEnd(data.jobID);
-    io.to(data.to).emit("leaveCall",{});
+    io.to(data.to).emit("leaveCall", {});
   });
 
   socket.on("join", (data) => {

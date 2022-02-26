@@ -1,6 +1,6 @@
-import { Dialog,  DialogContent, TextField, Typography } from "@mui/material";
+import { Dialog, DialogContent, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import React from "react";
+import { useState, useEffect, useRef } from "react";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import { Button } from "@mui/material";
 import MessageIcon from "@mui/icons-material/Message";
@@ -13,18 +13,26 @@ import { FormControl } from "@mui/material";
 import { MenuItem } from "@mui/material";
 import { Select } from "@mui/material";
 import { InputLabel } from "@mui/material";
-
+import { confirmPayment, createConsultJob } from "../service/customer.service";
 
 function valuetext(value) {
   return `${value}min`;
 }
 
 export default function ConsultNowDetailsPopUp(props) {
+  const fileInput = useRef();
+  const [form, setForm] = useState({
+    communicationChannel: "",
+    reservePeriod_m: 15,
+    expectedPrice: 0,
+    symptomDetail: "",
+    media: null,
+  });
   const handleClose = () => {
     props.onClose();
   };
-  const [Change, setChange] = React.useState("");
-  const [Coupon, setCoupon] = React.useState("");
+  const [Change, setChange] = useState("");
+  const [Coupon, setCoupon] = useState("");
   const handleChange = (event) => {
     setChange(event.target.value);
   };
@@ -34,13 +42,62 @@ export default function ConsultNowDetailsPopUp(props) {
   };
   const height = 100;
   const label = { inputProps: { "aria-label": "Checkbox demo" } };
-  const MessagePrice = "200/15";
-  const VoicePrice = "200/15";
-  const VideoPrice = "200/15";
 
-  const Discount = "20";
-  const Price="100";
-  
+  const Discount = 0;
+
+  const handleChangeForm = (event) => {
+    const { name, value } = event.target;
+    setForm((prevState) => {
+      return {
+        ...prevState,
+        [name]: value,
+      };
+    });
+  };
+  const handleChangeFiles = (event) => {
+    const { name, files } = event.target;
+    setForm((prevState) => {
+      return {
+        ...prevState,
+        [name]: files,
+      };
+    });
+  };
+
+  const submit = async () => {
+    try {
+      const formData = new FormData();
+      Object.keys(form).forEach((key) => {
+        formData.append(key, form[key]);
+      });
+      formData.append("consultantID", props.consultantID);
+      const {
+        data: {
+          paymentDetail: { paymentID },
+        },
+      } = await createConsultJob(formData);
+      handleClose();
+      await confirmPayment({ paymentID });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    setForm((prevState) => {
+      return {
+        ...prevState,
+        expectedPrice:
+          form.communicationChannel === "message"
+            ? (form.reservePeriod_m / 15) * props.price.messagePrice
+            : form.communicationChannel === "voice"
+            ? (form.reservePeriod_m / 15) * props.price.voiceCallPrice
+            : form.communicationChannel === "video"
+            ? (form.reservePeriod_m / 15) * props.price.videoCallPrice
+            : 0,
+      };
+    });
+  }, [form.reservePeriod_m, form.communicationChannel]);
 
   return (
     <>
@@ -56,13 +113,28 @@ export default function ConsultNowDetailsPopUp(props) {
                 },
               }}
               label="อาการเบื้องต้น"
+              name="symptomDetail"
+              value={form.symptomDetail}
+              onChange={handleChangeForm}
             />
             <Button
-              sx={{ marginTop: "3%",color:grey[600],borderColor:grey[400] }}
+              sx={{ marginTop: "3%", color: grey[600], borderColor: grey[400] }}
               variant="outlined"
               startIcon={<AddAPhotoIcon />}
+              onClick={() => {
+                fileInput.current.click();
+              }}
             >
               เพิ่มรูปภาพ
+              <input
+                type="file"
+                name="media"
+                accept="image/png, image/jpeg"
+                onChange={handleChangeFiles}
+                multiple
+                ref={fileInput}
+                hidden
+              />
             </Button>
           </Box>
 
@@ -83,8 +155,13 @@ export default function ConsultNowDetailsPopUp(props) {
                   checkedIcon={
                     <MessageIcon sx={{ color: pink[100], fontSize: 35 }} />
                   }
+                  disabled
+                  name="communicationChannel"
+                  checked={form.communicationChannel === "message"}
+                  value={"message"}
+                  onChange={handleChangeForm}
                 />
-                <label>{MessagePrice}</label>
+                <label>{props.price.messagePrice}</label>
               </Box>
               <Box sx={{ display: "grid", justifyItems: "center" }}>
                 <Checkbox
@@ -93,8 +170,12 @@ export default function ConsultNowDetailsPopUp(props) {
                   checkedIcon={
                     <CallIcon sx={{ color: pink[100], fontSize: 35 }} />
                   }
+                  name="communicationChannel"
+                  checked={form.communicationChannel === "voice"}
+                  value={"voice"}
+                  onChange={handleChangeForm}
                 />
-                <label>{VoicePrice}</label>
+                <label>{props.price.voiceCallPrice}</label>
               </Box>
               <Box sx={{ display: "grid", justifyItems: "center" }}>
                 <Checkbox
@@ -105,8 +186,12 @@ export default function ConsultNowDetailsPopUp(props) {
                   checkedIcon={
                     <VideocamIcon sx={{ color: pink[100], fontSize: 40 }} />
                   }
+                  name="communicationChannel"
+                  checked={form.communicationChannel === "video"}
+                  value={"video"}
+                  onChange={handleChangeForm}
                 />
-                <label>{VideoPrice}</label>
+                <label>{props.price.videoCallPrice}</label>
               </Box>
             </Box>
             <Box sx={{ marginTop: "3%", padding: "3%" }}>
@@ -114,7 +199,9 @@ export default function ConsultNowDetailsPopUp(props) {
               <Slider
                 sx={{ color: pink[100] }}
                 aria-label="Time Range"
-                defaultValue={30}
+                name="reservePeriod_m"
+                value={form.reservePeriod_m}
+                onChange={handleChangeForm}
                 getAriaValueText={valuetext}
                 valueLabelDisplay="auto"
                 step={15}
@@ -124,65 +211,109 @@ export default function ConsultNowDetailsPopUp(props) {
               />
             </Box>
           </Box>
-          <Box sx={{
+          <Box
+            sx={{
               p: 1,
               border: 1,
               borderColor: grey[400],
               borderRadius: 2,
               marginTop: "5%",
-            }}>
-          <Box sx={{ minWidth: 120, marginTop: "5%"}}>
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">
-                ช่องทางการชำระเงิน
-              </InputLabel>
-              <Select
-                sx={{height:50}}
-                labelId="demo-simple-select-label"
-                value={Change}
-                label="Change"
-                onChange={handleChange}
-              >
-                <MenuItem value={10}>Ten</MenuItem>
-                <MenuItem value={20}>Twenty</MenuItem>
-                <MenuItem value={30}>Thirty</MenuItem>
-              </Select>
-            </FormControl>
+            }}
+          >
+            <Box sx={{ minWidth: 120, marginTop: "5%" }}>
+              <FormControl fullWidth disabled>
+                <InputLabel id="demo-simple-select-label">
+                  ช่องทางการชำระเงิน
+                </InputLabel>
+                <Select
+                  sx={{ height: 50 }}
+                  labelId="demo-simple-select-label"
+                  value={Change}
+                  label="Change"
+                  onChange={handleChange}
+                >
+                  <MenuItem value={10}>Ten</MenuItem>
+                  <MenuItem value={20}>Twenty</MenuItem>
+                  <MenuItem value={30}>Thirty</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+            <Box sx={{ minWidth: 120, marginTop: "5%" }}>
+              <FormControl fullWidth disabled>
+                <InputLabel id="demo-simple-select-label">คูปอง</InputLabel>
+                <Select
+                  sx={{ height: 50 }}
+                  labelId="demo-simple-select-label"
+                  value={Coupon}
+                  label="Coupon"
+                  onChange={handleCoupon}
+                >
+                  <MenuItem value={10}>Ten</MenuItem>
+                  <MenuItem value={20}>Twenty</MenuItem>
+                  <MenuItem value={30}>Thirty</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                margin: "3%",
+              }}
+            >
+              <Typography sx={{ color: grey[500] }}>ส่วนลด :</Typography>
+              <Typography sx={{ color: pink[500] }}>-{Discount} บาท</Typography>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                margin: "3%",
+              }}
+            >
+              <Typography sx={{ color: grey[500] }}>
+                จำนวนเงินที่ต้องชำระ :
+              </Typography>
+              <Typography>{form.expectedPrice} บาท</Typography>
+            </Box>
           </Box>
-          <Box sx={{ minWidth: 120, marginTop: "5%"}}>
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">คูปอง</InputLabel>
-              <Select
-              sx={{height:50}}
-                labelId="demo-simple-select-label"
-                value={Coupon}
-                label="Coupon"
-                onChange={handleCoupon}
-              >
-                <MenuItem value={10}>Ten</MenuItem>
-                <MenuItem value={20}>Twenty</MenuItem>
-                <MenuItem value={30}>Thirty</MenuItem>
-              </Select>
-            </FormControl>
-          </Box>
-          <Box sx={{display:"flex",justifyContent:"space-between",margin: "3%"}}>
-          <Typography sx={{color:grey[500]}}>ส่วนลด :</Typography>
-          <Typography sx={{color:pink[500]}} >-{Discount} บาท</Typography>
-          </Box>
-          <Box sx={{display:"flex",justifyContent:"space-between",margin: "3%"}}>
-          <Typography sx={{color:grey[500]}}>จำนวนเงินที่ต้องชำระ :</Typography>
-          <Typography >{Price} บาท</Typography>
-          </Box>
-          </Box>
-          <Box sx={{display:"flex",justifyContent:"space-between",marginTop: "5%",marginBottom: "3%"}}>
-            <Button sx={{
-            color: grey[400]}}size="Large">ยกเลิก</Button>
-            <Button sx={{background: pink[100],
-            color: grey[50]}} variant="contained" size="Large">ยืนยัน</Button>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginTop: "5%",
+              marginBottom: "3%",
+            }}
+          >
+            <Button
+              sx={{
+                color: grey[400],
+              }}
+              size="Large"
+            >
+              ยกเลิก
+            </Button>
+            <Button
+              sx={{ background: pink[100], color: grey[50] }}
+              variant="contained"
+              size="Large"
+              onClick={submit}
+              disabled={!form.communicationChannel}
+            >
+              ยืนยัน
+            </Button>
           </Box>
         </DialogContent>
-        
-      </Dialog> 
+      </Dialog>
     </>
   );
 }
+
+ConsultNowDetailsPopUp.defaultProps = {
+  price: {
+    messagePrice: 0,
+    voiceCallPrice: 0,
+    videoCallPrice: 0,
+  },
+  consultantID: "",
+};

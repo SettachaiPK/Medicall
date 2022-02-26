@@ -11,6 +11,7 @@ export const NOT_CONNECT_NETWORK = "NOT_CONNECT_NETWORK";
 export const API_URL = `${process.env.REACT_APP_API_URL}apis/`;
 
 export const server = {
+  ///auth///
   userDetail: new AxiosModel({ url: `auth` }),
   SIGN_OUT: new AxiosModel({ url: `auth/logout` }),
   requestOTP: new AxiosModel({ url: `auth/requestOTP` }),
@@ -25,12 +26,20 @@ export const server = {
   checkPendingPhamarcy: new AxiosModel({
     url: `auth/pending-phamarcy`,
   }),
+  ///user///
+  avatar: new AxiosModel({ url: `user/avatar` }),
+  ///customer///
   occupation: new AxiosModel({ url: `customer/occupation` }),
   department: new AxiosModel({ url: `customer/department` }),
   customerConsultantService: new AxiosModel({
     url: `customer/consult-service`,
   }),
+  createConsultJob: new AxiosModel({
+    url: `customer/consult-job`,
+  }),
+  ///consultant///
   consultantService: new AxiosModel({ url: `consultant/service` }),
   editConsultantStatus: new AxiosModel({ url: `consultant/online-status` }),
-  avatar: new AxiosModel({ url: `user/avatar` }),
+  ///delete///
+  confirmPayment: new AxiosModel({ url: `external/confirm-payment` }),
 };

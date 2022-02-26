@@ -112,7 +112,7 @@ exports.getConsultServiceList = async (req, res) => {
     let occupationParam = occupation ? occupation : "all";
     let departmentParam = department ? department : "all";
     let tagsParam = tags ? tags : "all";
-    let queryText = ` SELECT  
+    /*let queryText = ` SELECT  
         DISTINCT ON (service."userID") 
           service."userID",
           "detail",
@@ -126,7 +126,8 @@ exports.getConsultServiceList = async (req, res) => {
           "academy",
           "firstName",
           "lastName",
-          "avatar"
+          "avatar",
+          "socketID"
         FROM consultantService AS service
         INNER JOIN 
           (SELECT * FROM consultantDetail 
@@ -151,13 +152,46 @@ exports.getConsultServiceList = async (req, res) => {
         LIMIT $4
         OFFSET $5;`;
 
-    const { rows: details } = await client.query(queryText, [
+    let { rows: details } = await client.query(queryText, [
       occupationParam,
       departmentParam,
       tagsParam,
       limit,
       offset,
-    ]);
+    ]);*/
+    let queryText = ` SELECT  
+        DISTINCT ON (service."userID") 
+          service."userID",
+          "detail",
+          "messagePrice",
+          "voiceCallPrice",
+          "videoCallPrice",
+          "onlineStatus",
+          "ocupation",
+          "department",
+          "infirmary",
+          "academy",
+          "firstName",
+          "lastName",
+          "avatar",
+          "socketID"
+        FROM consultantService AS service
+        INNER JOIN 
+          (SELECT * FROM consultantDetail ) 
+          AS detail
+        ON service."userID" = detail."userID"
+        INNER JOIN 
+          (SELECT * FROM userDetail) 
+          AS userDetail
+        ON service."userID" = userDetail."userID"
+        ORDER BY ${orderby === "userID" ? '"userID"' : '"userID"'} DESC
+        LIMIT $1
+        OFFSET $2;`;
+    let { rows: details } = await client.query(queryText, [limit, offset]);
+    details.forEach((detail) => {
+      detail.onlineStatus = detail.socketID ? detail.onlineStatus : "offline";
+      delete detail.socketID;
+    });
 
     await client.query("COMMIT");
 
