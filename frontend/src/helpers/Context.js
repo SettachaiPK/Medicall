@@ -33,7 +33,14 @@ const ContextProvider = ({ user: { userID }, children }) => {
 
     socket.on(
       "invite",
-      ({ jobID, role, type, destinationName, destinationSocket }) => {
+      ({
+        jobID,
+        role,
+        type,
+        destinationName,
+        destinationSocket,
+        reservePeriod_m,
+      }) => {
         if (!isReceivingCall) {
           setCall({
             ...call,
@@ -42,6 +49,7 @@ const ContextProvider = ({ user: { userID }, children }) => {
             type: type,
             destinationName: destinationName,
             destinationSocket: destinationSocket,
+            reservePeriod_m: reservePeriod_m,
           });
           setIsReceivingCall(true);
         }
@@ -82,13 +90,13 @@ const ContextProvider = ({ user: { userID }, children }) => {
     socket.on("leaveCall", () => {
       console.log("got leave signal", isReceivingCall);
       if (isReceivingCall) {
-        console.log("click leave" ,leaveCallRef.current);
+        console.log("click leave", leaveCallRef.current);
         leaveCallRef.current.click();
       }
     });
   }, [isReceivingCall]);
   useEffect(() => {
-    console.log(leaveCallRef.current)
+    console.log(leaveCallRef.current);
   }, [leaveCallRef]);
 
   useEffect(() => {
@@ -167,7 +175,7 @@ const ContextProvider = ({ user: { userID }, children }) => {
       userVideo.current.srcObject = currentStream;
     });
 
-    socket.on("callAccepted", (signal) => {
+    socket.on("callAccepted", ({ signal, meetStartDate }) => {
       console.log("call accepted", signal);
       setCallAccepted(true);
 
@@ -271,7 +279,8 @@ const ContextProvider = ({ user: { userID }, children }) => {
         me,
         leaveCall,
         isReceivingCall,
-        callAccepted,leaveCallRef
+        callAccepted,
+        leaveCallRef,
       }}
     >
       {children}

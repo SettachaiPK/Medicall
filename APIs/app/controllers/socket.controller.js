@@ -67,6 +67,7 @@ exports.makeCall = async (jobID) => {
           consultantLastName,
           customerFirstName,
           customerLastName,
+          reservePeriod_m
         },
       ],
     } = await client.query(
@@ -77,7 +78,8 @@ exports.makeCall = async (jobID) => {
           consultantSocket."firstName" AS "consultantFirstName" , 
           consultantSocket."lastName" AS "consultantLastName" , 
           customerSocket."firstName" AS "customerFirstName" , 
-          customerSocket."lastName" AS "customerLastName"
+          customerSocket."lastName" AS "customerLastName" ,
+          "reservePeriod_m"
         FROM consultJob 
         INNER JOIN (SELECT "userID", "socketID", "firstName", "lastName" FROM userDetail) AS consultantSocket
             ON consultantSocket."userID" = consultJob."consultantID"
@@ -92,6 +94,7 @@ exports.makeCall = async (jobID) => {
       type: communicationChannel,
       jobID,
       role: "customer",
+      reservePeriod_m
     });
     global.io.to(consultantSocketID).emit("invite", {
       destinationSocket: customerSocketID,
@@ -99,6 +102,7 @@ exports.makeCall = async (jobID) => {
       type: communicationChannel,
       jobID,
       role: "consultant",
+      reservePeriod_m
     });
     await client.query("COMMIT");
   } catch (err) {
@@ -130,9 +134,8 @@ exports.userClear = async () => {
   }
 };
 
-exports.jobMeetingStart = async (jobID) => {
+exports.jobMeetingStart = async (jobID, now) => {
   const client = await pool.connect();
-  const now = moment();
   try {
     await client.query("BEGIN");
     await client.query(

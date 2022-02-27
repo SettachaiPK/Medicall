@@ -102,9 +102,12 @@ io.on("connection", (socket) => {
   });
 
   socket.on("answerCall", (data) => {
-    socketController.jobMeetingStart(data.jobID);
+    socketController.jobMeetingStart(data.jobID, data.meetStartDate);
     console.log("answerCall", data.to);
-    io.to(data.to).emit("callAccepted", data.signal);
+    io.to(data.to).emit("callAccepted", {
+      signal: data.signal,
+      meetStartDate: data.meetStartDate,
+    });
   });
   socket.on("leaveCall", (data) => {
     socketController.jobMeetingEnd(data.jobID);

@@ -1,7 +1,8 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useCallback } from "react";
 import { connect } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { SocketContext } from "../helpers/Context";
+import moment from "moment";
 import Box from "@mui/material/Box";
 import {
   Grid,
@@ -20,8 +21,6 @@ function TestMeetingPage({ user: { roles } }) {
     userVideo,
     stream,
     call,
-    answerCall,
-    me,
     leaveCall,
     isReceivingCall,
     leaveCallRef,
@@ -29,6 +28,9 @@ function TestMeetingPage({ user: { roles } }) {
     destinationReady,
   } = useContext(SocketContext);
   const [step, setStep] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(15 * 60);
+  const [meetEndDate, setMeetEndDate] = useState(null);
+  let timerHandle;
 
   const toggleCam = () => {
     if (myVideo.current.srcObject.getVideoTracks()[0].enabled === true) {
@@ -56,6 +58,25 @@ function TestMeetingPage({ user: { roles } }) {
     if (callAccepted && destinationReady) {
     }
   }, [callAccepted, destinationReady]);
+
+  useEffect(async () => {
+    if (call.meetStartDate && call.reservePeriod_m) {
+      const endDate = moment(call.meetStartDate).add(
+        call.reservePeriod_m,
+        "minutes"
+      );
+      await setMeetEndDate(endDate);
+      timerHandle = await setInterval(() => {
+        setTimeLeft(endDate.diff(moment(), "seconds"));
+      }, 1000);
+    }
+    return () => clearInterval(timerHandle);
+  }, [call.meetStartDate, call.reservePeriod_m]);
+
+  useEffect(() => {
+    // call.meetStartDate = Date.now();
+    // call.reservePeriod_m = 15;
+  }, []);
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -104,6 +125,9 @@ function TestMeetingPage({ user: { roles } }) {
                 {call.type === "voice" && <>voice call</>}
               </Paper>
             )}
+            Started time: {moment(call.meetStartDate).format("hh:mm:ss a")}
+            End time: {moment(meetEndDate).format("hh:mm:ss a")}
+            Time left: {Math.floor(timeLeft / 60)}:{timeLeft % 60} m
           </Grid>
           <Button
             variant="contained"

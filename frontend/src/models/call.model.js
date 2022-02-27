@@ -6,5 +6,7 @@ export class CallModel {
     this.type = null;
     this.jobID = null;
     this.role = null;
+    this.meetStartDate = null;
+    this.reservePeriod_m = null;
   }
 }
