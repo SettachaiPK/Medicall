@@ -3,7 +3,8 @@ import { connect } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { SocketContext } from "../helpers/Context";
 import PropTypes from "prop-types";
-import { CircularProgress, Button, Box, Paper, Grid } from "@mui/material";
+import { CircularProgress, Button, Box, Paper, Grid, Typography } from "@mui/material";
+import { pink, grey } from "@mui/material/colors";
 
 //import { alertChange } from '../actions/alert.actions';
 
@@ -50,18 +51,25 @@ function AlertPopup(props) {
       >
         <div className="wrapper">
           <div style={{ display: "flex", justifyContent: "space-around" }}>
-            <Box>
-              <Paper>
-                <h1>Meeting is ready!</h1>
+            <Box sx={{width:"30rem", height:"200%"}}>
+              <Paper sx={{height:"15rem", display:"flex",flexDirection:"column"}}>
+                <h2 className="describe_label" style={{marginTop:"10%"}} >การปรึกษาของคุณพร้อมแล้ว....</h2>
                 <Button
+                sx={{
+                  m: "auto",
+                  mt:"1%",
+                  background: pink[100],
+                  color: grey[50],
+                  fontWeight: 900,
+                  fontSize: 20,
+                }}
                   variant="contained"
-                  color="primary"
                   onClick={() => {
                     navigate(`/meeting/${call.jobID}`);
                     answerCall();
                   }}
                 >
-                  ACCEPT
+                  ยอมรับ
                 </Button>
               </Paper>
             </Box>
