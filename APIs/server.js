@@ -114,7 +114,7 @@ io.on("connection", (socket) => {
     io.to(data.to).emit("leaveCall", {});
   });
 
-  socket.on("join", (data) => {
+  /*socket.on("join", (data) => {
     socket.join(data.roomId);
     console.log(`User join to room ${data.roomId}`);
   });
@@ -126,7 +126,7 @@ io.on("connection", (socket) => {
       message: data.message,
       sender: data.sender,
     });
-  });
+  });*/
 });
 
 module.exports = app;

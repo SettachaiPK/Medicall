@@ -44,7 +44,8 @@ function AlertPopup(props) {
       </div>
       <div
         className={`blind-fold ${
-          isReceivingCall && !callAccepted ? "active" : ""
+          // isReceivingCall && !callAccepted ? "active" : ""
+          "active"
         }`}
       >
         <div className="wrapper">
@@ -56,7 +57,7 @@ function AlertPopup(props) {
                   variant="contained"
                   color="primary"
                   onClick={() => {
-                    navigate(`/test-meeting/${call.jobID}`);
+                    navigate(`/meeting/${call.jobID}`);
                     answerCall();
                   }}
                 >

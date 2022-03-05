@@ -29,7 +29,7 @@ function App() {
         <Route path="dashboard" element={<DashBoard />} />
         <Route path="consultant/:id" element={<ConsultantDetailPage />} />
         <Route path="calling" element={<Call />} />
-        <Route path="test-meeting/:jobID" element={<TestMeetingPage />} />
+        <Route path="meeting/:jobID" element={<TestMeetingPage />} />
         {/* <Route exact path="/" element={<ProtectedRoute />}>
           <Route exact path="/protect" element={<HomePage />} />
         </Route> */}
