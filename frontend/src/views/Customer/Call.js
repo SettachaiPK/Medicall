@@ -1,8 +1,11 @@
-import React from 'react'
-import SummaryCustomerPage from '../../components/SummaryCustomerPage'
+import React from "react";
+import CallComponent from "../../components/CallComponent";
+
 
 export default function Call() {
   return (
-    <div><SummaryCustomerPage/></div>
-  )
+    <div>
+     <CallComponent />
+    </div>
+  );
 }

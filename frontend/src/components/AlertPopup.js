@@ -45,8 +45,8 @@ function AlertPopup(props) {
       </div>
       <div
         className={`blind-fold ${
-          // isReceivingCall && !callAccepted ? "active" : ""
-          "active"
+          isReceivingCall && !callAccepted ? "active" : ""
+
         }`}
       >
         <div className="wrapper">
