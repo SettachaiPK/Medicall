@@ -6,9 +6,8 @@ import Stack from "@mui/material/Stack";
 
 const SearchConsult = () => (
   <form action="/" method="get">
-    <div>
+    <div className="search-box">
       <Autocomplete
-        sx={{ width: 1/4 }}
         multiple
         id="tags-standard"
         options={top100Films}
@@ -18,7 +17,6 @@ const SearchConsult = () => (
           <TextField {...params} variant="outlined" placeholder="Search" />
         )}
       />
-      <button type="submit">Search</button>
     </div>
   </form>
 );

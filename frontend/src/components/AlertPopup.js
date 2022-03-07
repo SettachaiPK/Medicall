@@ -1,23 +1,21 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { connect } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { SocketContext } from "../helpers/Context";
-import PropTypes from "prop-types";
-import { CircularProgress, Button, Box, Paper, Grid, Typography } from "@mui/material";
+import {
+  CircularProgress,
+  Button,
+  Box,
+  Paper,
+} from "@mui/material";
 import { pink, grey } from "@mui/material/colors";
 
 //import { alertChange } from '../actions/alert.actions';
 
 function AlertPopup(props) {
   const {
-    userVideo,
-    stream,
     call,
     answerCall,
-    me,
-    leaveCall,
-    callUser,
-    getMediaDevice,
     isReceivingCall,
     callAccepted,
   } = useContext(SocketContext);
@@ -45,29 +43,37 @@ function AlertPopup(props) {
       </div>
       <div
         className={`blind-fold ${
-          // isReceivingCall && !callAccepted ? "active" : ""
-          "active"
+          isReceivingCall && !callAccepted ? "active" : ""
         }`}
       >
         <div className="wrapper">
           <div style={{ display: "flex", justifyContent: "space-around" }}>
-            <Box sx={{width:"30rem", height:"200%"}}>
-              <Paper sx={{height:"15rem", display:"flex",flexDirection:"column"}}>
-                <h2 className="describe_label" style={{marginTop:"10%"}} >การปรึกษาของคุณพร้อมแล้ว....</h2>
-                <Button
+            <Box sx={{ width: "30rem", height: "200%" }}>
+              <Paper
                 sx={{
-                  m: "auto",
-                  mt:"1%",
-                  background: pink[100],
-                  color: grey[50],
-                  fontWeight: 900,
-                  fontSize: 20,
+                  height: "15rem",
+                  display: "flex",
+                  flexDirection: "column",
                 }}
+              >
+                <h2 className="describe_label" style={{ marginTop: "10%" }}>
+                  การปรึกษาของคุณพร้อมแล้ว....
+                </h2>
+                <Button
+                  sx={{
+                    m: "auto",
+                    mt: "1%",
+                    background: pink[100],
+                    color: grey[50],
+                    fontWeight: 900,
+                    fontSize: 20,
+                  }}
                   variant="contained"
                   onClick={() => {
                     navigate(`/meeting/${call.jobID}`);
                     answerCall();
                   }}
+                  disabled={!(isReceivingCall && !callAccepted)}
                 >
                   ยอมรับ
                 </Button>

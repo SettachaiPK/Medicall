@@ -8,6 +8,11 @@ import AlertPopup from "./components/AlertPopup";
 import { actionVerifyLogIn } from "./actions/auth.actions";
 import ConsultantDetailPage from "./views/Customer/ConsultantDetailPage";
 import Call from "./views/Customer/Call";
+import { createTheme, ThemeProvider } from "@material-ui/core";
+
+const theme = createTheme({
+  palette: { primary: { main: "#fefefe" } },
+});
 
 function App() {
   const dispatch = useDispatch();
@@ -21,21 +26,23 @@ function App() {
     handleVerifyLogIn();
   }, []);
   return (
-    <Router>
-      <Topnav />
-      <Routes>
-        <Route exact path="/" element={<HomePage />} />
-        <Route path="menu" element={<UserMenuPage />} />
-        <Route path="dashboard" element={<DashBoard />} />
-        <Route path="consultant/:id" element={<ConsultantDetailPage />} />
-        <Route path="calling" element={<Call />} />
-        <Route path="meeting/:jobID" element={<TestMeetingPage />} />
-        {/* <Route exact path="/" element={<ProtectedRoute />}>
+    <ThemeProvider theme={theme}>
+      <Router>
+        <Topnav />
+        <Routes>
+          <Route exact path="/" element={<HomePage />} />
+          <Route path="menu" element={<UserMenuPage />} />
+          <Route path="dashboard" element={<DashBoard />} />
+          <Route path="consultant/:id" element={<ConsultantDetailPage />} />
+          <Route path="calling" element={<Call />} />
+          <Route path="meeting/:jobID" element={<TestMeetingPage />} />
+          {/* <Route exact path="/" element={<ProtectedRoute />}>
           <Route exact path="/protect" element={<HomePage />} />
         </Route> */}
-      </Routes>
-      <AlertPopup />
-    </Router>
+        </Routes>
+        <AlertPopup />
+      </Router>
+    </ThemeProvider>
   );
 }
 
