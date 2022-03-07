@@ -177,3 +177,8 @@ body {
 button.MuiButton-root {
   pointer-events: initial;
 }
+.video-active {
+  background-color: hsla(0, 4%, 5%, 0.733);
+  height: 25rem;
+  width: 40rem;
+}

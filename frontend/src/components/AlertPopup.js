@@ -2,23 +2,14 @@ import { useContext } from "react";
 import { connect } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { SocketContext } from "../helpers/Context";
-import {
-  CircularProgress,
-  Button,
-  Box,
-  Paper,
-} from "@mui/material";
+import { CircularProgress, Button, Box, Paper } from "@mui/material";
 import { pink, grey } from "@mui/material/colors";
 
 //import { alertChange } from '../actions/alert.actions';
 
 function AlertPopup(props) {
-  const {
-    call,
-    answerCall,
-    isReceivingCall,
-    callAccepted,
-  } = useContext(SocketContext);
+  const { call, answerCall, isReceivingCall, callAccepted } =
+    useContext(SocketContext);
   const navigate = useNavigate();
   const loading = false;
   // const classActive = () => {
