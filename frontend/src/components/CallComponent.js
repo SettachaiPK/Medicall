@@ -1,19 +1,22 @@
 import React from "react";
-import Card from "@mui/material/Card";
-import CardMedia from "@mui/material/CardMedia";
+import {
+  Card,
+  CardMedia,
+  CardActions,
+  CardHeader,
+  Avatar,
+  IconButton,
+  Checkbox,
+} from "@mui/material";
 import { Box } from "@mui/system";
-import { CardActions } from "@mui/material";
-import { Typography } from "@mui/material";
-import { CardHeader } from "@mui/material";
-import { Avatar } from "@mui/material";
-import { pink, grey } from "@mui/material/colors";
-import { IconButton } from "@mui/material";
-import { Checkbox } from "@mui/material";
-import VolumeUpIcon from "@mui/icons-material/VolumeUp";
-import VolumeMuteIcon from "@mui/icons-material/VolumeMute";
-import CallEndIcon from "@mui/icons-material/CallEnd";
-import VideocamOffIcon from "@mui/icons-material/VideocamOff";
-import VideocamIcon from "@mui/icons-material/Videocam";
+import { pink } from "@mui/material/colors";
+import {
+  VolumeUp as VolumeUpIcon,
+  VolumeMute as VolumeMuteIcon,
+  CallEnd as CallEndIcon,
+  VideocamOff as VideocamOffIcon,
+  Videocam as VideocamIcon,
+} from "@mui/icons-material";
 
 export default function CallComponent() {
   return (
