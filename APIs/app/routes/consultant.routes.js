@@ -36,9 +36,15 @@ module.exports = function (app) {
   );
 
   router.post(
-    "/advice",
+    "/meetingEnd",
     [authJwt.verifyToken, authJwt.isConsultant],
-    consultantController.submitAdvice
+    consultantController.jobMeetingEnd
+  );
+
+  router.get(
+    "/summary/:jobID",
+    [authJwt.verifyToken, authJwt.isConsultant],
+    consultantController.getMeetingSummary
   );
 
   app.use("/apis/consultant", router);

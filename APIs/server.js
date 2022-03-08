@@ -110,7 +110,6 @@ io.on("connection", (socket) => {
     });
   });
   socket.on("leaveCall", (data) => {
-    socketController.jobMeetingEnd(data.jobID);
     io.to(data.to).emit("leaveCall", {});
   });
 
