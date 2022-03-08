@@ -8,7 +8,7 @@ const height = "10rem";
 
 export default function CallConsultant() {
   return (
-    <div style={{ display: "flex", alignitems: "stretch", margin: "auto" }}>
+    <div style={{ display: "flex", alignitems: "stretch", margin: "auto","justify-content": "center" }}>
       <CustomerCallDetails />
       <Box
         sx={{
@@ -24,9 +24,10 @@ export default function CallConsultant() {
           inputProps={{
             style: {
               height,
-              width: "50rem",
+              width: "50rem"
             },
           }}
+          sx={{mt:3}}
           id="outlined-basic"
           label="คำแนะนำจากคุณ"
           variant="outlined"
