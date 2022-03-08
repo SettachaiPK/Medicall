@@ -1,19 +1,26 @@
-import React from "react";
+import { useState } from "react";
 import { connect } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import { IconButton } from "@mui/material";
-import SvgIcon from "@mui/material/SvgIcon";
-import { Icon } from "@mui/material";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
-import SchoolIcon from "@mui/icons-material/School";
-import { Avatar } from "@mui/material";
-import { Box, typography } from "@mui/system";
+import {
+  IconButton,
+  Paper,
+  Tooltip,
+  Typography,
+  Button,
+  Chip,
+  TextField,
+  Avatar,
+  SvgIcon,
+  styled,
+  tooltipClasses,
+} from "@mui/material";
+import {
+  Favorite as FavoriteIcon,
+  Circle as CircleIcon,
+} from "@mui/icons-material";
+import { Box } from "@mui/system";
 import ShowReview from "./ShowReview";
-import { TextField } from "@mui/material";
-import { Button, Chip, Container } from "@mui/material";
 import ConsultNowDetailsPopUp from "./ConsultNowDetailsPopUp";
-import { useState } from "react";
 
 function HomePageCard({
   consultant: {
@@ -34,6 +41,7 @@ function HomePageCard({
   const navigate = useNavigate();
 
   const [openAdd, setOpenAdd] = useState(false);
+  const [favorite, setFavorite] = useState(false);
 
   const handleOpenAdd = (event) => {
     setOpenAdd(true);
@@ -43,91 +51,167 @@ function HomePageCard({
     setOpenAdd(false);
   };
 
+  const handleToggleFavorite = (event) => {
+    setFavorite(!favorite);
+    event.stopPropagation();
+  };
+
+  const StyledTooltip = styled(({ className, ...props }) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+  ))(({ theme }) => ({
+    [`& .${tooltipClasses.tooltip}`]: {
+      backgroundColor:
+        onlineStatus === "online"
+          ? "#7DE882"
+          : onlineStatus === "busy"
+          ? "#FF820F"
+          : "#C4C4C4",
+    },
+  }));
+
   return (
     <>
-      <Box
+      <Paper
+        elevation={6}
         sx={{
-          border: 1,
-          display: "flex",
-          alignItems: "center",
-          flexDirection: "column",
-          maxWidth: "fit-content",
+          width: "fit-content",
+          maxWidth: 1,
           padding: 3,
-          margin: 3,
-        }}
-        onClick={() => {
-          navigate(`/consultant/${userID}`);
+          margin: "auto",
         }}
       >
-        {onlineStatus}
         <Box
           sx={{
-            width: "100%",
             display: "flex",
             alignItems: "center",
-            justifyContent: "space-between",
+            flexDirection: "column",
+          }}
+          onClick={() => {
+            navigate(`/consultant/${userID}`);
           }}
         >
-          <IconButton
-            aria-label="Example"
-            onClick={() => {
-              console.log("like");
+          <Box
+            sx={{
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              mb: 1,
             }}
           >
-            <SvgIcon component={FavoriteIcon} />
-          </IconButton>
-          <label>{videoCallPrice} B/ 15 min</label>
+            <IconButton
+              onClick={handleToggleFavorite}
+              sx={{ color: favorite ? "#f9b1c7" : "", p: 0 }}
+            >
+              <SvgIcon component={FavoriteIcon} />
+            </IconButton>
+            <label className="color-primary">{videoCallPrice} B/ 15 min</label>
+          </Box>
+          <Box sx={{ position: "relative", width: 60, height: 60, mb: 2 }}>
+            <Avatar
+              sx={{ position: "absolute", width: 60, height: 60 }}
+              src={`data:image/png;base64, ${avatar}`}
+            />
+            <StyledTooltip title={onlineStatus} placement="right-start">
+              <CircleIcon
+                sx={{
+                  position: "absolute",
+                  width: 20,
+                  bottom: 0,
+                  right: 0,
+                  color:
+                    onlineStatus === "online"
+                      ? "#7DE882"
+                      : onlineStatus === "busy"
+                      ? "#FF820F"
+                      : "#C4C4C4",
+                }}
+              />
+            </StyledTooltip>
+          </Box>
+
+          <Typography>
+            {firstName} {lastName}
+          </Typography>
+          <Chip size="small" label={department} sx={{ mb: 2 }} />
+          <ShowReview />
+
+          <Box
+            sx={{
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              mt: 3,
+            }}
+          >
+            <div className="text-icon-wrapper">
+              <img
+                src="/assets/img/icon/Pin_duotone.svg"
+                className="home-card-icon"
+                alt=""
+              />
+              <Typography>{infirmary}</Typography>
+            </div>
+            <div className="text-icon-wrapper">
+              <img
+                src="/assets/img/icon/Square academic cap.svg"
+                className="home-card-icon"
+                alt=""
+              />
+              <Typography>{academy}</Typography>
+            </div>
+          </Box>
+
+          <TextField
+            margin="normal"
+            sx={{ width: 300 }}
+            multiline
+            rows={3}
+            size="small"
+            label="รายละเอียด"
+            value={detail}
+            inputProps={{ readOnly: true }}
+            onClick={(event) => {
+              event.stopPropagation();
+            }}
+          />
+          <Box
+            sx={{
+              width: 1,
+              display: "flex",
+              justifyContent: "space-between",
+              mt: 2,
+            }}
+          >
+            <Button
+              variant="contained "
+              endIcon={<img src="/assets/img/icon/calendar-edit.svg" alt="" />}
+              sx={{ backgroundColor: "#AEEEEE", color: "black", px: 1 }}
+              disabled
+            >
+              จองล่วงหน้า
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleOpenAdd}
+              disabled={onlineStatus !== "online"}
+              endIcon={
+                <img src="/assets/img/icon/message-square-lines.svg" alt="" />
+              }
+              sx={{ backgroundColor: "#FFC1C1", color: "black", px: 1 }}
+            >
+              ปรึกษาทันที
+            </Button>
+          </Box>
         </Box>
-
-        <Avatar
-          sx={{ width: 60, height: 60 }}
-          src={`data:image/png;base64, ${avatar}`}
+        <ConsultNowDetailsPopUp
+          open={openAdd}
+          onClose={handleCloseAdd}
+          price={{ messagePrice, voiceCallPrice, videoCallPrice }}
+          consultantID={userID}
         />
-        <typography>
-          {firstName} {lastName}
-        </typography>
-        <Chip label={department}></Chip>
-        <ShowReview />
-
-        <Box
-          sx={{
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <div>
-            <LocationOnIcon />
-            <typography>{infirmary}</typography>
-          </div>
-          <div>
-            <SchoolIcon />
-            <typography>{academy}</typography>
-          </div>
-        </Box>
-
-        <TextField
-          margin="normal"
-          sx={{ width: 300 }}
-          required
-          label="รายละเอียด"
-          name="Consultant detail"
-          value={detail}
-          disabled
-        />
-
-        <Button disabled>จองล่วงหน้า</Button>
-        <Button onClick={handleOpenAdd} disabled={onlineStatus != "online"}>
-          ปรึกษาทันที
-        </Button>
-      </Box>
-      <ConsultNowDetailsPopUp
-        open={openAdd}
-        onClose={handleCloseAdd}
-        price={{ messagePrice, voiceCallPrice, videoCallPrice }}
-        consultantID={userID}
-      />
+      </Paper>
     </>
   );
 }

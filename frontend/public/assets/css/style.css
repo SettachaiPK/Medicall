@@ -1,3 +1,7 @@
+.color-primary {
+  color: #f9b1c7;
+}
+
 body {
   margin: 0;
   font-family: "Kanit", sans-serif;
@@ -5,16 +9,40 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.topnav {
-  background-color: #fefefe;
-  border-bottom: 1px solid #e3dee0;
-  overflow: hidden;
-  display: flex;
-  justify-content: space-between;
-  align-content: stretch;
+.section-container {
+  margin: 2rem 3rem;
+}
+.grid-container-wrapper {
+  margin: 4rem auto;
+  width: 400px;
+  max-width: 100%;
 }
 
-.topnav a {
+@media screen and (min-width: 1200px) {
+  .grid-container-wrapper {
+    width: 800px;
+  }
+}
+
+@media screen and (min-width: 1536px) {
+  .grid-container-wrapper {
+    width: 1200px;
+  }
+}
+
+.topnav {
+  background-color: #fefefe;
+  overflow: hidden;
+  display: flex;
+  width: 100%;
+  height: 5rem;
+  justify-content: space-between;
+  align-content: stretch;
+  align-items: center;
+}
+
+.topnav a,
+.MuiDrawer-paper a {
   float: left;
   color: #f9b1c7;
   text-align: center;
@@ -22,16 +50,44 @@ body {
   text-decoration: none;
   font-size: medium;
 }
+.MuiDrawer-paper a {
+  text-align: right;
+}
 
 .topnav a:hover {
   border-bottom: 3px solid black;
 }
 
-.logo {
+.topnav .logo {
   padding: 14px 16px;
   font-weight: bold;
   color: #f9b1c7;
   font-size: larger;
+}
+.nav-drawer-icon {
+  padding: 0 10px;
+}
+@media screen and (max-width: 700px) {
+  .nav-menu {
+    display: none;
+  }
+  .nav-drawer-icon {
+    display: flex;
+  }
+}
+@media screen and (min-width: 700px) {
+  .nav-menu {
+    display: flex;
+  }
+  .nav-drawer-icon {
+    display: none;
+  }
+}
+
+.search-box {
+  margin: auto;
+  width: 350px;
+  max-width: 100%;
 }
 
 .head-popup {
@@ -84,6 +140,16 @@ body {
   align-items: center;
 }
 
+.text-icon-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.home-card-icon {
+  width: 24px;
+  margin-right: 5px;
+}
+
 /* Blind fold */
 .blind-fold {
   position: fixed;
@@ -107,6 +173,9 @@ body {
   justify-content: center;
   width: 100%;
   height: 100%;
+}
+button.MuiButton-root {
+  pointer-events: initial;
 }
 .video-active {
   background-color: hsla(0, 4%, 5%, 0.733);

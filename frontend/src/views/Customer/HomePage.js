@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import * as customerService from "../../service/customer.service";
 import SearchConsult from "../../components/SearchConsult";
 import HomePageCard from "../../components/HomePageCard";
+import { Grid } from "@mui/material";
 
 function HomePage(props) {
   const [consultants, setConsultants] = useState([]);
@@ -19,11 +20,19 @@ function HomePage(props) {
   }, [fetchConsultantList]);
 
   return (
-    <div>
+    <div className="section-container">
       <SearchConsult />
-      {consultants.map((consultant, index) => {
-        return <HomePageCard key={index} consultant={consultant} />;
-      })}
+      <div className="grid-container-wrapper">
+        <Grid container rowSpacing={5} columnSpacing={{ sm: 0, md: 6, lg: 0 }}>
+          {consultants.map((consultant, index) => {
+            return (
+              <Grid item md={12} lg={6} xl={4}>
+                <HomePageCard key={index} consultant={consultant} />
+              </Grid>
+            );
+          })}
+        </Grid>
+      </div>
     </div>
   );
 }
