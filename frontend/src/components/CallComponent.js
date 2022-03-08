@@ -18,7 +18,7 @@ import VideocamIcon from "@mui/icons-material/Videocam";
 export default function CallComponent() {
   return (
     <div>
-      <Box sx={{ display: "flex", mt: "5%", justifyContent: "center" }}>
+      <Box sx={{ display: "flex", mt: "3%", justifyContent: "center" }}>
         <Card
           variant="outlined"
           sx={{ width: "40rem", height: "35rem", mr: "1%" }}

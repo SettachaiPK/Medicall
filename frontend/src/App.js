@@ -8,6 +8,7 @@ import AlertPopup from "./components/AlertPopup";
 import { actionVerifyLogIn } from "./actions/auth.actions";
 import ConsultantDetailPage from "./views/Customer/ConsultantDetailPage";
 import Call from "./views/Customer/Call";
+import CallConsultant from "./views/Consultant/CallConsultant";
 
 function App() {
   const dispatch = useDispatch();
@@ -29,6 +30,7 @@ function App() {
         <Route path="dashboard" element={<DashBoard />} />
         <Route path="consultant/:id" element={<ConsultantDetailPage />} />
         <Route path="calling" element={<Call />} />
+        <Route path="callconsultant" element={<CallConsultant />} />
         <Route path="meeting/:jobID" element={<TestMeetingPage />} />
         {/* <Route exact path="/" element={<ProtectedRoute />}>
           <Route exact path="/protect" element={<HomePage />} />
