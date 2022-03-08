@@ -60,6 +60,7 @@ exports.getConsultServiceDetail = async (req, res) => {
   const { userid } = req.params;
   const client = await pool.connect();
   try {
+    await client.query("BEGIN");
     const {
       rows: [detail],
     } = await client.query(
@@ -82,6 +83,7 @@ exports.getConsultServiceDetail = async (req, res) => {
       [userid]
     );
     if (!detail) {
+      await client.query("ROLLBACK");
       return res.status(400).send({ message: "Consultant not found" });
     }
     tags.forEach((tag, index) => {
@@ -298,6 +300,7 @@ exports.createConsultJob = async (req, res) => {
   try {
     await client.query("BEGIN");
     if (!["voice", "video"].includes(communicationChannel)) {
+      await client.query("ROLLBACK");
       return res.status(400).send({ message: "Invalid communication channel" });
     }
     const {
@@ -339,6 +342,7 @@ exports.createConsultJob = async (req, res) => {
 
     if (!schduleDate) {
       if (onlineStatus != "online") {
+        await client.query("ROLLBACK");
         return res.status(400).send({ message: "Consultant not online" });
       }
     }

@@ -69,6 +69,7 @@ exports.rejectConsultant = async (req, res) => {
     );
 
     if (consultantDetail.length === 0) {
+      await client.query("ROLLBACK");
       return res.status(400).send({ message: "No pending application" });
     }
 

@@ -96,6 +96,8 @@ exports.getConsultService = async (req, res) => {
   const { userID } = req;
   const client = await pool.connect();
   try {
+    await client.query("BEGIN");
+
     let {
       rows: [detail],
     } = await client.query(
@@ -118,6 +120,7 @@ exports.getConsultService = async (req, res) => {
       [userID]
     );
     if (!detail) {
+      await client.query("ROLLBACK");
       return res.status(400).send({ message: "Consultant not found" });
     }
     tags.forEach((tag, index) => {
@@ -130,6 +133,84 @@ exports.getConsultService = async (req, res) => {
     await client.query("COMMIT");
 
     return res.status(200).send(detail);
+  } catch (err) {
+    await client.query("ROLLBACK");
+
+    console.log(err);
+
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};
+
+exports.getCustomerDetail = async (req, res) => {
+  const { userID } = req;
+  const { jobID } = req.params;
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+
+    const {
+      rows: [jobDetail],
+    } = await client.query(
+      ` SELECT "birthDate","sex","congenitalDisease","drugAllergy","drugInUse" 
+        FROM consultJob       
+        INNER JOIN userDetail
+        ON userDetail."userID" = consultJob."customerID"
+        INNER JOIN customerDetail
+        ON customerDetail."userID" = consultJob."customerID"
+        WHERE "consultantID" = ($1)
+        AND "jobID" = ($2);`,
+      [userID, jobID]
+    );
+    if (!jobDetail) {
+      res.status(403).send({ message: "Permission Denied" });
+    }
+
+    await client.query("COMMIT");
+
+    return res.status(200).send(jobDetail);
+  } catch (err) {
+    await client.query("ROLLBACK");
+
+    console.log(err);
+
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};
+
+exports.submitAdvice = async (req, res) => {
+  const { userID } = req;
+  const { jobID, advice } = req.body;
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+
+    const {
+      rows: [result],
+    } = await client.query(
+      ` UPDATE consultJob 
+        SET "advice" = ($3)
+        WHERE "jobID" = ($2) 
+        AND "consultantID" = ($1)
+        RETURNING "jobID";`,
+      [userID, jobID, advice]
+    );
+    if (!result) {
+      await client.query("ROLLBACK");
+      return res.status(403).send({ message: "Permission Denied" });
+    }
+
+    await client.query("COMMIT");
+
+    return res
+      .status(200)
+      .send({ message: "Update advice success", jobID: result.jobID });
   } catch (err) {
     await client.query("ROLLBACK");
 

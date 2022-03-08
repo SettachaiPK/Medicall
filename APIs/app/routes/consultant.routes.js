@@ -29,5 +29,17 @@ module.exports = function (app) {
     consultantController.getConsultService
   );
 
+  router.get(
+    "/calling/:jobID",
+    [authJwt.verifyToken, authJwt.isConsultant],
+    consultantController.getCustomerDetail
+  );
+
+  router.post(
+    "/advice",
+    [authJwt.verifyToken, authJwt.isConsultant],
+    consultantController.submitAdvice
+  );
+
   app.use("/apis/consultant", router);
 };

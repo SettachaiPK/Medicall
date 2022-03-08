@@ -21,6 +21,7 @@ exports.confirmPayment = async (req, res) => {
     }
     const currentPayment = payment[0];
     if (currentPayment.paymentStatus != "created") {
+      await client.query("ROLLBACK");
       return res.status(400).send({
         message: `Unable to confirm payment, Current status ${currentPayment.paymentStatus}`,
       });

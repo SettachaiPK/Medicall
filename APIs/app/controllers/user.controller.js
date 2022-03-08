@@ -8,6 +8,7 @@ exports.editAvatar = async (req, res) => {
   try {
     await client.query("BEGIN");
     if (!files) {
+      await client.query("ROLLBACK");
       return res.status(400).send({ message: "No media file" });
     }
     const { media } = await files;
