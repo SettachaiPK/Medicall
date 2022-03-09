@@ -110,6 +110,7 @@ exports.verifyOTP = async (req, res) => {
       );
       user = newUser;
     } else if (user[0].status === "inactive") {
+      await client.query("ROLLBACK");
       return res.status(403).send({ message: "User Deactivated!" });
     }
 
@@ -214,6 +215,7 @@ exports.signUpCustomer = async (req, res) => {
     );
 
     if (customerDetail) {
+      await client.query("ROLLBACK");
       return res.status(403).send({ message: "You have already signed up!" });
     }
 
@@ -288,6 +290,7 @@ exports.signUpConsultant = async (req, res) => {
     );
 
     if (consultantDetail) {
+      await client.query("ROLLBACK");
       return res.status(403).send({ message: "You have already signed up!" });
     }
 
@@ -385,6 +388,7 @@ exports.signUpPhamarcy = async (req, res) => {
     );
 
     if (phamarcyDetail) {
+      await client.query("ROLLBACK");
       return res.status(403).send({ message: "You have already signed up!" });
     }
     await client.query(

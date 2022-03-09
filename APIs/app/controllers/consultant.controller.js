@@ -1,4 +1,5 @@
 const { pool } = require("../config/db.config");
+const moment = require("moment");
 require("dotenv").config();
 
 exports.editOnlineStatus = async (req, res) => {
@@ -96,6 +97,8 @@ exports.getConsultService = async (req, res) => {
   const { userID } = req;
   const client = await pool.connect();
   try {
+    await client.query("BEGIN");
+
     let {
       rows: [detail],
     } = await client.query(
@@ -118,6 +121,7 @@ exports.getConsultService = async (req, res) => {
       [userID]
     );
     if (!detail) {
+      await client.query("ROLLBACK");
       return res.status(400).send({ message: "Consultant not found" });
     }
     tags.forEach((tag, index) => {
@@ -130,6 +134,136 @@ exports.getConsultService = async (req, res) => {
     await client.query("COMMIT");
 
     return res.status(200).send(detail);
+  } catch (err) {
+    await client.query("ROLLBACK");
+
+    console.log(err);
+
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};
+
+exports.getCustomerDetail = async (req, res) => {
+  const { userID } = req;
+  const { jobID } = req.params;
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+
+    const {
+      rows: [jobDetail],
+    } = await client.query(
+      ` SELECT "birthDate","sex","congenitalDisease","drugAllergy","drugInUse" 
+        FROM consultJob       
+        INNER JOIN userDetail
+        ON userDetail."userID" = consultJob."customerID"
+        INNER JOIN customerDetail
+        ON customerDetail."userID" = consultJob."customerID"
+        WHERE "consultantID" = ($1)
+        AND "jobID" = ($2);`,
+      [userID, jobID]
+    );
+    if (!jobDetail) {
+      res.status(403).send({ message: "Permission Denied" });
+    }
+
+    await client.query("COMMIT");
+
+    return res.status(200).send(jobDetail);
+  } catch (err) {
+    await client.query("ROLLBACK");
+
+    console.log(err);
+
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};
+
+exports.jobMeetingEnd = async (req, res) => {
+  const { userID } = req;
+  const { jobID, advice } = req.body;
+  const client = await pool.connect();
+  const now = moment();
+
+  try {
+    await client.query("BEGIN");
+
+    const {
+      rows: [{ meetStartDate }],
+    } = await client.query(
+      ` SELECT "meetStartDate"
+        FROM consultJob
+        WHERE "jobID" = ($2) 
+        AND "consultantID" = ($1);`,
+      [userID, jobID]
+    );
+    if (!meetStartDate) {
+      await client.query("ROLLBACK");
+      return res.status(403).send({ message: "Permission Denied" });
+    }
+    const actualPeriod = moment
+      .duration(now.diff(moment(meetStartDate)))
+      .asMinutes();
+    const {
+      rows: [result],
+    } = await client.query(
+      ` UPDATE consultJob 
+        SET "advice" = ($3),"jobStatus" = 'hanged up',"meetEndDate" = $4,"actualPeriod" = $5
+        WHERE "jobID" = ($2) 
+        AND "consultantID" = ($1)
+        RETURNING "jobID";`,
+      [userID, jobID, advice, now, actualPeriod]
+    );
+
+    await client.query("COMMIT");
+
+    return res
+      .status(200)
+      .send({ message: "Update advice success", jobID: result.jobID });
+  } catch (err) {
+    await client.query("ROLLBACK");
+
+    console.log(err);
+
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};
+
+exports.getMeetingSummary = async (req, res) => {
+  const { userID } = req;
+  const { jobID } = req.params;
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+
+    const {
+      rows: [jobDetail],
+    } = await client.query(
+      ` SELECT "firstName","lastName","avatar","price","advice" ,"meetStartDate" ,"communicationChannel" ,"actualPeriod" 
+        FROM consultJob       
+        INNER JOIN userDetail
+        ON userDetail."userID" = consultJob."customerID"
+        INNER JOIN payment
+        ON payment."paymentID" = consultJob."paymentID"
+        WHERE "consultantID" = ($1)
+        AND "jobID" = ($2);`,
+      [userID, jobID]
+    );
+    if (!jobDetail) {
+      res.status(403).send({ message: "Permission Denied" });
+    }
+
+    await client.query("COMMIT");
+
+    return res.status(200).send(jobDetail);
   } catch (err) {
     await client.query("ROLLBACK");
 
