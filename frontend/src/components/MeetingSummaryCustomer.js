@@ -15,12 +15,14 @@ export default function MeetingSummaryCustomer() {
   return (
     <div>
       <Paper
+        elevation={4}
         sx={{
           width: "40rem",
           height: "40rem",
           margin: "auto",
           padding: "3%",
           marginTop: "2%",
+          marginBottom: "2%",
         }}
       >
         <Box sx={{ margin: "auto", width: "fit-content" }}>

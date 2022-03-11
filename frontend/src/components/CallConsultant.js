@@ -1,6 +1,6 @@
 import React from "react";
-import CallComponent from "../../components/CallComponent";
-import CustomerCallDetails from "../../components/CustomerCallDetails";
+import CallComponent from "./CallComponent";
+import CustomerCallDetails from "./CustomerCallDetails";
 import { Box } from "@mui/system";
 import { TextField } from "@mui/material";
 
