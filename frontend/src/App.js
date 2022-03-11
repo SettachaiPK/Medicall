@@ -10,11 +10,14 @@ import ConsultantDetailPage from "./views/Customer/ConsultantDetailPage";
 import Call from "./views/Customer/Call";
 import CallConsultant from "./views/Consultant/CallConsultant";
 import MeetingSummary from "./views/Customer/MeetingSummary";
-import { createTheme, ThemeProvider } from "@material-ui/core";
 import MeetingSummaryConsultant from "./components/MeetingSummaryConsultant";
+import { createTheme, ThemeProvider } from "@mui/material";
 
 const theme = createTheme({
-  palette: { primary: { main: "#fefefe" } },
+  palette: { primary: { main: "#EEA9B8" } },
+  typography: {
+    fontFamily: "Raleway, Arial",
+  },
 });
 
 function App() {
@@ -40,7 +43,10 @@ function App() {
           <Route path="calling" element={<Call />} />
           <Route path="callconsultant" element={<CallConsultant />} />
           <Route path="summary" element={<MeetingSummary />} />
-          <Route path="summaryconsultant" element={<MeetingSummaryConsultant />} />
+          <Route
+            path="summaryconsultant"
+            element={<MeetingSummaryConsultant />}
+          />
           <Route path="meeting/:jobID" element={<TestMeetingPage />} />
           {/* <Route exact path="/" element={<ProtectedRoute />}>
       <Router>

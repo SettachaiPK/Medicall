@@ -1,10 +1,11 @@
+
+
 .color-primary {
   color: #f9b1c7;
 }
 
 body {
   margin: 0;
-  font-family: "Kanit", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -13,7 +14,7 @@ body {
   margin: 2rem 3rem;
 }
 .grid-container-wrapper {
-  margin: 4rem auto;
+  margin: 4rem auto 4rem auto;
   width: 400px;
   max-width: 100%;
 }
@@ -28,6 +29,10 @@ body {
   .grid-container-wrapper {
     width: 1200px;
   }
+}
+
+.mt-2 {
+  margin-top: 16px !important;
 }
 
 .topnav {
@@ -85,9 +90,15 @@ body {
 }
 
 .search-box {
-  margin: auto;
   width: 350px;
   max-width: 100%;
+}
+
+.search-container {
+  display: flex;
+  justify-content: center;
+  margin: auto;
+  width: 100%;
 }
 
 .head-popup {
@@ -181,4 +192,22 @@ button.MuiButton-root {
   background-color: hsla(0, 4%, 5%, 0.733);
   height: 25rem;
   width: 40rem;
+}
+
+.favbar-container {
+  margin: 40px 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.favbar-wrapper {
+  width: 700px;
+  height: 40px;
+  display: flex;
+}
+
+@media screen and (max-width: 900px) {
+  .favbar-container {
+    display: none;
+  }
 }

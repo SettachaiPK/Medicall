@@ -4,6 +4,7 @@ import * as customerService from "../../service/customer.service";
 import SearchConsult from "../../components/SearchConsult";
 import HomePageCard from "../../components/HomePageCard";
 import { Grid } from "@mui/material";
+import FavoriteBar from "../../components/FavoriteBar";
 
 function HomePage(props) {
   const [consultants, setConsultants] = useState([]);
@@ -22,11 +23,16 @@ function HomePage(props) {
   return (
     <div className="section-container">
       <SearchConsult />
+      <FavoriteBar />
       <div className="grid-container-wrapper">
-        <Grid container rowSpacing={5} columnSpacing={{ sm: 0, md: 6, lg: 0 }}>
+        <Grid
+          container
+          rowSpacing={5}
+          columnSpacing={{ xs: 0, sm: 0, md: 6, lg: 0 }}
+        >
           {consultants.map((consultant, index) => {
             return (
-              <Grid item md={12} lg={6} xl={4}>
+              <Grid item xs={12} md={12} lg={6} xl={4}>
                 <HomePageCard key={index} consultant={consultant} />
               </Grid>
             );
