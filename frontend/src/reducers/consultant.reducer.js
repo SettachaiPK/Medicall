@@ -11,7 +11,8 @@ const consultantReducer = (state = initialState, action) => {
     case CONSULTANT_FETCH_DETAIL:
       return action.payload;
     case CONSULTANT_FETCH_STATUS:
-      return { ...state, onlineStatus: action.payload };
+      console.log(state + action.payload);
+      return state + action.payload;
     default:
       return state;
   }

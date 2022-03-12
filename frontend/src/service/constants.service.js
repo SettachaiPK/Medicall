@@ -37,6 +37,12 @@ export const server = {
   createConsultJob: new AxiosModel({
     url: `customer/consult-job`,
   }),
+  meetStart: new AxiosModel({
+    url: `customer/consult-job/start`,
+  }),
+  meetEnd: new AxiosModel({
+    url: `customer/consult-job/end`,
+  }),
   ///consultant///
   consultantService: new AxiosModel({ url: `consultant/service` }),
   editConsultantStatus: new AxiosModel({ url: `consultant/online-status` }),

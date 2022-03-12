@@ -1,16 +1,13 @@
-import { useContext, useEffect, useState, useCallback } from "react";
+import { useContext, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
-import { SocketContext } from "../helpers/Context";
+import { SocketContext } from "../helpers/Context_ref";
 import moment from "moment";
 import Box from "@mui/material/Box";
 import {
   Grid,
-  Typography,
   Paper,
   Button,
-  TextField,
-  Container,
 } from "@material-ui/core";
 
 function TestMeetingPage({ user: { roles } }) {
@@ -93,7 +90,7 @@ function TestMeetingPage({ user: { roles } }) {
                     playsInline
                     ref={userVideo}
                     autoPlay
-                    hidden={call.type != "video"}
+                    hidden={call.type !== "video"}
                     style={{ maxWidth: 400 }}
                   />
                 </Grid>
@@ -107,11 +104,11 @@ function TestMeetingPage({ user: { roles } }) {
                     muted
                     ref={myVideo}
                     autoPlay
-                    hidden={call.type != "video"}
+                    hidden={call.type !== "video"}
                     style={{ maxWidth: 200 }}
                   />
                 </Grid>
-                {call.type != "video" && (
+                {call.type !== "video" && (
                   <Button
                     variant="contained"
                     color="primary"

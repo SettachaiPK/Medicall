@@ -1,30 +1,19 @@
 import { useContext } from "react";
 import { connect } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 import { SocketContext } from "../helpers/Context";
 import { CircularProgress, Button, Box, Paper } from "@mui/material";
 import { pink, grey } from "@mui/material/colors";
+import { actionAcceptCall } from "../actions/consulting.action";
 
 //import { alertChange } from '../actions/alert.actions';
 
 function AlertPopup(props) {
-  const { call, answerCall, isReceivingCall, callAccepted } =
-    useContext(SocketContext);
+  const context = useContext(SocketContext);
   const navigate = useNavigate();
   const loading = false;
-  // const classActive = () => {
-  //   if(props.alert.status) return 'active';
-  //   else return '';
-  // };
-  // const classType = () => {
-  //   if(props.alert.type) {
-  //     if(props.alert.type === 'Info') return 'info';
-  //     else if(props.alert.type === 'Success') return 'success';
-  //     else if(props.alert.type === 'Warning') return 'warning';
-  //     else if(props.alert.type === 'Danger') return 'danger';
-  //   }
-  //   return '';
-  // };
+
   return (
     <>
       <div className={`blind-fold ${loading ? "active" : ""}`}>
@@ -34,7 +23,9 @@ function AlertPopup(props) {
       </div>
       <div
         className={`blind-fold ${
-          isReceivingCall && !callAccepted ? "active" : ""
+          props.consulting.isReceivingCall && !props.consulting.isCalling
+            ? "active"
+            : ""
         }`}
       >
         <div className="wrapper">
@@ -61,10 +52,10 @@ function AlertPopup(props) {
                   }}
                   variant="contained"
                   onClick={() => {
-                    navigate(`/meeting/${call.jobID}`);
-                    answerCall();
+                    navigate(`/consulting/${props.consulting.jobID}`);
+                    props.actionAcceptCall();
+                    context.socketAcceptCall();
                   }}
-                  disabled={!(isReceivingCall && !callAccepted)}
                 >
                   ยอมรับ
                 </Button>
@@ -93,13 +84,18 @@ function AlertPopup(props) {
 }
 
 AlertPopup.defaultProps = {};
-// AlertPopup.propTypes = {
-// 	alertChange: PropTypes.func.isRequired
-// };
+AlertPopup.propTypes = {
+  actionAcceptCall: PropTypes.func.isRequired,
+  alert: PropTypes.object.isRequired,
+  consulting: PropTypes.object.isRequired,
+};
 
 const mapStateToProps = (state) => ({
   alert: state.alert,
+  consulting: state.consulting,
 });
 
 //export default connect(mapStateToProps, {alertChange})(AlertPopup);
-export default connect(mapStateToProps)(AlertPopup);
+export default connect(mapStateToProps, { actionAcceptCall: actionAcceptCall })(
+  AlertPopup
+);

@@ -27,13 +27,23 @@ module.exports = function (app) {
   router.post(
     "/consult-job",
     [authJwt.verifyToken],
-    customerController.createConsultJob
+    customerController.createConsultJobNow
   );
 
   router.get(
     "/summary/:jobID",
     [authJwt.verifyToken],
     customerController.getMeetingSummary
+  );
+  router.post(
+    "/consult-job/start",
+    [authJwt.verifyToken],
+    customerController.jobMeetingStart
+  );
+  router.post(
+    "/consult-job/end",
+    [authJwt.verifyToken],
+    customerController.jobMeetingEnd
   );
 
   app.use("/apis/customer", router);

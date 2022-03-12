@@ -1,4 +1,4 @@
-import React from "react";
+import { useContext } from "react";
 import {
   Card,
   CardMedia,
@@ -17,8 +17,10 @@ import {
   VideocamOff as VideocamOffIcon,
   Videocam as VideocamIcon,
 } from "@mui/icons-material";
+import { SocketContext } from "../helpers/Context";
 
 export default function CallComponent() {
+  const context = useContext(SocketContext);
   return (
     <div>
       <Box sx={{ display: "flex", mt: "3%", justifyContent: "center" }}>
@@ -41,7 +43,12 @@ export default function CallComponent() {
               }
             />
             <IconButton>
-              <CallEndIcon sx={{ color: pink[100], fontSize: 40 }} />
+              <CallEndIcon
+                sx={{ color: pink[100], fontSize: 40 }}
+                onClick={() => {
+                  context.handleLeaveCall();
+                }}
+              />
             </IconButton>
             <Checkbox
               icon={<VideocamOffIcon sx={{ color: pink[100], fontSize: 40 }} />}

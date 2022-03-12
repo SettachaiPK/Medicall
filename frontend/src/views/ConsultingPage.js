@@ -1,29 +1,32 @@
 import { useEffect, useState, useCallback } from "react";
 import { connect } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import PropTypes from "prop-types";
 import MeetingSummaryConsultant from "../components/MeetingSummaryConsultant";
 import MeetingSummaryCustomer from "../components/MeetingSummaryCustomer";
 import CallConsultant from "../components/CallConsultant";
 import CallCustomer from "../components/CallCustomer";
+import { Button } from "@mui/material";
 
 function ConsultingPage(props) {
-  const { step } = useParams();
-  //const [step, setStep] = useState(0);
-  const role = "customer";
+  const { jobID } = useParams();
+  const navigate = useNavigate();
 
   return (
     <div>
-      {step === "0" && (
+      {props.consulting.step === 0 && (
         <>
-          {role === "customer" && <CallCustomer />}
-          {role === "consultant" && <CallConsultant />}
+          {props.consulting.role === "customer" && <CallCustomer />}
+          {props.consulting.role === "consultant" && <CallConsultant />}
         </>
       )}
-      {step === "1" && <>{role === "customer" && <CallCustomer />}</>}
-      {step === "2" && (
+      {props.consulting.step === 1 && (
+        <>{props.consulting.role === "customer" && <CallCustomer />}</>
+      )}
+      {props.consulting.step === 2 && (
         <>
-          {role === "customer" && <MeetingSummaryCustomer />}
-          {role === "consultant" && <MeetingSummaryConsultant />}
+          {props.consulting.role === "customer" && <MeetingSummaryCustomer />}
+          {props.consulting.role === "consultant" && <MeetingSummaryConsultant />}
         </>
       )}
     </div>
@@ -31,8 +34,10 @@ function ConsultingPage(props) {
 }
 
 ConsultingPage.defaultProps = {};
-ConsultingPage.propTypes = {};
+ConsultingPage.propTypes = {
+  consulting: PropTypes.object.isRequired,
+};
 
-const mapStateToProps = (state) => ({});
+const mapStateToProps = (state) => ({ consulting: state.consulting });
 
 export default connect(mapStateToProps, {})(ConsultingPage);
