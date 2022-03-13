@@ -6,16 +6,26 @@ export const actionGetOccupations = () => async (dispatch) => {
     return data;
   } catch (error) {
     alert(error.response.data.message || error.message);
-    return []
+    return [];
   }
 };
 
 export const actionGetDepartment = (occupation) => async (dispatch) => {
-    try {
-      const { data } = await customerService.getDepartment(occupation);
-      return data;
-    } catch (error) {
-      alert(error.response.data.message || error.message);
-      return []
-    }
-  };
+  try {
+    const { data } = await customerService.getDepartment(occupation);
+    return data;
+  } catch (error) {
+    alert(error.response.data.message || error.message);
+    return [];
+  }
+};
+
+export const actionGetJobDetail = (jobID) => async (dispatch) => {
+  try {
+    const { data } = await customerService.getJobDetail(jobID);
+    return data;
+  } catch (error) {
+    alert(error.response.data.message || error.message);
+    return [];
+  }
+};

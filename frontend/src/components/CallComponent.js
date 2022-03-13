@@ -1,4 +1,6 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 import {
   Card,
   CardMedia,
@@ -18,9 +20,13 @@ import {
   Videocam as VideocamIcon,
 } from "@mui/icons-material";
 import { SocketContext } from "../helpers/Context";
+import { actionGetJobDetail } from "../actions/customer.action";
 
-export default function CallComponent() {
+function CallComponent(props) {
   const context = useContext(SocketContext);
+  useEffect(() => {
+    console.log(props.actionGetJobDetail(props.consulting.jobID));
+  }, [props.consulting.jobID]);
   return (
     <div>
       <Box sx={{ display: "flex", mt: "3%", justifyContent: "center" }}>
@@ -71,3 +77,17 @@ export default function CallComponent() {
     </div>
   );
 }
+
+CallComponent.defaultProps = {};
+CallComponent.propTypes = {
+  consulting: PropTypes.object.isRequired,
+  actionGetJobDetail: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+  consulting: state.consulting,
+});
+
+export default connect(mapStateToProps, {
+  actionGetJobDetail: actionGetJobDetail,
+})(CallComponent);

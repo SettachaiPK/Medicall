@@ -45,6 +45,10 @@ module.exports = function (app) {
     [authJwt.verifyToken],
     customerController.jobMeetingEnd
   );
-
+  router.get(
+    "/consult-job/:jobID",
+    [authJwt.verifyToken],
+    customerController.getMeetingDetail
+  );
   app.use("/apis/customer", router);
 };

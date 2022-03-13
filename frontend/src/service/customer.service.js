@@ -79,7 +79,7 @@ export function getConsultantDetail(id) {
 }
 
 export function createConsultJob(data) {
-  const Axiosmodel = server.createConsultJob;
+  const Axiosmodel = server.CONSULT_JOB;
 
   return new Promise((resolve, reject) => {
     httpClient({
@@ -148,6 +148,25 @@ export function meetEnd(data) {
       withCredentials: true,
       config: Axiosmodel,
       data,
+    })
+      .then((res) => {
+        resolve(res);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}
+
+export function getJobDetail(jobID) {
+  const Axiosmodel = server.CONSULT_JOB;
+
+  return new Promise((resolve, reject) => {
+    httpClient({
+      method: "GET",
+      url: Axiosmodel.url + `/${jobID.toString()}`,
+      withCredentials: true,
+      config: Axiosmodel,
     })
       .then((res) => {
         resolve(res);

@@ -41,4 +41,5 @@ const mapStateToProps = (state) => ({
   consulting: state.consulting,
 });
 
-export default connect(mapStateToProps, {})(CallCustomer);
+export default connect(mapStateToProps, {
+})(CallCustomer);
