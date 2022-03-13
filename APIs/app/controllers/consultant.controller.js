@@ -274,3 +274,81 @@ exports.getMeetingSummary = async (req, res) => {
     client.release();
   }
 };
+
+exports.getMeetingDetail = async (req, res) => {
+  const { userID } = req;
+  const { jobID } = req.params;
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+
+    const {
+      rows: [jobDetail],
+    } = await client.query(
+      ` SELECT "firstName","lastName","avatar" 
+        FROM consultJob       
+        INNER JOIN userDetail
+        ON userDetail."userID" = consultJob."customerID"
+        WHERE "consultantID" = ($1)
+        AND "jobID" = ($2);`,
+      [userID, jobID]
+    );
+    if (!jobDetail) {
+      await client.query("ROLLBACK");
+      res.status(403).send({ message: "Permission Denied" });
+    }
+
+    await client.query("COMMIT");
+
+    return res.status(200).send(jobDetail);
+  } catch (err) {
+    await client.query("ROLLBACK");
+
+    console.log(err);
+
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};
+
+exports.getCustomerDetail = async (req, res) => {
+  const { userID } = req;
+  const { jobID } = req.params;
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+
+    const {
+      rows: [jobDetail],
+    } = await client.query(
+      ` SELECT "congenitalDisease", "drugAllergy", "drugInUse", "height", "weight", AGE("birthDate"), "sex"
+        FROM consultJob       
+        INNER JOIN userDetail
+        ON userDetail."userID" = consultJob."customerID"
+        INNER JOIN customerDetail
+        ON customerDetail."userID" = consultJob."customerID"
+        WHERE "consultantID" = ($1)
+        AND "jobID" = ($2);`,
+      [userID, jobID]
+    );
+    if (!jobDetail) {
+      await client.query("ROLLBACK");
+      res.status(403).send({ message: "Permission Denied" });
+    }
+
+    await client.query("COMMIT");
+
+    return res.status(200).send(jobDetail);
+  } catch (err) {
+    await client.query("ROLLBACK");
+
+    console.log(err);
+
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};

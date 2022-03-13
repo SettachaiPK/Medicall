@@ -1,5 +1,5 @@
 import * as consultantService from "../service/consultant.service";
-import { CONSULTANT_FETCH_DETAIL,CONSULTANT_FETCH_STATUS } from "./types";
+import { CONSULTANT_FETCH_DETAIL, CONSULTANT_FETCH_STATUS } from "./types";
 
 export const actionGetServiceDetail = () => async (dispatch) => {
   try {
@@ -22,14 +22,34 @@ export const actionEditServiceDetail = (payload) => async (dispatch) => {
 };
 
 export const actionEditServiceStatus = (payload) => async (dispatch) => {
-    try {
-      await consultantService.editConsultantStatus(payload);
-      await dispatch(reducerFetchConsultantStatus(payload.onlineStatus));
-    } catch (error) {
-      console.log(error.response.data.message || error.message);
-    }
-  };
+  try {
+    await consultantService.editConsultantStatus(payload);
+    await dispatch(reducerFetchConsultantStatus(payload.onlineStatus));
+  } catch (error) {
+    console.log(error.response.data.message || error.message);
+  }
+};
 
+export const actionGetJobDetailConsultant = (jobID) => async (dispatch) => {
+  try {
+    const { data } = await consultantService.getJobDetail(jobID);
+    return data;
+  } catch (error) {
+    alert(error.response.data.message || error.message);
+    return [];
+  }
+};
+
+export const actionGetCustomerDetail = (jobID) => async (dispatch) => {
+  try {
+    const { data } = await consultantService.getCustomerDetail(jobID);
+    console.log(data);
+    return data;
+  } catch (error) {
+    alert(error.response.data.message || error.message);
+    return [];
+  }
+};
 
 export const reducerFetchConsultantDetail = (payload) => ({
   type: CONSULTANT_FETCH_DETAIL,

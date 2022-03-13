@@ -9,7 +9,7 @@ import { pink } from "@mui/material/colors";
 function CallCustomer(props) {
   return (
     <div>
-      <CallComponent />
+      <CallComponent jobID={props.jobID} />
       <Box
         sx={{
           display: "flex",
@@ -41,5 +41,4 @@ const mapStateToProps = (state) => ({
   consulting: state.consulting,
 });
 
-export default connect(mapStateToProps, {
-})(CallCustomer);
+export default connect(mapStateToProps, {})(CallCustomer);

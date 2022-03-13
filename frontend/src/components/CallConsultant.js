@@ -6,7 +6,7 @@ import { TextField } from "@mui/material";
 
 const height = "10rem";
 
-export default function CallConsultant() {
+export default function CallConsultant(props) {
   return (
     <div
       style={{
@@ -25,7 +25,7 @@ export default function CallConsultant() {
         }}
       >
         <Box sx={{ width: "63rem" }}>
-          <CallComponent />
+          <CallComponent jobID={props.jobID} />
         </Box>
         <TextField
           inputProps={{

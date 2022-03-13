@@ -46,6 +46,12 @@ export const server = {
   ///consultant///
   consultantService: new AxiosModel({ url: `consultant/service` }),
   editConsultantStatus: new AxiosModel({ url: `consultant/online-status` }),
+  CONSULT_JOB_CONSULTANT: new AxiosModel({
+    url: `consultant/consult-job`,
+  }),
+  CONSULT_JOB_GET_CUSTOMER: new AxiosModel({
+    url: `consultant/customer`,
+  }),
   ///delete///
   confirmPayment: new AxiosModel({ url: `external/confirm-payment` }),
 };
