@@ -9,7 +9,7 @@ import CallCustomer from "../components/CallCustomer";
 function ConsultingPage(props) {
   const { step } = useParams();
   //const [step, setStep] = useState(0);
-  const role = "customer";
+  const role = "consultant";
 
   return (
     <div>
