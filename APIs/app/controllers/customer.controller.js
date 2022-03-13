@@ -1,6 +1,10 @@
 const { pool } = require("../config/db.config");
 const moment = require("moment");
 const qs = require("qs");
+const {
+  getConnectionID,
+  consultingEstablishment,
+} = require("./socket.controller");
 
 exports.getOccupation = async (req, res) => {
   try {
@@ -175,8 +179,7 @@ exports.getConsultServiceList = async (req, res) => {
           "academy",
           "firstName",
           "lastName",
-          "avatar",
-          "socketID"
+          "avatar"
         FROM consultantService AS service
         INNER JOIN 
           (SELECT * FROM consultantDetail ) 
@@ -190,9 +193,10 @@ exports.getConsultServiceList = async (req, res) => {
         LIMIT $1
         OFFSET $2;`;
     let { rows: details } = await client.query(queryText, [limit, offset]);
-    details.forEach((detail) => {
-      detail.onlineStatus = detail.socketID ? detail.onlineStatus : "offline";
-      delete detail.socketID;
+    details.forEach(async (detail) => {
+      console.log(detail.userID);
+      const socketID = await getConnectionID(detail.userID);
+      detail.onlineStatus = (await socketID) ? detail.onlineStatus : "offline";
     });
 
     await client.query("COMMIT");
@@ -280,11 +284,10 @@ exports.editAvatar = async (req, res) => {
   }
 };
 
-exports.createConsultJob = async (req, res) => {
-  const {
+exports.createConsultJobNow = async (req, res) => {
+  let {
     userID,
     body: {
-      schduleDate,
       reservePeriod_m,
       symptomDetail,
       communicationChannel,
@@ -340,11 +343,9 @@ exports.createConsultJob = async (req, res) => {
       ]
     );
 
-    if (!schduleDate) {
-      if (onlineStatus != "online") {
-        await client.query("ROLLBACK");
-        return res.status(400).send({ message: "Consultant not online" });
-      }
+    if (onlineStatus != "online") {
+      await client.query("ROLLBACK");
+      return res.status(400).send({ message: "Consultant not online" });
     }
 
     const {
@@ -352,11 +353,11 @@ exports.createConsultJob = async (req, res) => {
     } = await client.query(
       `
     INSERT INTO consultJob 
-      ("schduleDate", "reservePeriod_m","symptomDetail","communicationChannel","consultantID","customerID","paymentID")
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
+      ("schduleDate", "reservePeriod_m","symptomDetail","communicationChannel","consultantID","customerID","paymentID","jobStatus")
+    VALUES ($1, $2, $3, $4, $5, $6, $7, 'paid')
     RETURNING *`,
       [
-        schduleDate,
+        moment(),
         reservePeriod_m,
         symptomDetail,
         communicationChannel,
@@ -391,9 +392,47 @@ exports.createConsultJob = async (req, res) => {
         );
       });
     }
-
+    await consultingEstablishment(jobDetail);
     await client.query("COMMIT");
     return res.status(200).send({ jobDetail, paymentDetail });
+  } catch (err) {
+    await client.query("ROLLBACK");
+
+    console.log(err);
+
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};
+
+exports.getMeetingDetail = async (req, res) => {
+  const { userID } = req;
+  const { jobID } = req.params;
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+
+    const {
+      rows: [jobDetail],
+    } = await client.query(
+      ` SELECT "firstName","lastName","avatar" 
+        FROM consultJob       
+        INNER JOIN userDetail
+        ON userDetail."userID" = consultJob."consultantID"
+        WHERE "customerID" = ($1)
+        AND "jobID" = ($2);`,
+      [userID, jobID]
+    );
+    if (!jobDetail) {
+      await client.query("ROLLBACK");
+      res.status(403).send({ message: "Permission Denied" });
+    }
+
+    await client.query("COMMIT");
+
+    return res.status(200).send(jobDetail);
   } catch (err) {
     await client.query("ROLLBACK");
 
@@ -427,6 +466,7 @@ exports.getMeetingSummary = async (req, res) => {
       [userID, jobID]
     );
     if (!jobDetail) {
+      await client.query("ROLLBACK");
       res.status(403).send({ message: "Permission Denied" });
     }
 
@@ -444,3 +484,88 @@ exports.getMeetingSummary = async (req, res) => {
   }
 };
 
+exports.jobMeetingStart = async (req, res) => {
+  const { userID } = req;
+  const { jobID } = req.body;
+  const client = await pool.connect();
+  const now = moment();
+  try {
+    await client.query("BEGIN");
+    const {
+      rows: [result],
+    } = await client.query(
+      ` UPDATE consultJob 
+            SET "jobStatus" = 'meeting',
+            "meetStartDate" = $2
+        WHERE "jobID" = $1
+        AND "jobStatus" = 'paid'
+        AND "customerID" = $3
+        RETURNING "meetStartDate", "reservePeriod_m";`,
+      [jobID, now, userID]
+    );
+
+    if (!result) {
+      await client.query("ROLLBACK");
+      return res.status(400).send({ message: "Unable to start meeting" });
+    }
+
+    await client.query("COMMIT");
+
+    return res.status(200).send({ message: "job start", result });
+  } catch (err) {
+    await client.query("ROLLBACK");
+
+    console.log(err);
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};
+
+exports.jobMeetingEnd = async (req, res) => {
+  const { jobID } = req.body;
+  const client = await pool.connect();
+  const now = moment();
+  try {
+    await client.query("BEGIN");
+
+    const {
+      rows: [result],
+    } = await client.query(
+      ` UPDATE consultJob 
+            SET "jobStatus" = 'hanged up',
+            "meetEndDate" = $2
+        WHERE "jobID" = $1
+        AND "jobStatus" = 'meeting'
+        RETURNING "meetStartDate", "meetEndDate";`,
+      [jobID, now]
+    );
+
+    if (!result) {
+      await client.query("ROLLBACK");
+      return res.status(400).send({ message: "Unable to end meeting" });
+    }
+
+    const actualPeriod = moment
+      .duration(moment(result.meetEndDate).diff(moment(result.meetStartDate)))
+      .asMinutes();
+
+    await client.query(
+      ` UPDATE consultJob 
+            SET "actualPeriod" = $2
+        WHERE "jobID" = $1;`,
+      [jobID, actualPeriod]
+    );
+
+    await client.query("COMMIT");
+
+    return res.status(200).send({ message: "job ended", result });
+  } catch (err) {
+    await client.query("ROLLBACK");
+
+    console.log(err);
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};

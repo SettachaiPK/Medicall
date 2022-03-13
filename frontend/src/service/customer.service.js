@@ -79,7 +79,7 @@ export function getConsultantDetail(id) {
 }
 
 export function createConsultJob(data) {
-  const Axiosmodel = server.createConsultJob;
+  const Axiosmodel = server.CONSULT_JOB;
 
   return new Promise((resolve, reject) => {
     httpClient({
@@ -100,7 +100,6 @@ export function createConsultJob(data) {
 
 export function confirmPayment(data) {
   const Axiosmodel = server.confirmPayment;
-  console.log("don't forget to delete");
 
   return new Promise((resolve, reject) => {
     httpClient({
@@ -109,6 +108,65 @@ export function confirmPayment(data) {
       withCredentials: true,
       config: Axiosmodel,
       data,
+    })
+      .then((res) => {
+        resolve(res);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}
+
+export function meetStart(data) {
+  const Axiosmodel = server.meetStart;
+
+  return new Promise((resolve, reject) => {
+    httpClient({
+      method: "POST",
+      url: Axiosmodel.url,
+      withCredentials: true,
+      config: Axiosmodel,
+      data,
+    })
+      .then((res) => {
+        resolve(res);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}
+
+export function meetEnd(data) {
+  const Axiosmodel = server.meetEnd;
+
+  return new Promise((resolve, reject) => {
+    httpClient({
+      method: "POST",
+      url: Axiosmodel.url,
+      withCredentials: true,
+      config: Axiosmodel,
+      data,
+    })
+      .then((res) => {
+        resolve(res);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}
+
+export function getJobDetail(jobID) {
+  const Axiosmodel = server.CONSULT_JOB;
+
+  return new Promise((resolve, reject) => {
+    httpClient({
+      method: "GET",
+      url: Axiosmodel.url + `/${jobID.toString()}`,
+      withCredentials: true,
+      config: Axiosmodel,
     })
       .then((res) => {
         resolve(res);

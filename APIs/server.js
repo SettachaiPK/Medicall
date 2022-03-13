@@ -62,7 +62,7 @@ server = app.listen(port, () => console.log("server running on port " + port));
 //connect to socketIO
 
 const socketController = require("./app/controllers/socket.controller");
-socketController.userClear();
+// socketController.userClear();
 
 const io = new Server(server, {
   cors: {
@@ -73,6 +73,7 @@ const io = new Server(server, {
 });
 
 global.io = io; //added
+
 // connection error
 io.engine.on("connection_error", (err) => {
   console.log(err.req); // the request object
@@ -80,52 +81,75 @@ io.engine.on("connection_error", (err) => {
   console.log(err.message); // the error message, for example "Session ID unknown"
   console.log(err.context); // some additional error context
 });
-io.on("connection", (socket) => {
-  socket.emit("me", socket.id);
 
-  socket.on("user", ({ userID }) => {
-    socketController.userConnect(userID, socket.id);
-  });
-
-  socket.on("disconnect", (data) => {
-    socketController.userDisconnect(socket.id);
-    socket.leave(data.roomId);
-  });
-
-  socket.on("userReady", ({ to }) => {
-    io.to(to).emit("userReady", {});
-  });
-
-  socket.on("callUser", ({ userToCall, from, signalData }) => {
-    console.log("calling", userToCall);
-    io.to(userToCall).emit("callUser", { from, signalData });
-  });
-
-  socket.on("answerCall", (data) => {
-    socketController.jobMeetingStart(data.jobID, data.meetStartDate);
-    console.log("answerCall", data.to);
-    io.to(data.to).emit("callAccepted", {
-      signal: data.signal,
-      meetStartDate: data.meetStartDate,
-    });
-  });
-  socket.on("leaveCall", (data) => {
-    io.to(data.to).emit("leaveCall", {});
-  });
-
-  /*socket.on("join", (data) => {
-    socket.join(data.roomId);
-    console.log(`User join to room ${data.roomId}`);
-  });
-
-  socket.on("send-message", (data) => {
-    console.log(`send message ${JSON.stringify(data)}`);
-    socket.to(data.userId).emit("recieve-message", {
-      userId: data.userId,
-      message: data.message,
-      sender: data.sender,
-    });
-  });*/
+io.use((socket, next) => {
+  const userID = socket.handshake.auth.userID;
+  if (!userID) {
+    return next(new Error("invalid userID"));
+  }
+  socket.userID = userID;
+  console.log(`user ${userID} connected`);
+  next();
 });
+
+io.on("connection", (socket) => {
+  socket.on("disconnect", async () => {
+    console.log(`user ${socket.userID} disconnected`);
+  });
+  socket.on("acceptCall", ({ to, jobID }) => {
+    socket.to(to).emit("acceptCall", jobID);
+  });
+  socket.on("leaveCall", ({ to }) => {
+    socket.to(to).emit("leaveCall", {});
+  });
+});
+
+// io.on("connection", (socket) => {
+//   socket.emit("me", socket.id);
+
+//   socket.on("user", ({ userID }) => {
+//     socketController.userConnect(userID, socket.id);
+//   });
+
+//   socket.on("disconnect", (data) => {
+//     socketController.userDisconnect(socket.id);
+//     socket.leave(data.roomId);
+//   });
+
+//   socket.on("userReady", ({ to }) => {
+//     io.to(to).emit("userReady", {});
+//   });
+
+//   socket.on("callUser", ({ userToCall, from, signalData }) => {
+//     console.log("calling", userToCall);
+//     io.to(userToCall).emit("callUser", { from, signalData });
+//   });
+
+//   socket.on("answerCall", (data) => {
+//     socketController.jobMeetingStart(data.jobID, data.meetStartDate);
+//     console.log("answerCall", data.to);
+//     io.to(data.to).emit("callAccepted", {
+//       signal: data.signal,
+//       meetStartDate: data.meetStartDate,
+//     });
+//   });
+//   socket.on("leaveCall", (data) => {
+//     io.to(data.to).emit("leaveCall", {});
+//   });
+
+//   /*socket.on("join", (data) => {
+//     socket.join(data.roomId);
+//     console.log(`User join to room ${data.roomId}`);
+//   });
+
+//   socket.on("send-message", (data) => {
+//     console.log(`send message ${JSON.stringify(data)}`);
+//     socket.to(data.userId).emit("recieve-message", {
+//       userId: data.userId,
+//       message: data.message,
+//       sender: data.sender,
+//     });
+//   });*/
+// });
 
 module.exports = app;

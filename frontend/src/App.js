@@ -36,7 +36,7 @@ function App() {
           <Route exact path="/" element={<HomePage />} />
           <Route path="menu" element={<UserMenuPage />} />
           <Route path="dashboard" element={<DashBoard />} />
-          <Route path="consulting/:step" element={<ConsultingPage />} />
+          <Route path="consulting/:jobID" element={<ConsultingPage />} />
           <Route path="consultant/:id" element={<ConsultantDetailPage />} />
           <Route path="meeting/:jobID" element={<TestMeetingPage />} />
           {/* <Route exact path="/" element={<ProtectedRoute />}>

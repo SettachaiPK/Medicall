@@ -1,14 +1,12 @@
 import { Typography } from "@mui/material";
 import React from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 import CallComponent from "./CallComponent";
 import { Box } from "@mui/system";
 import { pink } from "@mui/material/colors";
 
-const StartTime = "00.00";
-const EndTime = "00.00";
-const TotalTime = "15 min";
-
-export default function CallCustomer() {
+function CallCustomer(props) {
   return (
     <div>
       <CallComponent />
@@ -21,15 +19,27 @@ export default function CallCustomer() {
         }}
       >
         <Typography sx={{ color: pink[200], fontSize: 20 }}>
-          เวลาเริ่มต้น: {StartTime}
+          เวลาเริ่มต้น: {props.consulting.meetStartDate}
         </Typography>
         <Typography sx={{ color: pink[200], fontSize: 20 }}>
-          เวลาสิ้นสุด: {EndTime}
+          เวลาสิ้นสุด: {props.consulting.meetEndDate}
         </Typography>
         <Typography sx={{ color: pink[200], fontSize: 20 }}>
-          เวลาทั้งหมด: {TotalTime}
+          เวลาทั้งหมด: {props.consulting.reservePeriod_m}
         </Typography>
       </Box>
     </div>
   );
 }
+
+CallCustomer.defaultProps = {};
+CallCustomer.propTypes = {
+  consulting: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+  consulting: state.consulting,
+});
+
+export default connect(mapStateToProps, {
+})(CallCustomer);

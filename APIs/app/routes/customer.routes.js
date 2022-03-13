@@ -27,7 +27,7 @@ module.exports = function (app) {
   router.post(
     "/consult-job",
     [authJwt.verifyToken],
-    customerController.createConsultJob
+    customerController.createConsultJobNow
   );
 
   router.get(
@@ -35,6 +35,20 @@ module.exports = function (app) {
     [authJwt.verifyToken],
     customerController.getMeetingSummary
   );
-
+  router.post(
+    "/consult-job/start",
+    [authJwt.verifyToken],
+    customerController.jobMeetingStart
+  );
+  router.post(
+    "/consult-job/end",
+    [authJwt.verifyToken],
+    customerController.jobMeetingEnd
+  );
+  router.get(
+    "/consult-job/:jobID",
+    [authJwt.verifyToken],
+    customerController.getMeetingDetail
+  );
   app.use("/apis/customer", router);
 };
