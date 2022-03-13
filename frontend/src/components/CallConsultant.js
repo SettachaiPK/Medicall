@@ -35,6 +35,8 @@ export default function CallConsultant() {
             },
           }}
           sx={{ mt: 3 }}
+          multiline
+          rows={4}
           id="outlined-basic"
           label="คำแนะนำจากคุณ"
           variant="outlined"
