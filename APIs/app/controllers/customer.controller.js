@@ -104,7 +104,6 @@ exports.getConsultServiceDetail = async (req, res) => {
       WHERE consultJob."consultantID" = $1;`,
       [userid]
     );
-    console.log(reviews);
     detail.reviews = reviews;
     const ratings = [];
     reviews.forEach((rate) => {
