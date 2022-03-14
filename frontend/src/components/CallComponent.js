@@ -101,7 +101,7 @@ function CallComponent(props) {
               <CallEndIcon
                 sx={{ color: pink[100], fontSize: 40 }}
                 onClick={() => {
-                  context.handleLeaveCall(props.advice);
+                  context.handleLeaveCall();
                 }}
               />
             </IconButton>
@@ -132,13 +132,12 @@ function CallComponent(props) {
   );
 }
 
-CallComponent.defaultProps = { advice: "" };
+CallComponent.defaultProps = {  };
 CallComponent.propTypes = {
   consulting: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
   actionGetJobDetail: PropTypes.func.isRequired,
   actionGetJobDetailConsultant: PropTypes.func.isRequired,
-  advice: PropTypes.string,
 };
 
 const mapStateToProps = (state) => ({

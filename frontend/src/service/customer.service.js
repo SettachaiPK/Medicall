@@ -176,3 +176,22 @@ export function getJobDetail(jobID) {
       });
   });
 }
+
+export function getJobSummary(jobID) {
+  const Axiosmodel = server.CUSTOMER_GET_SUMMARY;
+
+  return new Promise((resolve, reject) => {
+    httpClient({
+      method: "GET",
+      url: Axiosmodel.url + `/${jobID.toString()}`,
+      withCredentials: true,
+      config: Axiosmodel,
+    })
+      .then((res) => {
+        resolve(res);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}

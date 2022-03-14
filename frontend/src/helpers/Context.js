@@ -30,19 +30,22 @@ const ContextProvider = (props) => {
     });
   };
 
-  const handleLeaveCall = (advice = "") => {
+  const handleLeaveCall = () => {
     socket.emit("leaveCall", {
       to: props.consulting.destination,
     });
     props.actionEndMeeting(props.consulting.jobID);
-    if (props.consulting.role === "consultant") {
-      props.actionSubmitAdvice({ jobID: props.consulting.jobID, advice });
-    }
     leaveCall();
   };
 
   const leaveCall = () => {
-    props.actionLeaveCall();
+    if (props.consulting.role === "consultant") {
+      props.actionSubmitAdvice({
+        jobID: props.consulting.jobID,
+        advice: props.consulting.advice,
+      });
+    }
+    props.actionLeaveCall(props.consulting.role);
   };
 
   useEffect(() => {

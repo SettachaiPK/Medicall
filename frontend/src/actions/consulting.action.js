@@ -4,6 +4,8 @@ import {
   CONSULTING_DESTINATION_READY,
   CONSULTING_START_TIMER,
   CONSULTING_LEAVE_CALL,
+  CONSULTING_LEAVE_CALL_CUSTOMER,
+  ON_CHANG_ADVICE,
 } from "./types";
 import * as customerService from "../service/customer.service";
 import moment from "moment";
@@ -57,11 +59,11 @@ export const actionStartMeeting = (jobID) => async (dispatch) => {
   }
 };
 
-export const actionLeaveCall = () => async (dispatch) => {
-  try {
-    await dispatch(reducerLeaveCall());
-  } catch (error) {
-    console.log(error.response.data.message || error.message);
+export const actionLeaveCall = (role) => async (dispatch) => {
+  if (role === "consultant") {
+    dispatch(reducerLeaveCall());
+  } else if (role === "customer") {
+    dispatch(reducerLeaveCallCustomer());
   }
 };
 
@@ -71,6 +73,10 @@ export const actionEndMeeting = (jobID) => async () => {
   } catch (error) {
     console.log(error.response.data.message || error.message);
   }
+};
+
+export const actionChangeAdvice = (payload) => (dispatch) => {
+  dispatch(reducerChangeAdvice(payload));
 };
 
 export const reducerIncomingCall = (payload) => ({
@@ -93,4 +99,13 @@ export const reducerStartTimer = (payload) => ({
 
 export const reducerLeaveCall = () => ({
   type: CONSULTING_LEAVE_CALL,
+});
+
+export const reducerLeaveCallCustomer = () => ({
+  type: CONSULTING_LEAVE_CALL_CUSTOMER,
+});
+
+export const reducerChangeAdvice = (payload) => ({
+  type: ON_CHANG_ADVICE,
+  payload,
 });
