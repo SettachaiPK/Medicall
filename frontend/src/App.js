@@ -9,6 +9,7 @@ import { actionVerifyLogIn } from "./actions/auth.actions";
 import ConsultantDetailPage from "./views/Customer/ConsultantDetailPage";
 import { createTheme, ThemeProvider } from "@mui/material";
 import ConsultingPage from "./views/ConsultingPage";
+import ReviewPage from "./components/ReviewPage";
 
 const theme = createTheme({
   palette: { primary: { main: "#EEA9B8" } },
@@ -39,6 +40,7 @@ function App() {
           <Route path="consulting/:jobID" element={<ConsultingPage />} />
           <Route path="consultant/:id" element={<ConsultantDetailPage />} />
           <Route path="meeting/:jobID" element={<TestMeetingPage />} />
+          <Route path="reviewpage" element={<ReviewPage />} />
           {/* <Route exact path="/" element={<ProtectedRoute />}>
       <Router>
         <Topnav />
