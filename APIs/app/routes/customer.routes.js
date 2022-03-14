@@ -50,5 +50,10 @@ module.exports = function (app) {
     [authJwt.verifyToken],
     customerController.getMeetingDetail
   );
+  router.post(
+    "/review",
+    [authJwt.verifyToken],
+    customerController.giveServiceReview
+  );
   app.use("/apis/customer", router);
 };

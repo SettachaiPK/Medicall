@@ -131,6 +131,24 @@ exports.getConsultService = async (req, res) => {
     detail.tags = tags;
     //detail.consultantAvatar = detail.consultantAvatar.toString("base64");
 
+    const { rows: reviews } = await client.query(
+      ` SELECT "rating", "reason", jobReview."createDate"
+      FROM jobReview
+      INNER JOIN consultJob 
+      ON jobReview."jobID" = consultJob."jobID" 
+      WHERE consultJob."consultantID" = $1;`,
+      [userID]
+    );
+    detail.reviews = reviews;
+    const ratings = [];
+    reviews.forEach((rate) => {
+      ratings.push(rate.rating);
+    });
+    detail.rating =
+      ratings.length === 0
+        ? null
+        : ratings.reduce((a, b) => a + b, 0) / ratings.length;
+        
     await client.query("COMMIT");
 
     return res.status(200).send(detail);

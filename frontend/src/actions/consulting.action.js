@@ -5,7 +5,7 @@ import {
   CONSULTING_START_TIMER,
   CONSULTING_LEAVE_CALL,
   CONSULTING_LEAVE_CALL_CUSTOMER,
-  ON_CHANG_ADVICE,
+  ON_CHANG_ADVICE,ON_CHANG_STEP
 } from "./types";
 import * as customerService from "../service/customer.service";
 import moment from "moment";
@@ -79,6 +79,10 @@ export const actionChangeAdvice = (payload) => (dispatch) => {
   dispatch(reducerChangeAdvice(payload));
 };
 
+export const actionChangeStep = (payload) => (dispatch) => {
+  dispatch(reducerChangeStep(payload));
+};
+
 export const reducerIncomingCall = (payload) => ({
   type: CONSULTING_INCOMING_CALL,
   payload,
@@ -107,5 +111,10 @@ export const reducerLeaveCallCustomer = () => ({
 
 export const reducerChangeAdvice = (payload) => ({
   type: ON_CHANG_ADVICE,
+  payload,
+});
+
+export const reducerChangeStep = (payload) => ({
+  type: ON_CHANG_STEP,
   payload,
 });

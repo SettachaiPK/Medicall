@@ -115,3 +115,23 @@ export function submitAdvice(data) {
       });
   });
 }
+
+
+export function getSummaryConsultant(jobID) {
+  const Axiosmodel = server.CONSULTANT_GET_SUMMARY;
+
+  return new Promise((resolve, reject) => {
+    httpClient({
+      method: "GET",
+      url: Axiosmodel.url + `/${jobID.toString()}`,
+      withCredentials: true,
+      config: Axiosmodel,
+    })
+      .then((res) => {
+        resolve(res);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}

@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import PropTypes from "prop-types";
 import MeetingSummaryConsultant from "../components/MeetingSummaryConsultant";
 import MeetingSummaryCustomer from "../components/MeetingSummaryCustomer";
+import ReviewPage from "../components/ReviewPage";
 import CallConsultant from "../components/CallConsultant";
 import CallCustomer from "../components/CallCustomer";
 import { Button } from "@mui/material";
@@ -25,7 +26,7 @@ function ConsultingPage(props) {
         </>
       )}
       {props.consulting.step === 1 && (
-        <>{props.consulting.role === "customer" && <CallCustomer />}</>
+        <>{props.consulting.role === "customer" && <ReviewPage />}</>
       )}
       {props.consulting.step === 2 && (
         <>
@@ -33,7 +34,7 @@ function ConsultingPage(props) {
             <MeetingSummaryCustomer jobID={jobID} />
           )}
           {props.consulting.role === "consultant" && (
-            <MeetingSummaryConsultant />
+            <MeetingSummaryConsultant jobID={jobID} />
           )}
         </>
       )}

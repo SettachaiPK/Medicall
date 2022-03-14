@@ -77,6 +77,10 @@ exports.getConsultServiceDetail = async (req, res) => {
         WHERE service."userID" = $1 ;`,
       [userid]
     );
+    if (!detail) {
+      await client.query("ROLLBACK");
+      return res.status(400).send({ message: "Consultant not found" });
+    }
 
     const { rows: tags } = await client.query(
       ` SELECT *
@@ -86,16 +90,30 @@ exports.getConsultServiceDetail = async (req, res) => {
         WHERE "userID" = $1 ;`,
       [userid]
     );
-    if (!detail) {
-      await client.query("ROLLBACK");
-      return res.status(400).send({ message: "Consultant not found" });
-    }
     tags.forEach((tag, index) => {
       tags[index] = tag.tagName;
     });
 
     detail.tags = tags;
     //detail.consultantAvatar = detail.consultantAvatar.toString("base64");
+    const { rows: reviews } = await client.query(
+      ` SELECT "rating", "reason", jobReview."createDate"
+      FROM jobReview
+      INNER JOIN consultJob 
+      ON jobReview."jobID" = consultJob."jobID" 
+      WHERE consultJob."consultantID" = $1;`,
+      [userid]
+    );
+    console.log(reviews);
+    detail.reviews = reviews;
+    const ratings = [];
+    reviews.forEach((rate) => {
+      ratings.push(rate.rating);
+    });
+    detail.rating =
+      ratings.length === 0
+        ? null
+        : ratings.reduce((a, b) => a + b, 0) / ratings.length;
 
     await client.query("COMMIT");
 
@@ -165,6 +183,7 @@ exports.getConsultServiceList = async (req, res) => {
       limit,
       offset,
     ]);*/
+
     let queryText = ` SELECT  
         DISTINCT ON (service."userID") 
           service."userID",
@@ -179,7 +198,8 @@ exports.getConsultServiceList = async (req, res) => {
           "academy",
           "firstName",
           "lastName",
-          "avatar"
+          "avatar",
+          "rating"
         FROM consultantService AS service
         INNER JOIN 
           (SELECT * FROM consultantDetail ) 
@@ -189,12 +209,20 @@ exports.getConsultServiceList = async (req, res) => {
           (SELECT * FROM userDetail) 
           AS userDetail
         ON service."userID" = userDetail."userID"
+        LEFT JOIN 
+          ( SELECT AVG("rating") AS "rating","consultantID" 
+            FROM consultJob 
+            INNER JOIN jobReview
+            ON jobReview."jobID" = consultJob."jobID"
+            GROUP BY "consultantID"
+          ) 
+          AS review
+        ON review."consultantID" = userDetail."userID"
         ORDER BY ${orderby === "userID" ? '"userID"' : '"userID"'} DESC
         LIMIT $1
         OFFSET $2;`;
     let { rows: details } = await client.query(queryText, [limit, offset]);
     details.forEach(async (detail) => {
-      console.log(detail.userID);
       const socketID = await getConnectionID(detail.userID);
       detail.onlineStatus = (await socketID) ? detail.onlineStatus : "offline";
     });
@@ -563,6 +591,58 @@ exports.jobMeetingEnd = async (req, res) => {
     await client.query("COMMIT");
 
     return res.status(200).send({ message: "job ended", result });
+  } catch (err) {
+    await client.query("ROLLBACK");
+
+    console.log(err);
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};
+
+exports.giveServiceReview = async (req, res) => {
+  const { userID } = req;
+  const { jobID, rating, reason } = req.body;
+  const client = await pool.connect();
+  const now = moment();
+  try {
+    await client.query("BEGIN");
+
+    const {
+      rows: [consultJob],
+    } = await client.query(
+      ` UPDATE consultJob
+        SET  "jobStatus" = 'finished'
+        WHERE "jobID" = $1
+        AND "customerID" = $2
+        AND "jobStatus" = 'hanged up'
+        RETURNING *;`,
+      [jobID, userID]
+    );
+    if (!consultJob) {
+      await client.query("ROLLBACK");
+      return res
+        .status(403)
+        .send({ message: "Job not foud or Permission denied" });
+    }
+
+    const {
+      rows: [{ jobReviewID }],
+    } = await client.query(
+      ` INSERT INTO jobReview ("jobID", "rating","reason","createDate")
+        VALUES ($1, $2, $3, $4)
+        RETURNING "jobReviewID"`,
+      [jobID, rating, reason, now]
+    );
+    if (!jobReviewID) {
+      await client.query("ROLLBACK");
+      return res.status(400).send({ message: "Unable to create review" });
+    }
+
+    await client.query("COMMIT");
+
+    return res.status(200).send({ message: "Review Created", jobReviewID });
   } catch (err) {
     await client.query("ROLLBACK");
 

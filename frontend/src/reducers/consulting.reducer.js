@@ -7,6 +7,7 @@ import {
   CONSULTING_LEAVE_CALL,
   ON_CHANG_ADVICE,
   CONSULTING_LEAVE_CALL_CUSTOMER,
+  ON_CHANG_STEP,
 } from "../actions/types";
 
 const initialState = new ConsultingModel();
@@ -43,12 +44,14 @@ const consultingReducer = (state = initialState, action) => {
       };
     case CONSULTING_LEAVE_CALL:
       tempState = new ConsultingModel();
-      return { ...tempState, step: 2 };
+      return { ...tempState, step: 2, role: state.role };
     case CONSULTING_LEAVE_CALL_CUSTOMER:
       tempState = new ConsultingModel();
-      return { ...tempState, step: 1 };
+      return { ...tempState, step: 1, role: state.role };
     case ON_CHANG_ADVICE:
       return { ...state, advice: action.payload };
+    case ON_CHANG_STEP:
+      return { ...state, step: action.payload };
     default:
       return state;
   }

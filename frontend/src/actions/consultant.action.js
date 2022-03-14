@@ -60,6 +60,16 @@ export const actionSubmitAdvice = (payload) => async (dispatch) => {
   }
 };
 
+export const actionGetSummaryConsultant = (jobID) => async () => {
+  try {
+    const { data } = await consultantService.getSummaryConsultant(jobID);
+    return data;
+  } catch (error) {
+    alert(error.response.data.message || error.message);
+    return [];
+  }
+};
+
 
 export const reducerFetchConsultantDetail = (payload) => ({
   type: CONSULTANT_FETCH_DETAIL,

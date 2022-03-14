@@ -38,14 +38,14 @@ const ContextProvider = (props) => {
     leaveCall();
   };
 
-  const leaveCall = () => {
+  const leaveCall = async () => {
     if (props.consulting.role === "consultant") {
-      props.actionSubmitAdvice({
+      await props.actionSubmitAdvice({
         jobID: props.consulting.jobID,
         advice: props.consulting.advice,
       });
     }
-    props.actionLeaveCall(props.consulting.role);
+    await props.actionLeaveCall(props.consulting.role);
   };
 
   useEffect(() => {

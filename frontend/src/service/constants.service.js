@@ -58,6 +58,9 @@ export const server = {
   CONSULTANT_SUBMIT_ADVICE: new AxiosModel({
     url: `consultant/meetingEnd`,
   }),
+  CONSULTANT_GET_SUMMARY: new AxiosModel({
+    url: `consultant/summary`,
+  }),
   ///delete///
   confirmPayment: new AxiosModel({ url: `external/confirm-payment` }),
 };

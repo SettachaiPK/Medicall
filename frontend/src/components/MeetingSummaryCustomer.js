@@ -6,21 +6,23 @@ import { Box } from "@mui/system";
 import { Avatar } from "@mui/material";
 import { pink, grey } from "@mui/material/colors";
 import { actionGetJobSummary } from "../actions/customer.action";
-
-const date = "00/00/00";
-const time = "00.00";
-const total_time = "00 min";
-const Type = "type";
-const cash = "1000";
-const discount = "20";
+import moment from "moment";
 
 function MeetingSummaryCustomer(props) {
   const { jobID, actionGetJobSummary } = props;
-  const [summary, setSummary] = useState({});
+  const [summary, setSummary] = useState({
+    actualPeriod: "",
+    advice: "",
+    avatar: null,
+    communicationChannel: "",
+    firstName: "",
+    lastName: "",
+    meetStartDate: "",
+    price: "",
+  });
   useEffect(() => {
     async function fetch(jobID) {
       const data = await actionGetJobSummary(jobID);
-      console.log(data);
       setSummary(data);
     }
     fetch(jobID);
@@ -53,9 +55,10 @@ function MeetingSummaryCustomer(props) {
         >
           <Avatar
             sx={{ bgcolor: grey[300], height: "4rem", width: "4rem" }}
-          ></Avatar>
+            src={`data:image/png;base64, ${summary.avatar}`}
+          />
           <label style={{ padding: "0.5rem", fontSize: "18px" }}>
-            Consultant Name
+            {summary.firstName} {summary.lastName}
           </label>
           <Button
             sx={{
@@ -86,7 +89,7 @@ function MeetingSummaryCustomer(props) {
               padding: "1rem",
             }}
           >
-            <label>คำแนะนำจากผู้ให้คำปรึกษา :</label>
+            <label>คำแนะนำจากผู้ให้คำปรึกษา : {summary.advice}</label>
           </Box>
           <Box
             sx={{
@@ -96,14 +99,20 @@ function MeetingSummaryCustomer(props) {
             }}
           >
             <Box sx={{ display: "grid" }}>
-              <label>วันที่: {date}</label>
-              <label>เวลา: {time}</label>
-              <label>เวลาทั้งหมด: {total_time}</label>
+              <label>
+                วันที่: {moment(summary.meetStartDate).format("DD-MM-YYYY")}
+              </label>
+              <label>
+                เวลา: {moment(summary.meetStartDate).format("HH.mm")}
+              </label>
+              <label>
+                เวลาทั้งหมด: {(summary.actualPeriod / 60).toFixed(2)} นาที
+              </label>
             </Box>
             <Box sx={{ display: "grid" }}>
-              <label>ชนิดของการสนทนา: {Type}</label>
-              <label>จำนวนเงินที่ชำระ: {cash} บาท</label>
-              <label>ส่วนลดทั้งหมด: {discount} บาท</label>
+              <label>ชนิดของการสนทนา: {summary.communicationChannel}</label>
+              <label>จำนวนเงินที่ชำระ: {summary.price} บาท</label>
+              <label>ส่วนลดทั้งหมด: {0} บาท</label>
             </Box>
           </Box>
         </Box>
@@ -127,6 +136,7 @@ function MeetingSummaryCustomer(props) {
 MeetingSummaryCustomer.defaultProps = {};
 MeetingSummaryCustomer.propTypes = {
   actionGetJobSummary: PropTypes.func.isRequired,
+  jobID: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = (state) => ({});
