@@ -16,8 +16,12 @@ function ConsultingPage(props) {
     <div>
       {props.consulting.step === 0 && (
         <>
-          {props.consulting.role === "customer" && <CallCustomer />}
-          {props.consulting.role === "consultant" && <CallConsultant />}
+          {props.consulting.role === "customer" && (
+            <CallCustomer jobID={jobID} />
+          )}
+          {props.consulting.role === "consultant" && (
+            <CallConsultant jobID={jobID} />
+          )}
         </>
       )}
       {props.consulting.step === 1 && (
@@ -26,7 +30,9 @@ function ConsultingPage(props) {
       {props.consulting.step === 2 && (
         <>
           {props.consulting.role === "customer" && <MeetingSummaryCustomer />}
-          {props.consulting.role === "consultant" && <MeetingSummaryConsultant />}
+          {props.consulting.role === "consultant" && (
+            <MeetingSummaryConsultant />
+          )}
         </>
       )}
     </div>

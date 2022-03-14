@@ -10,6 +10,7 @@ import {
   actionLeaveCall,
   actionEndMeeting,
 } from "../actions/consulting.action";
+import { actionSubmitAdvice } from "../actions/consultant.action";
 
 const SocketContext = createContext();
 
@@ -29,11 +30,14 @@ const ContextProvider = (props) => {
     });
   };
 
-  const handleLeaveCall = () => {
+  const handleLeaveCall = (advice = "") => {
     socket.emit("leaveCall", {
       to: props.consulting.destination,
     });
     props.actionEndMeeting(props.consulting.jobID);
+    if (props.consulting.role === "consultant") {
+      props.actionSubmitAdvice({ jobID: props.consulting.jobID, advice });
+    }
     leaveCall();
   };
 
@@ -113,6 +117,7 @@ export default connect(mapStateToProps, {
   actionStartMeeting: actionStartMeeting,
   actionEndMeeting: actionEndMeeting,
   actionLeaveCall: actionLeaveCall,
+  actionSubmitAdvice: actionSubmitAdvice,
 })(ContextProvider);
 
 export { SocketContext };

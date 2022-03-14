@@ -46,6 +46,16 @@ module.exports = function (app) {
     [authJwt.verifyToken, authJwt.isConsultant],
     consultantController.getMeetingSummary
   );
+  router.get(
+    "/consult-job/:jobID",
+    [authJwt.verifyToken],
+    consultantController.getMeetingDetail
+  );
+  router.get(
+    "/customer/:jobID",
+    [authJwt.verifyToken],
+    consultantController.getCustomerDetail
+  );
 
   app.use("/apis/consultant", router);
 };

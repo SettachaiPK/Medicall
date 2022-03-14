@@ -59,3 +59,59 @@ export function editConsultantStatus(data) {
       });
   });
 }
+
+export function getJobDetail(jobID) {
+  const Axiosmodel = server.CONSULT_JOB_CONSULTANT;
+
+  return new Promise((resolve, reject) => {
+    httpClient({
+      method: "GET",
+      url: Axiosmodel.url + `/${jobID.toString()}`,
+      withCredentials: true,
+      config: Axiosmodel,
+    })
+      .then((res) => {
+        resolve(res);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}
+export function getCustomerDetail(jobID) {
+  const Axiosmodel = server.CONSULT_JOB_GET_CUSTOMER;
+
+  return new Promise((resolve, reject) => {
+    httpClient({
+      method: "GET",
+      url: Axiosmodel.url + `/${jobID.toString()}`,
+      withCredentials: true,
+      config: Axiosmodel,
+    })
+      .then((res) => {
+        resolve(res);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}
+export function submitAdvice(data) {
+  const Axiosmodel = server.CONSULTANT_SUBMIT_ADVICE;
+
+  return new Promise((resolve, reject) => {
+    httpClient({
+      method: "POST",
+      url: Axiosmodel.url,
+      withCredentials: true,
+      config: Axiosmodel,
+      data,
+    })
+      .then((res) => {
+        resolve(res);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}

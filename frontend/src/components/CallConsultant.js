@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import CallComponent from "./CallComponent";
 import CustomerCallDetails from "./CustomerCallDetails";
 import { Box } from "@mui/system";
@@ -6,7 +6,15 @@ import { TextField } from "@mui/material";
 
 const height = "10rem";
 
-export default function CallConsultant() {
+export default function CallConsultant(props) {
+  const [values, setValues] = useState({
+    advice: "",
+  });
+
+  const onChangeInput = (key, val) => {
+    setValues({ ...values, [key]: val });
+  };
+
   return (
     <div
       style={{
@@ -25,7 +33,7 @@ export default function CallConsultant() {
         }}
       >
         <Box sx={{ width: "63rem" }}>
-          <CallComponent />
+          <CallComponent jobID={props.jobID} advice={values.advice} />
         </Box>
         <TextField
           inputProps={{
@@ -40,6 +48,8 @@ export default function CallConsultant() {
           id="outlined-basic"
           label="คำแนะนำจากคุณ"
           variant="outlined"
+          value={values.advice}
+          onChange={(e) => onChangeInput("advice", e.target.value)}
         />
       </Box>
     </div>
