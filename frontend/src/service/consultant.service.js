@@ -96,3 +96,22 @@ export function getCustomerDetail(jobID) {
       });
   });
 }
+export function submitAdvice(data) {
+  const Axiosmodel = server.CONSULTANT_SUBMIT_ADVICE;
+
+  return new Promise((resolve, reject) => {
+    httpClient({
+      method: "POST",
+      url: Axiosmodel.url,
+      withCredentials: true,
+      config: Axiosmodel,
+      data,
+    })
+      .then((res) => {
+        resolve(res);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}

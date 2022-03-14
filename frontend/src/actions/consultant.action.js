@@ -43,13 +43,23 @@ export const actionGetJobDetailConsultant = (jobID) => async (dispatch) => {
 export const actionGetCustomerDetail = (jobID) => async (dispatch) => {
   try {
     const { data } = await consultantService.getCustomerDetail(jobID);
-    console.log(data);
     return data;
   } catch (error) {
     alert(error.response.data.message || error.message);
     return [];
   }
 };
+
+export const actionSubmitAdvice = (payload) => async (dispatch) => {
+  try {
+    const { data } = await consultantService.submitAdvice(payload);
+    return data;
+  } catch (error) {
+    alert(error.response.data.message || error.message);
+    return [];
+  }
+};
+
 
 export const reducerFetchConsultantDetail = (payload) => ({
   type: CONSULTANT_FETCH_DETAIL,
