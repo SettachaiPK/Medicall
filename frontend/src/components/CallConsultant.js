@@ -1,18 +1,18 @@
 import { useState } from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 import CallComponent from "./CallComponent";
 import CustomerCallDetails from "./CustomerCallDetails";
 import { Box } from "@mui/system";
 import { TextField } from "@mui/material";
+import { actionChangeAdvice } from "../actions/consulting.action";
 
 const height = "10rem";
 
-export default function CallConsultant(props) {
-  const [values, setValues] = useState({
-    advice: "",
-  });
-
-  const onChangeInput = (key, val) => {
-    setValues({ ...values, [key]: val });
+function CallConsultant(props) {
+  const onChangeInput = (e) => {
+    console.log('onChangeInput');
+    props.actionChangeAdvice(e);
   };
 
   return (
@@ -33,7 +33,7 @@ export default function CallConsultant(props) {
         }}
       >
         <Box sx={{ width: "63rem" }}>
-          <CallComponent jobID={props.jobID} advice={values.advice} />
+          <CallComponent jobID={props.jobID} advice={props.consulting.advice} />
         </Box>
         <TextField
           inputProps={{
@@ -46,10 +46,23 @@ export default function CallConsultant(props) {
           id="outlined-basic"
           label="คำแนะนำจากคุณ"
           variant="outlined"
-          value={values.advice}
-          onChange={(e) => onChangeInput("advice", e.target.value)}
+          value={props.consulting.advice}
+          onChange={(e) => onChangeInput(e.target.value)}
         />
       </Box>
     </div>
   );
 }
+
+CallConsultant.defaultProps = {};
+CallConsultant.propTypes = {
+  consulting: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+  consulting: state.consulting,
+});
+
+export default connect(mapStateToProps, {
+  actionChangeAdvice: actionChangeAdvice,
+})(CallConsultant);

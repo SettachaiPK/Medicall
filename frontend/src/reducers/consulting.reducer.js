@@ -5,9 +5,12 @@ import {
   CONSULTING_DESTINATION_READY,
   CONSULTING_START_TIMER,
   CONSULTING_LEAVE_CALL,
+  ON_CHANG_ADVICE,
+  CONSULTING_LEAVE_CALL_CUSTOMER,
 } from "../actions/types";
 
 const initialState = new ConsultingModel();
+let tempState;
 
 const consultingReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -39,8 +42,13 @@ const consultingReducer = (state = initialState, action) => {
         meetEndDate: action.payload.meetEndDate,
       };
     case CONSULTING_LEAVE_CALL:
-      let tempState = new ConsultingModel();
+      tempState = new ConsultingModel();
       return { ...tempState, step: 2 };
+    case CONSULTING_LEAVE_CALL_CUSTOMER:
+      tempState = new ConsultingModel();
+      return { ...tempState, step: 1 };
+    case ON_CHANG_ADVICE:
+      return { ...state, advice: action.payload };
     default:
       return state;
   }

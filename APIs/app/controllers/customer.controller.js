@@ -451,6 +451,8 @@ exports.getMeetingSummary = async (req, res) => {
 
   try {
     await client.query("BEGIN");
+    console.log(jobID);
+    console.log(userID);
 
     const {
       rows: [jobDetail],
@@ -465,6 +467,7 @@ exports.getMeetingSummary = async (req, res) => {
         AND "jobID" = ($2);`,
       [userID, jobID]
     );
+    console.log(jobDetail);
     if (!jobDetail) {
       await client.query("ROLLBACK");
       res.status(403).send({ message: "Permission Denied" });

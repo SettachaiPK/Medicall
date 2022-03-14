@@ -29,7 +29,9 @@ function ConsultingPage(props) {
       )}
       {props.consulting.step === 2 && (
         <>
-          {props.consulting.role === "customer" && <MeetingSummaryCustomer />}
+          {props.consulting.role === "customer" && (
+            <MeetingSummaryCustomer jobID={jobID} />
+          )}
           {props.consulting.role === "consultant" && (
             <MeetingSummaryConsultant />
           )}

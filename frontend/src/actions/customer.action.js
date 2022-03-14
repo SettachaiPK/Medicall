@@ -29,3 +29,13 @@ export const actionGetJobDetail = (jobID) => async (dispatch) => {
     return [];
   }
 };
+
+export const actionGetJobSummary = (jobID) => async (dispatch) => {
+  try {
+    const { data } = await customerService.getJobSummary(jobID);
+    return data;
+  } catch (error) {
+    alert(error.response.data.message || error.message);
+    return [];
+  }
+};

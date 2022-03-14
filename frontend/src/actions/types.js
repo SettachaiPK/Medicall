@@ -10,3 +10,5 @@ export const CONSULTING_ACCEPT_CALL = "consulting/accpet";
 export const CONSULTING_DESTINATION_READY = "consulting/destination/ready";
 export const CONSULTING_START_TIMER = "consulting/timer/start";
 export const CONSULTING_LEAVE_CALL = "consulting/leave";
+export const CONSULTING_LEAVE_CALL_CUSTOMER = "consulting/leave/customer";
+export const ON_CHANG_ADVICE = "consulting/advice";

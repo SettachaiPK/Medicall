@@ -1,8 +1,11 @@
+import { useEffect, useState } from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 import { Button, Paper, Typography } from "@mui/material";
-import React from "react";
 import { Box } from "@mui/system";
 import { Avatar } from "@mui/material";
 import { pink, grey } from "@mui/material/colors";
+import { actionGetJobSummary } from "../actions/customer.action";
 
 const date = "00/00/00";
 const time = "00.00";
@@ -11,7 +14,17 @@ const Type = "type";
 const cash = "1000";
 const discount = "20";
 
-export default function MeetingSummaryCustomer() {
+function MeetingSummaryCustomer(props) {
+  const { jobID, actionGetJobSummary } = props;
+  const [summary, setSummary] = useState({});
+  useEffect(() => {
+    async function fetch(jobID) {
+      const data = await actionGetJobSummary(jobID);
+      console.log(data);
+      setSummary(data);
+    }
+    fetch(jobID);
+  }, [jobID, actionGetJobSummary]);
   return (
     <div>
       <Paper
@@ -41,7 +54,9 @@ export default function MeetingSummaryCustomer() {
           <Avatar
             sx={{ bgcolor: grey[300], height: "4rem", width: "4rem" }}
           ></Avatar>
-          <label style={{padding:"0.5rem",fontSize:"18px"}}>Consultant Name</label>
+          <label style={{ padding: "0.5rem", fontSize: "18px" }}>
+            Consultant Name
+          </label>
           <Button
             sx={{
               color: pink[100],
@@ -108,3 +123,14 @@ export default function MeetingSummaryCustomer() {
     </div>
   );
 }
+
+MeetingSummaryCustomer.defaultProps = {};
+MeetingSummaryCustomer.propTypes = {
+  actionGetJobSummary: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = (state) => ({});
+
+export default connect(mapStateToProps, {
+  actionGetJobSummary: actionGetJobSummary,
+})(MeetingSummaryCustomer);
