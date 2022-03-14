@@ -3,11 +3,13 @@ import { useParams } from "react-router-dom";
 import { ConsultantDetailModel } from "../../models";
 import { getConsultantDetail } from "../../service/customer.service";
 import { Box } from "@mui/system";
-import { Avatar } from "@mui/material";
+import { Avatar, Paper } from "@mui/material";
 import MessageIcon from "@mui/icons-material/Message";
 import VideocamIcon from "@mui/icons-material/Videocam";
 import CallIcon from "@mui/icons-material/Call";
 import { Button } from "@mui/material";
+import { grey, pink } from "@mui/material/colors";
+import { Checkbox } from "@mui/material";
 
 function ConsultantDetailPage() {
   const { id } = useParams();
@@ -39,10 +41,10 @@ function ConsultantDetailPage() {
   }, [fetchDetail]);
 
   return (
-    <div style={{ display: "flex", justifyContent: "center", marginTop: "5%" }}>
+    <div style={{ display: "flex", justifyContent: "center", marginTop: "2%" }}>
       <div className="flex_column_center">
         <Avatar
-          sx={{ width: 60, height: 60 }}
+          sx={{ width: 80, height: 80 , mb:"1rem"}}
           src={`data:image/png;base64, ${avatar}`}
         />
         <div className="flex_column_center">
@@ -53,11 +55,12 @@ function ConsultantDetailPage() {
       </div>
       <br />
       <div style={{ marginLeft: "4%" }}>
-        <Box
+        <Paper
           sx={{
             display: "flex",
-            border: 1,
-            width: "max-content",
+            justifyContent: "space-between",
+            width: "30rem",
+            height: "max-content",
             padding: "5%",
           }}
         >
@@ -66,69 +69,88 @@ function ConsultantDetailPage() {
             <div>infirmary: {infirmary}</div>
             <div>academy: {academy}</div>
           </div>
-          <div style={{ marginLeft: "150px", marginTop: "25px" }}>
+          <div>
             AvrgReview
           </div>
-        </Box>
+        </Paper>
         <br />
-        <Box
+        <Paper
           sx={{
-            minWidth: 400,
-            maxHeight: 200,
-            border: 1,
-            padding: "5%",
+            width: "40rem",
+            padding: "3%",
           }}
         >
           <Box
             sx={{
-              minWidth: 200,
-              maxWidth: 350,
-              minHeight: 50,
-              maxHeight: 70,
               margin: "auto",
+              height: "4rem",
               border: 1,
-              padding: "3%",
+              borderColor: grey[300],
+              padding: "2%",
             }}
           >
             <div>detail: {detail}</div>
           </Box>
           <Box
-            sx={{ display: "flex", justifyContent: "space-around", margin: 2 }}
+            sx={{
+              display: "flex",
+              justifyContent: "space-around",
+              margin: 1.5,
+            }}
           >
-            <div style={{ display: "grid" }}>
-              <MessageIcon />
+            <Box sx={{display:"grid", justifyItems:"center"}}>
+              <Checkbox
+                icon={<MessageIcon sx={{ color: grey[400], fontSize: 35 }} />}
+                checkedIcon={
+                  <MessageIcon sx={{ color: pink[100], fontSize: 35 }} />
+                }
+              />
               {messagePrice}
-            </div>
-            <div style={{ display: "grid" }}>
-              <VideocamIcon /> {voiceCallPrice}
-            </div>
-            <div style={{ display: "grid" }}>
-              <CallIcon /> {videoCallPrice}
-            </div>
+            </Box>
+            <Box sx={{display:"grid", justifyItems:"center"}}>
+            <Checkbox
+                icon={<VideocamIcon sx={{ color: grey[400], fontSize: 35 }} />}
+                checkedIcon={
+                  <VideocamIcon sx={{ color: pink[100], fontSize: 35 }} />
+                }
+              />
+              {voiceCallPrice}
+            </Box>
+            <Box sx={{display:"grid", justifyItems:"center"}}>
+            <Checkbox
+                icon={<CallIcon sx={{ color: grey[400], fontSize: 35 }} />}
+                checkedIcon={
+                  <CallIcon sx={{ color: pink[100], fontSize: 35 }} />
+                }
+              />
+              {videoCallPrice}
+            </Box>
           </Box>
-        </Box>
+        </Paper>
         <br />
-        <Box
+        <Paper
           sx={{
-            minWidth: 400,
-            maxHeight: 200,
-            border: 1,
-            padding: "5%",
+            width: "40rem",
+            padding: "3%",
           }}
         >
           <Box
             sx={{
-              minWidth: 50,
               border: 1,
-              maxWidth: 50,
-              padding: "5%",
+              borderColor: grey[300],
+              padding: "2%",
+              minHeight: "5rem"
             }}
           >
             <div>{review}</div>
           </Box>
-        </Box>
-        <Button>จองล่วงหน้า</Button>
-        <Button>ปรึกษาทันที</Button>
+        </Paper>
+      <Box sx={{ p:"6%", width:"100%"}}>
+      <div style={{display:"flex",justifyContent:"flex-end"}}>
+        <Button sx={{backgroundColor: "#AEEEEE"}} variant="contained"  >จองล่วงหน้า</Button>
+        <Button sx={{ml:"3rem"}} variant="contained" >ปรึกษาทันที</Button>
+      </div>
+      </Box>
       </div>
     </div>
   );
