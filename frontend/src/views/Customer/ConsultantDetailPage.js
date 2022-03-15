@@ -124,9 +124,9 @@ function ConsultantDetailPage() {
           }}
         >
           <div>
-            <Typography sx={{fontSize:"80%"}}>department: {department}</Typography>
-            <Typography sx={{fontSize:"80%"}}>infirmary: {infirmary}</Typography>
-            <Typography sx={{fontSize:"80%"}}>academy: {academy}</Typography>
+            <Typography sx={{fontSize:"80%"}}>แผนก : {department}</Typography>
+            <Typography sx={{fontSize:"80%"}}>ทำงานที่ : {infirmary}</Typography>
+            <Typography sx={{fontSize:"80%"}}>สถารศึกษา : {academy}</Typography>
           </div>
           <div style={{display:"flex", alignItems:"center"}}>
           <Typography sx={{fontSize:"2rem"}}>{parseFloat(rating).toFixed(2)}</Typography>
