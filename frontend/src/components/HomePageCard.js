@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { forwardRef, useState } from "react";
 import { connect } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
@@ -36,6 +36,7 @@ function HomePageCard({
     onlineStatus,
     userID,
     avatar,
+    rating,
   },
 }) {
   const navigate = useNavigate();
@@ -68,6 +69,14 @@ function HomePageCard({
           : "#C4C4C4",
     },
   }));
+
+  const MyShowReview = forwardRef(function MyComponent(props, ref) {
+    return (
+      <div {...props} ref={ref}>
+        <ShowReview {...props} />
+      </div>
+    );
+  });
 
   return (
     <>
@@ -134,7 +143,11 @@ function HomePageCard({
             {firstName} {lastName}
           </Typography>
           <Chip size="small" label={department} sx={{ mb: 2 }} />
-          <ShowReview />
+          <Tooltip
+            title={`${rating ? parseFloat(rating).toFixed(2) : "No"} score`}
+          >
+            <MyShowReview rating={rating} />
+          </Tooltip>
 
           <Box
             sx={{
@@ -170,7 +183,7 @@ function HomePageCard({
             rows={3}
             size="small"
             label="รายละเอียด"
-            value={detail}
+            value={detail ? detail : ""}
             inputProps={{ readOnly: true }}
             onClick={(event) => {
               event.stopPropagation();
@@ -231,6 +244,7 @@ HomePageCard.defaultProps = {
     userID: 0,
   },
 };
+
 HomePageCard.propTypes = {};
 
 const mapStateToProps = (state) => ({});
