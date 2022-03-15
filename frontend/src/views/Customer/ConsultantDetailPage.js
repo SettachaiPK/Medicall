@@ -30,6 +30,7 @@ import Rating from "@mui/material/Rating";
 import { styled } from "@mui/material/styles";
 import PropTypes from "prop-types";
 import GradeIcon from '@mui/icons-material/Grade';
+import { Chip } from "@mui/material";
 
 function ConsultantDetailPage() {
   const { id } = useParams();
@@ -124,9 +125,23 @@ function ConsultantDetailPage() {
           }}
         >
           <div>
-            <Typography sx={{fontSize:"80%"}}>แผนก : {department}</Typography>
-            <Typography sx={{fontSize:"80%"}}>ทำงานที่ : {infirmary}</Typography>
-            <Typography sx={{fontSize:"80%"}}>สถารศึกษา : {academy}</Typography>
+            <Chip size="small" label={department} sx={{ mb: 1 }} />
+            <div className="text-icon-wrapper">
+            <img
+                src="/assets/img/icon/Pin_duotone.svg"
+                className="home-card-icon"
+                alt=""
+              />
+            <Typography sx={{fontSize:"80%"}}>{infirmary}</Typography>
+            </div>
+            <div className="text-icon-wrapper">
+            <img
+                src="/assets/img/icon/Square academic cap.svg"
+                className="home-card-icon"
+                alt=""
+              />
+            <Typography sx={{fontSize:"80%"}}>{academy}</Typography>
+            </div>
           </div>
           <div style={{display:"flex", alignItems:"center"}}>
           <Typography sx={{fontSize:"2rem"}}>{parseFloat(rating).toFixed(2)}</Typography>
