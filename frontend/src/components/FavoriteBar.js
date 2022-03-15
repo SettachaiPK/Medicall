@@ -1,17 +1,5 @@
-import { useState } from "react";
-import Chip from "@mui/material/Chip";
-import Autocomplete from "@mui/material/Autocomplete";
-import TextField from "@mui/material/TextField";
-import Stack from "@mui/material/Stack";
 import {
   Avatar,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  styled,
-  Tooltip,
-  tooltipClasses,
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
@@ -49,6 +37,7 @@ function FavoriteBar(props) {
                     marginRight: 2,
                     position: "relative",
                   }}
+                  key={index}
                 >
                   <Avatar
                     sx={{ position: "absolute", width: 40, height: 40 }}
@@ -84,13 +73,3 @@ function FavoriteBar(props) {
 }
 
 export default FavoriteBar;
-
-const top100Films = [
-  { title: "headache" },
-  { title: "อาเจียน" },
-  { title: "คลื่นไส้" },
-  { title: "ปวดหัว" },
-  { title: "ปวดท้อง" },
-  { title: "eye discomfort" },
-  { title: "unable to breath" },
-];

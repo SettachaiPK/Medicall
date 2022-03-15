@@ -32,7 +32,7 @@ function HomePage(props) {
         >
           {consultants.map((consultant, index) => {
             return (
-              <Grid item xs={12} md={12} lg={6} xl={4}>
+              <Grid item xs={12} md={12} lg={6} xl={4} key={index}>
                 <HomePageCard key={index} consultant={consultant} />
               </Grid>
             );

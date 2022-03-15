@@ -22,7 +22,6 @@ function ConsultantDetailPage() {
     voiceCallPrice,
     videoCallPrice,
     onlineStatus,
-    consultantAvatar,
     department,
     infirmary,
     academy,
@@ -141,8 +140,8 @@ function ConsultantDetailPage() {
               minHeight: "5rem",
             }}
           >
-            {reviews.map((review) => (
-              <div>
+            {reviews.map((review, index) => (
+              <div key={index}>
                 <div>rating: {review.rating}</div>
                 <div>reason: {review.reason}</div>
                 <div>create date: {review.createDate}</div>

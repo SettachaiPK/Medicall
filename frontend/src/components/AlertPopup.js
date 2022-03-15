@@ -86,7 +86,7 @@ function AlertPopup(props) {
 AlertPopup.defaultProps = {};
 AlertPopup.propTypes = {
   actionAcceptCall: PropTypes.func.isRequired,
-  alert: PropTypes.object.isRequired,
+  alert: PropTypes.object,
   consulting: PropTypes.object.isRequired,
 };
 

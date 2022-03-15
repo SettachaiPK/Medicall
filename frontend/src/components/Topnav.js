@@ -2,10 +2,7 @@ import { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import LoginStep from "./LoginStep";
-import {
-  IconButton,
-  Drawer,
-} from "@mui/material";
+import { IconButton, Drawer } from "@mui/material";
 import { Menu } from "@mui/icons-material";
 
 function Topnav({ user: { status, roles } }) {
@@ -13,7 +10,10 @@ function Topnav({ user: { status, roles } }) {
   const [openAdd, setOpenAdd] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const handleOpenAdd = () => setOpenAdd(true);
+  const handleOpenAdd = (e) => {
+    e.preventDefault();
+    setOpenAdd(true);
+  };
   const handleCloseAdd = () => {
     setOpenAdd(false);
   };
@@ -32,7 +32,7 @@ function Topnav({ user: { status, roles } }) {
       {/* <Link to="/hospital">ค้นหาสถานพยาบาล</Link> */}
       <Link to="/appointment">ประวัติการนัดหมาย</Link>
       {!status && (
-        <a href onClick={handleOpenAdd}>
+        <a href="/" onClick={handleOpenAdd}>
           เข้าสู่ระบบ
         </a>
       )}
