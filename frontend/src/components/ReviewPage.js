@@ -114,7 +114,9 @@ function ReviewPage(props) {
             }}
           />
         </Box>
+        <Box sx={{display:"flex",justifyContent:"flex-end",p:"0.5rem"}}>
         <Button
+         sx={{backgroundColor: "#FFC1C1",color: grey[500],px:1}}
           onClick={() => {
             props.actionGiveReview({
               jobID: props.jobID,
@@ -126,6 +128,7 @@ function ReviewPage(props) {
         >
           ยืนยัน
         </Button>
+        </Box>
       </Paper>
     </div>
   );

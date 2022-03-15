@@ -21,6 +21,7 @@ import {
 import { Box } from "@mui/system";
 import ShowReview from "./ShowReview";
 import ConsultNowDetailsPopUp from "./ConsultNowDetailsPopUp";
+import { grey } from "@mui/material/colors";
 
 function HomePageCard({
   consultant: {
@@ -200,7 +201,7 @@ function HomePageCard({
             <Button
               variant="contained "
               endIcon={<img src="/assets/img/icon/calendar-edit.svg" alt="" />}
-              sx={{ backgroundColor: "#AEEEEE", color: "black", px: 1 }}
+              sx={{ backgroundColor: "#AEEEEE", color: grey[600], px: 1 }}
               disabled
             >
               จองล่วงหน้า
@@ -212,7 +213,7 @@ function HomePageCard({
               endIcon={
                 <img src="/assets/img/icon/message-square-lines.svg" alt="" />
               }
-              sx={{ backgroundColor: "#FFC1C1", color: "black", px: 1 }}
+              sx={{ backgroundColor: "#FFC1C1", color: grey[600], px: 1 }}
             >
               ปรึกษาทันที
             </Button>

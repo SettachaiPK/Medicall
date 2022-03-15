@@ -1,4 +1,5 @@
 import { useEffect, useCallback, useState } from "react";
+import * as React from "react";
 import { useParams } from "react-router-dom";
 import { ConsultantDetailModel } from "../../models";
 import { getConsultantDetail } from "../../service/customer.service";
@@ -10,6 +11,25 @@ import CallIcon from "@mui/icons-material/Call";
 import { Button } from "@mui/material";
 import { grey, pink } from "@mui/material/colors";
 import { Checkbox } from "@mui/material";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import Divider from "@mui/material/Divider";
+import ListItemText from "@mui/material/ListItemText";
+import Typography from "@mui/material/Typography";
+import { CssBaseline } from "@mui/material";
+import { ExpandMore } from "@mui/icons-material";
+import { Accordion } from "@mui/material";
+import { AccordionDetails } from "@mui/material";
+import { AccordionSummary } from "@mui/material";
+import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
+import SentimentDissatisfiedIcon from "@mui/icons-material/SentimentDissatisfied";
+import SentimentSatisfiedIcon from "@mui/icons-material/SentimentSatisfied";
+import SentimentSatisfiedAltIcon from "@mui/icons-material/SentimentSatisfiedAltOutlined";
+import SentimentVerySatisfiedIcon from "@mui/icons-material/SentimentVerySatisfied";
+import Rating from "@mui/material/Rating";
+import { styled } from "@mui/material/styles";
+import PropTypes from "prop-types";
+import GradeIcon from '@mui/icons-material/Grade';
 
 function ConsultantDetailPage() {
   const { id } = useParams();
@@ -29,6 +49,45 @@ function ConsultantDetailPage() {
     rating,
     reviews,
   } = consultant;
+
+  const customIcons = {
+    1: {
+      icon: <SentimentVeryDissatisfiedIcon />,
+      label: "Very Dissatisfied",
+    },
+    2: {
+      icon: <SentimentDissatisfiedIcon />,
+      label: "Dissatisfied",
+    },
+    3: {
+      icon: <SentimentSatisfiedIcon />,
+      label: "Neutral",
+    },
+    4: {
+      icon: <SentimentSatisfiedAltIcon />,
+      label: "Satisfied",
+    },
+    5: {
+      icon: <SentimentVerySatisfiedIcon />,
+      label: "Very Satisfied",
+    },
+  };
+  
+  const StyledRating = styled(Rating)({
+    "& .MuiRating-iconHover": {
+      color: "#ff6d75",
+    },
+  });
+  
+  function IconContainer(props) {
+    const { value, ...other } = props;
+    return <span {...other}>{customIcons[value].icon}</span>;
+  }
+  
+  IconContainer.propTypes = {
+    value: PropTypes.number.isRequired,
+  };
+  
 
   const fetchDetail = useCallback(async () => {
     const { data } = await getConsultantDetail(id);
@@ -61,15 +120,18 @@ function ConsultantDetailPage() {
             justifyContent: "space-between",
             width: "30rem",
             height: "max-content",
-            padding: "5%",
+            padding: "3%",
           }}
         >
           <div>
-            <div>department: {department}</div>
-            <div>infirmary: {infirmary}</div>
-            <div>academy: {academy}</div>
+            <Typography sx={{fontSize:"80%"}}>department: {department}</Typography>
+            <Typography sx={{fontSize:"80%"}}>infirmary: {infirmary}</Typography>
+            <Typography sx={{fontSize:"80%"}}>academy: {academy}</Typography>
           </div>
-          <div>{parseFloat(rating).toFixed(2)}</div>
+          <div style={{display:"flex", alignItems:"center"}}>
+          <Typography sx={{fontSize:"2rem"}}>{parseFloat(rating).toFixed(2)}</Typography>
+          <GradeIcon sx={{ color: pink[100], fontSize: 20 }}/>
+          </div>
         </Paper>
         <br />
         <Paper
@@ -78,17 +140,11 @@ function ConsultantDetailPage() {
             padding: "3%",
           }}
         >
-          <Box
-            sx={{
-              margin: "auto",
-              height: "4rem",
-              border: 1,
-              borderColor: grey[300],
-              padding: "2%",
-            }}
-          >
-            <div>detail: {detail}</div>
-          </Box>
+          <Accordion>
+            <AccordionDetails expandIcon={<ExpandMore />} sx={{minHeight:"7rem"}}>
+              <Typography>{detail}</Typography>
+            </AccordionDetails>
+          </Accordion>
           <Box
             sx={{
               display: "flex",
@@ -97,30 +153,15 @@ function ConsultantDetailPage() {
             }}
           >
             <Box sx={{ display: "grid", justifyItems: "center" }}>
-              <Checkbox
-                icon={<MessageIcon sx={{ color: grey[400], fontSize: 35 }} />}
-                checkedIcon={
                   <MessageIcon sx={{ color: pink[100], fontSize: 35 }} />
-                }
-              />
               {messagePrice}
             </Box>
             <Box sx={{ display: "grid", justifyItems: "center" }}>
-              <Checkbox
-                icon={<VideocamIcon sx={{ color: grey[400], fontSize: 35 }} />}
-                checkedIcon={
                   <VideocamIcon sx={{ color: pink[100], fontSize: 35 }} />
-                }
-              />
               {voiceCallPrice}
             </Box>
             <Box sx={{ display: "grid", justifyItems: "center" }}>
-              <Checkbox
-                icon={<CallIcon sx={{ color: grey[400], fontSize: 35 }} />}
-                checkedIcon={
                   <CallIcon sx={{ color: pink[100], fontSize: 35 }} />
-                }
-              />
               {videoCallPrice}
             </Box>
           </Box>
@@ -136,18 +177,33 @@ function ConsultantDetailPage() {
             sx={{
               border: 1,
               borderColor: grey[300],
-              padding: "2%",
-              minHeight: "5rem",
+              maxHeight: "7rem",
+              overflow: "auto",
             }}
           >
-            {reviews.map((review, index) => (
-              <div key={index}>
-                <div>rating: {review.rating}</div>
-                <div>reason: {review.reason}</div>
-                <div>create date: {review.createDate}</div>
-                <div>-----------------</div>
-              </div>
-            ))}
+            <CssBaseline />
+            <List>
+              {reviews.map((review, index) => (
+                <ListItem button key={index}>
+                  <ListItemText
+                    primary={<StyledRating
+                      readOnly
+                      sx={{ color: pink[100] }}
+                      name="highlight-selected-only"
+                      value={review.rating}
+                      IconContainerComponent={IconContainer}
+                      highlightSelectedOnly
+                    />}
+                    secondary={
+                      <React.Fragment>
+                        <Typography>reason: {review.reason}</Typography>
+                        create date: {review.createDate}
+                      </React.Fragment>
+                    }
+                  />
+                </ListItem>
+              ))}
+            </List>
           </Box>
         </Paper>
         <Box sx={{ p: "6%", width: "100%" }}>
@@ -166,3 +222,4 @@ function ConsultantDetailPage() {
 }
 
 export default ConsultantDetailPage;
+

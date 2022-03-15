@@ -14,7 +14,7 @@ import ReviewPage from "./components/ReviewPage";
 const theme = createTheme({
   palette: { primary: { main: "#EEA9B8" } },
   typography: {
-    fontFamily: "Raleway, Arial",
+    fontFamily: "'Kanit', sans-serif",
   },
 });
 
