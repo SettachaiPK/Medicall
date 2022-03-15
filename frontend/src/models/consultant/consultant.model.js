@@ -15,5 +15,9 @@ export class ConsultantDetailModel {
     this.infirmary = "";
     this.academy = "";
     this.tags = [];
+    this.rating = 5;
+    this.reviews = [
+      { rating: 5, createDate: "2022-03-14T10:52:34.685Z", reason: "" },
+    ];
   }
 }

@@ -27,12 +27,13 @@ function ConsultantDetailPage() {
     infirmary,
     academy,
     avatar,
+    rating,
+    reviews,
   } = consultant;
-
-  const review = "review";
 
   const fetchDetail = useCallback(async () => {
     const { data } = await getConsultantDetail(id);
+    await console.log(data);
     setConsultant(data);
   }, [id]);
 
@@ -44,7 +45,7 @@ function ConsultantDetailPage() {
     <div style={{ display: "flex", justifyContent: "center", marginTop: "2%" }}>
       <div className="flex_column_center">
         <Avatar
-          sx={{ width: 80, height: 80 , mb:"1rem"}}
+          sx={{ width: 80, height: 80, mb: "1rem" }}
           src={`data:image/png;base64, ${avatar}`}
         />
         <div className="flex_column_center">
@@ -69,9 +70,7 @@ function ConsultantDetailPage() {
             <div>infirmary: {infirmary}</div>
             <div>academy: {academy}</div>
           </div>
-          <div>
-            AvrgReview
-          </div>
+          <div>{parseFloat(rating).toFixed(2)}</div>
         </Paper>
         <br />
         <Paper
@@ -98,7 +97,7 @@ function ConsultantDetailPage() {
               margin: 1.5,
             }}
           >
-            <Box sx={{display:"grid", justifyItems:"center"}}>
+            <Box sx={{ display: "grid", justifyItems: "center" }}>
               <Checkbox
                 icon={<MessageIcon sx={{ color: grey[400], fontSize: 35 }} />}
                 checkedIcon={
@@ -107,8 +106,8 @@ function ConsultantDetailPage() {
               />
               {messagePrice}
             </Box>
-            <Box sx={{display:"grid", justifyItems:"center"}}>
-            <Checkbox
+            <Box sx={{ display: "grid", justifyItems: "center" }}>
+              <Checkbox
                 icon={<VideocamIcon sx={{ color: grey[400], fontSize: 35 }} />}
                 checkedIcon={
                   <VideocamIcon sx={{ color: pink[100], fontSize: 35 }} />
@@ -116,8 +115,8 @@ function ConsultantDetailPage() {
               />
               {voiceCallPrice}
             </Box>
-            <Box sx={{display:"grid", justifyItems:"center"}}>
-            <Checkbox
+            <Box sx={{ display: "grid", justifyItems: "center" }}>
+              <Checkbox
                 icon={<CallIcon sx={{ color: grey[400], fontSize: 35 }} />}
                 checkedIcon={
                   <CallIcon sx={{ color: pink[100], fontSize: 35 }} />
@@ -139,18 +138,29 @@ function ConsultantDetailPage() {
               border: 1,
               borderColor: grey[300],
               padding: "2%",
-              minHeight: "5rem"
+              minHeight: "5rem",
             }}
           >
-            <div>{review}</div>
+            {reviews.map((review) => (
+              <div>
+                <div>rating: {review.rating}</div>
+                <div>reason: {review.reason}</div>
+                <div>create date: {review.createDate}</div>
+                <div>-----------------</div>
+              </div>
+            ))}
           </Box>
         </Paper>
-      <Box sx={{ p:"6%", width:"100%"}}>
-      <div style={{display:"flex",justifyContent:"flex-end"}}>
-        <Button sx={{backgroundColor: "#AEEEEE"}} variant="contained"  >จองล่วงหน้า</Button>
-        <Button sx={{ml:"3rem"}} variant="contained" >ปรึกษาทันที</Button>
-      </div>
-      </Box>
+        <Box sx={{ p: "6%", width: "100%" }}>
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <Button sx={{ backgroundColor: "#AEEEEE" }} variant="contained">
+              จองล่วงหน้า
+            </Button>
+            <Button sx={{ ml: "3rem" }} variant="contained">
+              ปรึกษาทันที
+            </Button>
+          </div>
+        </Box>
       </div>
     </div>
   );
