@@ -195,3 +195,24 @@ export function getJobSummary(jobID) {
       });
   });
 }
+
+
+export function giveReview(data) {
+  const Axiosmodel = server.CUSTOMER_GIVE_REVIEW;
+
+  return new Promise((resolve, reject) => {
+    httpClient({
+      method: "POST",
+      url: Axiosmodel.url ,
+      withCredentials: true,
+      config: Axiosmodel,
+      data,
+    })
+      .then((res) => {
+        resolve(res);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}

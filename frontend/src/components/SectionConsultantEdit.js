@@ -143,12 +143,12 @@ function SectionConsultantEdit({ consultant, user }) {
         แก้ไขรูปภาพ
       </Button>
       <div style={{ display: "flex" }}>
-        <label>คะแนนรีวิวเฉลี่ย :</label>
+        <label>คะแนนรีวิวเฉลี่ย : </label>
         <StyledRating
           readOnly
           sx={{ color: pink[100] }}
           name="highlight-selected-only"
-          defaultValue={5}
+          value={formValue.rating}
           IconContainerComponent={IconContainer}
           highlightSelectedOnly
         />

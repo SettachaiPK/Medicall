@@ -39,3 +39,13 @@ export const actionGetJobSummary = (jobID) => async (dispatch) => {
     return [];
   }
 };
+
+
+export const actionGiveReview = (payload) => async (dispatch) => {
+  try {
+    const { data } = await customerService.giveReview(payload);
+    return data;
+  } catch (error) {
+    console.log(error)
+  }
+};

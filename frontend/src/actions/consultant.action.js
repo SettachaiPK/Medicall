@@ -70,7 +70,6 @@ export const actionGetSummaryConsultant = (jobID) => async () => {
   }
 };
 
-
 export const reducerFetchConsultantDetail = (payload) => ({
   type: CONSULTANT_FETCH_DETAIL,
   payload,

@@ -1,5 +1,5 @@
 import { Paper, Typography } from "@mui/material";
-import React from "react";
+import { useState } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import Rating from "@mui/material/Rating";
@@ -12,6 +12,8 @@ import { pink, grey } from "@mui/material/colors";
 import { TextField } from "@mui/material";
 import { Box } from "@mui/system";
 import { actionChangeStep } from "../actions/consulting.action";
+import { actionGiveReview } from "../actions/customer.action";
+import { Button } from "@mui/material";
 
 const customIcons = {
   1: {
@@ -58,6 +60,8 @@ IconContainer.propTypes = {
 };
 
 function ReviewPage(props) {
+  const [rating, setRating] = useState(5);
+  const [comment, setComment] = useState("");
   return (
     <div>
       <Paper
@@ -84,11 +88,12 @@ function ReviewPage(props) {
           <Rating
             sx={{ color: pink[100], margin: "1rem" }}
             name="highlight-selected-only"
-            defaultValue={5}
+            value={rating}
             IconContainerComponent={IconContainer}
             highlightSelectedOnly
             onChange={(event, newValue) => {
-              props.actionChangeStep(2);
+              setRating(newValue);
+              //props.actionChangeStep(2);
             }}
           />
           <TextField
@@ -102,9 +107,25 @@ function ReviewPage(props) {
             rows={4}
             id="outlined-basic"
             label="อธิบายเพิ่มเติมเกี่ยวกับความพึงพอใจของคุณ..."
+            value={comment}
             variant="outlined"
+            onChange={(event, newValue) => {
+              setComment(newValue);
+            }}
           />
         </Box>
+        <Button
+          onClick={() => {
+            props.actionGiveReview({
+              jobID: props.jobID,
+              rating: rating,
+              reason: comment,
+            });
+            props.actionChangeStep(2);
+          }}
+        >
+          ยืนยัน
+        </Button>
       </Paper>
     </div>
   );
@@ -113,10 +134,12 @@ function ReviewPage(props) {
 ReviewPage.defaultProps = {};
 ReviewPage.propTypes = {
   actionChangeStep: PropTypes.func.isRequired,
+  actionGiveReview: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({});
 
-export default connect(mapStateToProps, { actionChangeStep: actionChangeStep })(
-  ReviewPage
-);
+export default connect(mapStateToProps, {
+  actionChangeStep: actionChangeStep,
+  actionGiveReview: actionGiveReview,
+})(ReviewPage);

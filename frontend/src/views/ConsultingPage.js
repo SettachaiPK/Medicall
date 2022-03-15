@@ -26,7 +26,7 @@ function ConsultingPage(props) {
         </>
       )}
       {props.consulting.step === 1 && (
-        <>{props.consulting.role === "customer" && <ReviewPage />}</>
+        <>{props.consulting.role === "customer" && <ReviewPage jobID={jobID}/>}</>
       )}
       {props.consulting.step === 2 && (
         <>
