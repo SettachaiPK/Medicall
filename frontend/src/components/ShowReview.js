@@ -47,6 +47,7 @@ export default function ShowReview(props) {
       name="highlight-selected-only"
       IconContainerComponent={IconContainer}
       value={parseFloat(props.rating)}
+      //highlightSelectedOnly
     />
   );
 }

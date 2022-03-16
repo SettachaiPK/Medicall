@@ -21,7 +21,5 @@ module.exports = function (app) {
     [authJwt.verifyToken, authJwt.isAdmin],
     adminController.rejectConsultant
   );
-  ;
-
   app.use("/apis/admin", router);
 };

@@ -122,7 +122,16 @@ function HomePageCard({
               sx={{ position: "absolute", width: 60, height: 60 }}
               src={`data:image/png;base64, ${avatar}`}
             />
-            <StyledTooltip title={onlineStatus} placement="right-start">
+            <StyledTooltip
+              title={
+                onlineStatus === "online"
+                  ? "พร้อมให้บริการ"
+                  : onlineStatus === "busy"
+                  ? "ไม่ว่าง"
+                  : "ไม่พร้อมให้บริการ"
+              }
+              placement="right-start"
+            >
               <CircleIcon
                 sx={{
                   position: "absolute",
@@ -145,7 +154,9 @@ function HomePageCard({
           </Typography>
           <Chip size="small" label={department} sx={{ mb: 2 }} />
           <Tooltip
-            title={`${rating ? parseFloat(rating).toFixed(2) : "No"} score`}
+            title={`${
+              rating ? parseFloat(rating).toFixed(2) : "ยังไม่มี"
+            } คะแนน`}
           >
             <MyShowReview rating={rating} />
           </Tooltip>
