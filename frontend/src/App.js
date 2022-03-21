@@ -10,6 +10,9 @@ import ConsultantDetailPage from "./views/Customer/ConsultantDetailPage";
 import { createTheme, ThemeProvider } from "@mui/material";
 import ConsultingPage from "./views/ConsultingPage";
 import ReviewPage from "./components/ReviewPage";
+import ManageProduct from "./views/Pharmacy/ManageProduct";
+import AddProduct from "./views/Pharmacy/AddProduct";
+import EditProduct from "./views/Pharmacy/EditProduct";
 
 const theme = createTheme({
   palette: { primary: { main: "#EEA9B8" } },
@@ -41,6 +44,9 @@ function App() {
           <Route path="consultant/:id" element={<ConsultantDetailPage />} />
           <Route path="meeting/:jobID" element={<TestMeetingPage />} />
           <Route path="reviewpage" element={<ReviewPage />} />
+          <Route path="manageproduct" element={<ManageProduct />} />
+          <Route path="addproduct" element={<AddProduct />} />
+          <Route path="editproduct" element={<EditProduct />} />
           {/* <Route exact path="/" element={<ProtectedRoute />}>
       <Router>
         <Topnav />

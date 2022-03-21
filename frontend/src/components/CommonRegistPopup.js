@@ -114,7 +114,6 @@ function CommonRegistPopup(props) {
                 <RadioGroup
                   row
                   aria-labelledby="demo-controlled-radio-buttons-group"
-                  name="controlled-radio-buttons-group"
                   name="sex"
                   value={sex}
                   onChange={handleChange}
