@@ -18,7 +18,7 @@ function StorePage(props) {
       icon: <ShoppingBagIcon sx={classes.icon} />,
       name: "ตะกร้าสินค้า",
       action: () => {
-        navigate(`/`);
+        navigate(`/cart`);
       },
     },
     {
