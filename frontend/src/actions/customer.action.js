@@ -5,7 +5,7 @@ export const actionGetOccupations = () => async (dispatch) => {
     const { data } = await customerService.getOccupation();
     return data;
   } catch (error) {
-    alert(error.response.data.message || error.message);
+    console.log(error.response.data.message || error.message);
     return [];
   }
 };
@@ -15,7 +15,7 @@ export const actionGetDepartment = (occupation) => async (dispatch) => {
     const { data } = await customerService.getDepartment(occupation);
     return data;
   } catch (error) {
-    alert(error.response.data.message || error.message);
+    console.log(error.response.data.message || error.message);
     return [];
   }
 };
@@ -25,7 +25,7 @@ export const actionGetJobDetail = (jobID) => async (dispatch) => {
     const { data } = await customerService.getJobDetail(jobID);
     return data;
   } catch (error) {
-    alert(error.response.data.message || error.message);
+    console.log(error.response.data.message || error.message);
     return [];
   }
 };
@@ -35,7 +35,7 @@ export const actionGetJobSummary = (jobID) => async (dispatch) => {
     const { data } = await customerService.getJobSummary(jobID);
     return data;
   } catch (error) {
-    alert(error.response.data.message || error.message);
+    console.log(error.response.data.message || error.message);
     return [];
   }
 };

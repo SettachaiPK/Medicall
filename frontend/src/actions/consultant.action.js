@@ -35,7 +35,7 @@ export const actionGetJobDetailConsultant = (jobID) => async (dispatch) => {
     const { data } = await consultantService.getJobDetail(jobID);
     return data;
   } catch (error) {
-    alert(error.response.data.message || error.message);
+    console.log(error.response.data.message || error.message);
     return [];
   }
 };
@@ -45,7 +45,7 @@ export const actionGetCustomerDetail = (jobID) => async (dispatch) => {
     const { data } = await consultantService.getCustomerDetail(jobID);
     return data;
   } catch (error) {
-    alert(error.response.data.message || error.message);
+    console.log(error.response.data.message || error.message);
     return [];
   }
 };
@@ -55,7 +55,7 @@ export const actionSubmitAdvice = (payload) => async (dispatch) => {
     const { data } = await consultantService.submitAdvice(payload);
     return data;
   } catch (error) {
-    alert(error.response.data.message || error.message);
+    console.log(error.response.data.message || error.message);
     return [];
   }
 };
@@ -65,7 +65,7 @@ export const actionGetSummaryConsultant = (jobID) => async () => {
     const { data } = await consultantService.getSummaryConsultant(jobID);
     return data;
   } catch (error) {
-    alert(error.response.data.message || error.message);
+    console.log(error.response.data.message || error.message);
     return [];
   }
 };

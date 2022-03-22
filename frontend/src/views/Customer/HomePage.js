@@ -5,6 +5,7 @@ import SearchConsult from "../../components/SearchConsult";
 import HomePageCard from "../../components/HomePageCard";
 import { Grid } from "@mui/material";
 import FavoriteBar from "../../components/FavoriteBar";
+import StorePage from "./StorePage";
 
 function HomePage(props) {
   const [consultants, setConsultants] = useState([]);
