@@ -14,6 +14,7 @@ import ManageProduct from "./views/Pharmacy/ManageProduct";
 import AddProduct from "./views/Pharmacy/AddProduct";
 import EditProduct from "./views/Pharmacy/EditProduct";
 import StorePage from "./views/Customer/StorePage";
+import Cart from "./views/Pharmacy/Cart";
 
 const theme = createTheme({
   palette: { primary: { main: "#EEA9B8" } },
@@ -49,6 +50,7 @@ function App() {
           <Route path="addproduct" element={<AddProduct />} />
           <Route path="editproduct" element={<EditProduct />} />
           <Route path="product" element={<StorePage />} />
+          <Route path="cart" element={<Cart />} />
           {/* <Route exact path="/" element={<ProtectedRoute />}>
       <Router>
         <Topnav />
