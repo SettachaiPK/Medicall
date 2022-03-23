@@ -103,6 +103,52 @@ exports.rejectConsultant = async (req, res) => {
   }
 };
 
+exports.acceptPhamarcy = async (req, res) => {
+  const { userID } = req.body;
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+    const { rows: phamarcyDetail } = await client.query(
+      ` UPDATE phamarcyDetail 
+        SET status = 'active' 
+        WHERE "userID" = ($1)
+        RETURNING *`,
+      [userID]
+    );
+    if (phamarcyDetail.length === 0) {
+      await client.query("ROLLBACK");
+      return res.status(400).send({ message: "No pending application" });
+    }
+
+    const {
+      rows: [{ roleID }],
+    } = await client.query(
+      ` SELECT "roleID" FROM roles WHERE "roleName" = ($1)`,
+      [process.env.ROLE_PHAMARCY]
+    );
+    await client.query(
+      ` INSERT INTO userToRole ("userID", "roleID")
+          VALUES ($1, $2)`,
+      [userID, roleID]
+    );
+
+    await client.query("COMMIT");
+
+    return res.status(200).send({
+      message: "Phamarcy activate",
+      userID,
+    });
+  } catch (err) {
+    await client.query("ROLLBACK");
+
+    console.log(err);
+
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};
 
 exports.rejectPhamarcy = async (req, res) => {
   const { userID } = req.body;
