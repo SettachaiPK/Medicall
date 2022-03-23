@@ -80,6 +80,12 @@ exports.rejectConsultant = async (req, res) => {
       [userID]
     );
 
+    await client.query(
+      ` DELETE FROM consultantDetailMedia
+        WHERE "userID" = ($1);`,
+      [userID]
+    );
+
     await client.query("COMMIT");
 
     return res.status(200).send({
