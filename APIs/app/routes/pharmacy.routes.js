@@ -17,5 +17,17 @@ module.exports = function (app) {
     pharmacyController.getStoreDetail
   );
 
+  router.post(
+    "/product",
+    [authJwt.verifyToken, authJwt.isPharmacy],
+    pharmacyController.addProduct
+  );
+
+  router.put(
+    "/product",
+    [authJwt.verifyToken, authJwt.isPharmacy],
+    pharmacyController.editProduct
+  );
+
   app.use("/apis/pharmacy", router);
 };
