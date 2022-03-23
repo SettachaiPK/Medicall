@@ -79,10 +79,34 @@ isConsultant = async (req, res, next) => {
   }
 };
 
+isPharmacy = async (req, res, next) => {
+  const { userID } = req;
+  try {
+    const { rows: pharmacyRows } = await pool.query(
+      ` SELECT "roleName" 
+      FROM userToRole As userRoles
+      INNER JOIN roles
+      ON roles."roleID" = userRoles."roleID"
+      WHERE "userID" = ($1)
+      AND "roleName" = 'phamarcy';`,
+      [userID]
+    );
+
+    if (pharmacyRows.length > 0) {
+      return next();
+    } else {
+      res.status(403).send({ message: "Permission Denied" });
+    }
+  } catch (err) {
+    return res.status(500).send({ message: "internal server error" });
+  }
+};
+
 const authJwt = {
   verifyToken,
   isAdmin,
   isConsultant,
+  isPharmacy,
 };
 
 module.exports = authJwt;

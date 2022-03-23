@@ -112,7 +112,7 @@ exports.acceptPhamarcy = async (req, res) => {
     const { rows: phamarcyDetail } = await client.query(
       ` UPDATE phamarcyDetail 
         SET status = 'active' 
-        WHERE "userID" = ($1)
+        WHERE "ownerID" = ($1)
         RETURNING *`,
       [userID]
     );
@@ -159,7 +159,7 @@ exports.rejectPhamarcy = async (req, res) => {
 
     const { rows: phamarcyDetail } = await client.query(
       ` SELECT * FROM phamarcyDetail
-        WHERE "userID" = ($1)
+        WHERE "ownerID" = ($1)
         AND status = 'waiting approval';`,
       [userID]
     );
@@ -171,7 +171,7 @@ exports.rejectPhamarcy = async (req, res) => {
 
     await client.query(
       ` DELETE FROM phamarcyDetail
-        WHERE "userID" = ($1)
+        WHERE "ownerID" = ($1)
         AND status = 'waiting approval';`,
       [userID]
     );

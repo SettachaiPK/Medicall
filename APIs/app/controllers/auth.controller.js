@@ -383,7 +383,7 @@ exports.signUpPhamarcy = async (req, res) => {
     } = await client.query(
       `SELECT * 
         FROM phamarcyDetail
-        WHERE "userID" = ($1);`,
+        WHERE "ownerID" = ($1);`,
       [userID]
     );
 
@@ -392,7 +392,7 @@ exports.signUpPhamarcy = async (req, res) => {
       return res.status(403).send({ message: "You have already signed up!" });
     }
     await client.query(
-      ` INSERT INTO phamarcyDetail ("userID", "storeName","location","licenseNumber","personalID","registerDate")
+      ` INSERT INTO phamarcyDetail ("ownerID", "storeName","location","licenseNumber","personalID","registerDate")
         VALUES ($1, $2, $3, $4, $5, $6)`,
       [userID, storeName, location, licenseNumber, personalID, now]
     );
@@ -543,7 +543,7 @@ exports.checkPendingPhamarcy = async (req, res) => {
       ` SELECT "userID"
         FROM phamarcyDetail
         WHERE "status" = 'waiting approval'
-        AND "userID" = ($1);`,
+        AND "ownerID" = ($1);`,
       [userID]
     );
     if (phamarcyDetail.length > 0) {
