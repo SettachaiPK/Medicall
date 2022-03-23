@@ -96,3 +96,53 @@ exports.rejectConsultant = async (req, res) => {
     client.release();
   }
 };
+
+
+exports.rejectPhamarcy = async (req, res) => {
+  const { userID } = req.body;
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+
+    const { rows: phamarcyDetail } = await client.query(
+      ` SELECT * FROM phamarcyDetail
+        WHERE "userID" = ($1)
+        AND status = 'waiting approval';`,
+      [userID]
+    );
+
+    if (phamarcyDetail.length === 0) {
+      await client.query("ROLLBACK");
+      return res.status(400).send({ message: "No pending application" });
+    }
+
+    await client.query(
+      ` DELETE FROM phamarcyDetail
+        WHERE "userID" = ($1)
+        AND status = 'waiting approval';`,
+      [userID]
+    );
+
+    await client.query(
+      ` DELETE FROM phamarcyDetailMedia
+        WHERE "userID" = ($1);`,
+      [userID]
+    );
+
+    await client.query("COMMIT");
+
+    return res.status(200).send({
+      message: "Application deleted",
+      userID,
+    });
+  } catch (err) {
+    await client.query("ROLLBACK");
+
+    console.log(err);
+
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};

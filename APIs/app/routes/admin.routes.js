@@ -21,5 +21,10 @@ module.exports = function (app) {
     [authJwt.verifyToken, authJwt.isAdmin],
     adminController.rejectConsultant
   );
+  router.post(
+    "/reject-phamarcy",
+    [authJwt.verifyToken, authJwt.isAdmin],
+    adminController.rejectPhamarcy
+  );
   app.use("/apis/admin", router);
 };
