@@ -16,6 +16,12 @@ module.exports = function (app) {
     [authJwt.verifyToken, authJwt.isPharmacy],
     pharmacyController.getStoreDetail
   );
+  
+  router.get(
+    "/products",
+    [authJwt.verifyToken, authJwt.isPharmacy],
+    pharmacyController.getProducts
+  );
 
   router.post(
     "/product",

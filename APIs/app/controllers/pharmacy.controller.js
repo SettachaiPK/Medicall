@@ -66,6 +66,7 @@ exports.addProduct = async (req, res) => {
     if (files) {
       const { media } = await files;
       if (media.length) {
+        console.log('files');
         for (let index = 0; index < media.length; index++) {
           const image = await media[index];
           if (!image.name.match(/\.(jpg|jpeg|png)$/i)) {
@@ -84,6 +85,7 @@ exports.addProduct = async (req, res) => {
           );
         }
       } else {
+        console.log('file');
         if (!media.name.match(/\.(jpg|jpeg|png)$/i)) {
           await client.query("ROLLBACK");
           return res.status(415).send({ message: "wrong file type" });
@@ -199,6 +201,93 @@ exports.editProduct = async (req, res) => {
       message: "Product edited",
       productID,
     });
+  } catch (err) {
+    await client.query("ROLLBACK");
+
+    console.log(err);
+
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};
+
+exports.getProducts = async (req, res) => {
+  const { userID } = req;
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+    const {
+      rows: [{ storeID }],
+    } = await client.query(
+      ` SELECT "storeID"
+        FROM phamarcyDetail
+        WHERE "ownerID" = ($1)`,
+      [userID]
+    );
+    if (!storeID) {
+      await client.query("ROLLBACK");
+      res.status(403).send({ message: "Permission Denied" });
+    }
+    const { rows: products } = await client.query(
+      ` SELECT * 
+        FROM product   
+        LEFT JOIN (
+          SELECT DISTINCT "productID", "imageBase64" AS "productMedia"
+          FROM   productMedia
+          )  AS "productMedia" USING ("productID")
+        WHERE "storeID" = ($1)`,
+      [storeID]
+    );
+
+    await client.query("COMMIT");
+
+    return res.status(200).send(products);
+  } catch (err) {
+    await client.query("ROLLBACK");
+
+    console.log(err);
+
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};
+
+exports.getProductDetail = async (req, res) => {
+  const { userID } = req;
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+    const {
+      rows: [{ storeID }],
+    } = await client.query(
+      ` SELECT "storeID"
+        FROM phamarcyDetail
+        WHERE "ownerID" = ($1)`,
+      [userID]
+    );
+    if (!storeID) {
+      await client.query("ROLLBACK");
+      res.status(403).send({ message: "Permission Denied" });
+    }
+    const { rows: products } = await client.query(
+      ` SELECT * 
+        FROM product   
+        LEFT JOIN (
+          SELECT "productID", array_agg("imageBase64") AS "productMedia"
+          FROM   productMedia
+          GROUP BY "productID"
+          ) AS "productMedia" USING ("productID")
+        WHERE "storeID" = ($1)`,
+      [storeID]
+    );
+
+    await client.query("COMMIT");
+
+    return res.status(200).send(products);
   } catch (err) {
     await client.query("ROLLBACK");
 
