@@ -115,14 +115,11 @@ export default function PurchaseOrder() {
           }} />
       <Paper sx={{ display: "flex",flexDirection: "row",justifyContent: "space-between",alignItems: "center",width: "45rem",padding: "0.5rem"}}>
       <FormControl sx={{ m: 1, minWidth: 120 }}>
-        <InputLabel id="demo-simple-select-helper-label">Age</InputLabel>
+        <InputLabel id="demo-simple-select-helper-label">ช่องทางการชำระเงิน</InputLabel>
         <Select
-          labelId="demo-simple-select-helper-label"
-          id="demo-simple-select-helper"
           value={payment}
-          label="ช่องทางการชำระเงิน"
           onChange={handleChange}
-          sx={{height:"2rem",width:"25rem"}}
+          sx={{height:"3rem",width:"25rem",fontSize:"1rem"}}
         >
           <MenuItem value="">
             <em>None</em>
@@ -132,7 +129,7 @@ export default function PurchaseOrder() {
           <MenuItem value={30}>Thirty</MenuItem>
         </Select>
       </FormControl>
-        <Button sx={{ backgroundColor: "#FFC1C1", color: grey[500],height:"2rem",width:"8rem"}}>ชำระเงิน</Button>
+        <Button sx={{ backgroundColor: "#FFC1C1", color: grey[500],height:"3rem",width:"10rem",fontSize:"1rem"}}>ชำระเงิน</Button>
         </Paper>
       </Box>
     </div>
