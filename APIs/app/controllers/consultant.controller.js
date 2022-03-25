@@ -148,7 +148,7 @@ exports.getConsultService = async (req, res) => {
       ratings.length === 0
         ? null
         : ratings.reduce((a, b) => a + b, 0) / ratings.length;
-        
+
     await client.query("COMMIT");
 
     return res.status(200).send(detail);
@@ -360,6 +360,41 @@ exports.getCustomerDetail = async (req, res) => {
     await client.query("COMMIT");
 
     return res.status(200).send(jobDetail);
+  } catch (err) {
+    await client.query("ROLLBACK");
+
+    console.log(err);
+
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};
+
+exports.getProducts = async (req, res) => {
+  const client = await pool.connect();
+  const { search } = req.query;
+
+  try {
+    await client.query("BEGIN");
+    console.log(search);
+    const { rows: products } = await client.query(
+      ` SELECT * 
+        FROM product
+        INNER JOIN phamarcyDetail
+          USING ("storeID")
+        LEFT JOIN (
+          SELECT DISTINCT on ("productID") 
+            "productID", "imageBase64" AS "productMedia"
+          FROM   productMedia
+          )  AS "productMedia" USING ("productID")
+        WHERE "productName" LIKE $1`,
+      [`%${search}%`]
+    );
+
+    await client.query("COMMIT");
+
+    return res.status(200).send(products);
   } catch (err) {
     await client.query("ROLLBACK");
 

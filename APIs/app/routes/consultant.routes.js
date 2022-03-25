@@ -48,14 +48,19 @@ module.exports = function (app) {
   );
   router.get(
     "/consult-job/:jobID",
-    [authJwt.verifyToken],
+    [authJwt.verifyToken, authJwt.isConsultant],
     consultantController.getMeetingDetail
   );
   router.get(
     "/customer/:jobID",
-    [authJwt.verifyToken],
+    [authJwt.verifyToken, authJwt.isConsultant],
     consultantController.getCustomerDetail
   );
-
+  router.get(
+    "/products",
+    [authJwt.verifyToken, authJwt.isConsultant],
+    consultantController.getProducts
+  );
+  
   app.use("/apis/consultant", router);
 };
