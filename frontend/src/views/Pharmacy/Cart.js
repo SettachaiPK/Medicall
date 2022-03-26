@@ -295,7 +295,7 @@ export default function EnhancedTable() {
       </Paper>
       
     </Box>
-    <Box sx={{display: "flex",justifyContent: "flex-end",p:2,width: "90%",position:"fixed"}}>
+    <Box sx={{display: "flex",justifyContent: "flex-end",p:2,width: "90%"}}>
             <Button sx={{ backgroundColor: "#FFC1C1", color: grey[500],height:"3rem"}}>สั่งซื้อสินค้า</Button>
       </Box>
     </>

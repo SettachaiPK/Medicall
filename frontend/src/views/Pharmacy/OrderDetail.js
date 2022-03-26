@@ -60,7 +60,7 @@ export default function OrderDetail() {
                 <TableCell>ชื่อสินค้า</TableCell>
                 <TableCell align="left">ราคา/ชิ้น</TableCell>
                 <TableCell align="left">จำนวน</TableCell>
-                <TableCell align="left">รวม</TableCell>
+                <TableCell align="left">รวม(บาท)</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -81,7 +81,7 @@ export default function OrderDetail() {
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell colSpan={2}>Tax</TableCell>
+                <TableCell colSpan={2}>Shipping Cost</TableCell>
                 <TableCell align="left">{ccyFormat(shippingCost)}</TableCell>
               </TableRow>
               <TableRow>
@@ -95,7 +95,7 @@ export default function OrderDetail() {
         <Box sx={{ width: "44rem",display: "flex",
     justifyContent: "flex-end",
     flexDirection: "row"}}>
-        <Button sx={{ color: grey[500],textDecoration:"underline",height:"2rem",width:"6rem"}}>จัดส่งแล้ว</Button>
+        <Button sx={{ color: grey[500],textDecoration:"underline",height:"2rem",width:"6rem"}}>ยกเลิก</Button>
         <Button sx={{ backgroundColor: "#FFC1C1", color: grey[500],height:"2rem",width:"6rem"}}>จัดส่งแล้ว</Button>
         </Box>
         </Box>
