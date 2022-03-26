@@ -35,5 +35,11 @@ module.exports = function (app) {
     pharmacyController.editProduct
   );
 
+  router.delete(
+    "/product/:productID",
+    [authJwt.verifyToken, authJwt.isPharmacy],
+    pharmacyController.deleteProduct
+  );
+
   app.use("/apis/pharmacy", router);
 };

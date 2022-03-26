@@ -388,7 +388,8 @@ exports.getProducts = async (req, res) => {
             "productID", "imageBase64" AS "productMedia"
           FROM   productMedia
           )  AS "productMedia" USING ("productID")
-        WHERE "productName" LIKE $1`,
+        WHERE "productName" LIKE $1
+        AND "isActive" = TRUE`,
       [`%${search}%`]
     );
 

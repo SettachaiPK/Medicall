@@ -135,7 +135,8 @@ exports.editProduct = async (req, res) => {
         FROM phamarcyDetail
         INNER JOIN product
         ON phamarcyDetail."storeID" = product."storeID"
-        WHERE "productID" = ($1)`,
+        WHERE "productID" = ($1)
+        AND "isActive" = TRUE`,
       [productID]
     );
     if (ownerIDs.length === 0) {
@@ -212,6 +213,55 @@ exports.editProduct = async (req, res) => {
   }
 };
 
+exports.deleteProduct = async (req, res) => {
+  const {
+    userID,
+    params: { productID },
+  } = req;
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+    const { rows: ownerIDs } = await client.query(
+      ` SELECT "ownerID" 
+        FROM phamarcyDetail
+        INNER JOIN product
+        USING("storeID")
+        WHERE "productID" = ($1)`,
+      [productID]
+    );
+    if (ownerIDs.length === 0) {
+      await client.query("ROLLBACK");
+      return res.status(403).send({ message: "Permission denied" });
+    }
+    if (ownerIDs[0].ownerID !== userID) {
+      await client.query("ROLLBACK");
+      return res.status(403).send({ message: "Permission denied" });
+    }
+    await client.query(
+      ` UPDATE product 
+        SET "isActive" = FALSE
+        WHERE "productID" = ($1)`,
+      [productID]
+    );
+
+    await client.query("COMMIT");
+
+    return res.status(200).send({
+      message: "Product deleted",
+      productID,
+    });
+  } catch (err) {
+    await client.query("ROLLBACK");
+
+    console.log(err);
+
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};
+
 exports.getProducts = async (req, res) => {
   const { userID } = req;
   const client = await pool.connect();
@@ -234,10 +284,12 @@ exports.getProducts = async (req, res) => {
       ` SELECT * 
         FROM product   
         LEFT JOIN (
-          SELECT DISTINCT "productID", "imageBase64" AS "productMedia"
+          SELECT DISTINCT ON ("productID")
+            "productID", "imageBase64" AS "productMedia"
           FROM   productMedia
           )  AS "productMedia" USING ("productID")
-        WHERE "storeID" = ($1)`,
+        WHERE "storeID" = ($1)
+        AND "isActive" = TRUE`,
       [storeID]
     );
 
