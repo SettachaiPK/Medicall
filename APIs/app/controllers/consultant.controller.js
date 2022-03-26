@@ -405,3 +405,87 @@ exports.getProducts = async (req, res) => {
     client.release();
   }
 };
+
+exports.submitRecommendedProduct = async (req, res) => {
+  const { userID } = req;
+  const { jobID, recommendedProducts } = req.body;
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+
+    const {
+      rows: [consultJob],
+    } = await client.query(
+      ` SELECT *
+        FROM consultJob
+        WHERE "jobID" = ($2) 
+        AND "consultantID" = ($1);`,
+      [userID, jobID]
+    );
+    if (!consultJob) {
+      await client.query("ROLLBACK");
+      return res.status(403).send({ message: "Permission Denied" });
+    }
+    const {
+      rows: [consultJobRecommendedProduct],
+    } = await client.query(
+      ` SELECT * 
+        FROM consultjobrecommendedproduct`,
+      []
+    );
+    if (consultJobRecommendedProduct) {
+      await client.query("ROLLBACK");
+      return res
+        .status(400)
+        .send({ message: "Recommended product already exist" });
+    }
+    if (recommendedProducts) {
+      for (var i = 0; i < recommendedProducts.length; i++) {
+        const productID = recommendedProducts[i];
+        if (isNaN(productID)) {
+          await client.query("ROLLBACK");
+          return res
+            .status(400)
+            .send({ message: "Invalid data type, Allowed number" });
+        } else {
+          const {
+            rows: [product],
+          } = await client.query(
+            ` SELECT * 
+              FROM product
+              WHERE "productID" = $1
+              AND "isActive" = TRUE;`,
+            [productID]
+          );
+          if (!product) {
+            await client.query("ROLLBACK");
+            return res
+              .status(400)
+              .send({ message: "Product does not exist" });
+          }
+          await client.query(
+            ` INSERT INTO consultJobRecommendedProduct
+                ("jobID", "productID") 
+              VALUES ($1, $2);`,
+            [jobID, productID]
+          );
+        }
+      }
+    }
+
+    await client.query("COMMIT");
+
+    return res
+      .status(200)
+      .send({ message: "Submit recommended product success", jobID });
+  } catch (err) {
+    await client.query("ROLLBACK");
+
+    console.log(err);
+
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};
