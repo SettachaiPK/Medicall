@@ -55,5 +55,10 @@ module.exports = function (app) {
     [authJwt.verifyToken],
     customerController.giveServiceReview
   );
+  router.post(
+    "/order",
+    [authJwt.verifyToken],
+    customerController.placeOrder
+  );
   app.use("/apis/customer", router);
 };

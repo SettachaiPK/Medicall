@@ -651,3 +651,99 @@ exports.giveServiceReview = async (req, res) => {
     client.release();
   }
 };
+
+exports.placeOrder = async (req, res) => {
+  const { userID } = req;
+  const {
+    orderDescription,
+    deliveryLocation,
+    deliveryChannel,
+    storeID,
+    items,
+  } = req.body;
+  const client = await pool.connect();
+  const now = moment();
+  let totalPrice = 0;
+  try {
+    await client.query("BEGIN");
+
+    const {
+      rows: [{ orderID }],
+    } = await client.query(
+      ` INSERT INTO productOrder
+          ("orderDescription", "deliveryLocation", "deliveryChannel", "storeID", "customerID", "createDate")
+        VALUES ($1, $2, $3, $4, $5, $6)
+        RETURNING "orderID";`,
+      [
+        orderDescription,
+        deliveryLocation,
+        deliveryChannel,
+        storeID,
+        userID,
+        now,
+      ]
+    );
+    console.log(orderID);
+
+    if (!items || items.length === 0) {
+      await client.query("ROLLBACK");
+      return res
+        .status(400)
+        .send({ message: "Unable to create order with no item" });
+    } else {
+      for (var i = 0; i < items.length; i++) {
+        const { productID, amount } = items[i];
+        if (isNaN(productID) || isNaN(amount)) {
+          await client.query("ROLLBACK");
+          return res
+            .status(400)
+            .send({ message: "Invalid data type, Allowed integer" });
+        } else {
+          const {
+            rows: [product],
+          } = await client.query(
+            ` SELECT * 
+              FROM product
+              WHERE "productID" = $1
+              AND "isActive" = TRUE;`,
+            [productID]
+          );
+          if (!product) {
+            await client.query("ROLLBACK");
+            return res.status(400).send({ message: "Product does not exist" });
+          }
+          if (product.storeID !== storeID) {
+            await client.query("ROLLBACK");
+            return res
+              .status(400)
+              .send({ message: "Product does not belong to this store" });
+          }
+          await client.query(
+            ` INSERT INTO productOrderToProduct
+                ("orderID", "productID", "pricePerPiece", "amount")
+              VALUES ($1, $2, $3, $4);`,
+            [orderID, productID, product.productPrice, amount]
+          );
+          totalPrice += product.productPrice * amount;
+        }
+      }
+      await client.query(
+        ` UPDATE productOrder
+          SET "totalPrice" = $1
+          WHERE "orderID" = $2;`,
+        [totalPrice, orderID]
+      );
+    }
+
+    await client.query("COMMIT");
+
+    return res.status(200).send({ message: "Order Created", orderID });
+  } catch (err) {
+    await client.query("ROLLBACK");
+
+    console.log(err);
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};
