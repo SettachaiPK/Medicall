@@ -40,6 +40,12 @@ module.exports = function (app) {
     [authJwt.verifyToken, authJwt.isPharmacy],
     pharmacyController.deleteProduct
   );
+  
+  router.get(
+    "/orders",
+    [authJwt.verifyToken, authJwt.isPharmacy],
+    pharmacyController.getOrders
+  );
 
   app.use("/apis/pharmacy", router);
 };

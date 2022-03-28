@@ -66,7 +66,7 @@ exports.addProduct = async (req, res) => {
     if (files) {
       const { media } = await files;
       if (media.length) {
-        console.log('files');
+        console.log("files");
         for (let index = 0; index < media.length; index++) {
           const image = await media[index];
           if (!image.name.match(/\.(jpg|jpeg|png)$/i)) {
@@ -85,7 +85,7 @@ exports.addProduct = async (req, res) => {
           );
         }
       } else {
-        console.log('file');
+        console.log("file");
         if (!media.name.match(/\.(jpg|jpeg|png)$/i)) {
           await client.query("ROLLBACK");
           return res.status(415).send({ message: "wrong file type" });
@@ -340,6 +340,54 @@ exports.getProductDetail = async (req, res) => {
     await client.query("COMMIT");
 
     return res.status(200).send(products);
+  } catch (err) {
+    await client.query("ROLLBACK");
+
+    console.log(err);
+
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};
+
+exports.getOrders = async (req, res) => {
+  const { userID } = req;
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+
+    const { rows: productorder } = await client.query(
+      ` SELECT *
+        FROM productorder
+        INNER JOIN 
+          (SELECT "storeID","ownerID" FROM phamarcyDetail) 
+        AS phamarcyDetail USING ("storeID")
+        LEFT JOIN (
+          SELECT "orderID", array_agg(json_build_object(
+            'productID', "productID", 
+            'pricePerPiece', "pricePerPiece", 
+            'amount', "amount", 
+            'productName', "productName"
+          )) AS "products"
+          FROM   productordertoproduct
+          INNER JOIN product
+          AS product USING("productID")
+          WHERE "isActive" = TRUE
+          GROUP BY "orderID"
+          ) AS "productordertoproduct" USING ("orderID")
+        WHERE "ownerID" = ($1);`,
+      [userID]
+    );
+    if (!productorder) {
+      await client.query("ROLLBACK");
+      res.status(403).send({ message: "Permission Denied" });
+    }
+
+    await client.query("COMMIT");
+
+    return res.status(200).send(productorder);
   } catch (err) {
     await client.query("ROLLBACK");
 
