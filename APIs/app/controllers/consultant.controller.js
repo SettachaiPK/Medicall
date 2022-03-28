@@ -276,12 +276,27 @@ exports.getMeetingSummary = async (req, res) => {
       [userID, jobID]
     );
     if (!jobDetail) {
-      res.status(403).send({ message: "Permission Denied" });
+      await client.query("ROLLBACK");
+      return res.status(403).send({ message: "Permission Denied" });
     }
+    const { rows: recommendedProducts } = await client.query(
+      ` SELECT * 
+        FROM consultjobrecommendedproduct       
+        INNER JOIN product
+        AS "product" USING ("productID")
+        LEFT JOIN (
+          SELECT DISTINCT on ("productID") 
+            "productID", "imageBase64" AS "productMedia"
+          FROM   productMedia
+          )  AS "productMedia" USING ("productID")
+        WHERE "jobID" = ($1)
+        AND "isActive" = TRUE;`,
+      [jobID]
+    );
 
     await client.query("COMMIT");
 
-    return res.status(200).send(jobDetail);
+    return res.status(200).send({ ...jobDetail, recommendedProducts });
   } catch (err) {
     await client.query("ROLLBACK");
 
@@ -461,9 +476,7 @@ exports.submitRecommendedProduct = async (req, res) => {
           );
           if (!product) {
             await client.query("ROLLBACK");
-            return res
-              .status(400)
-              .send({ message: "Product does not exist" });
+            return res.status(400).send({ message: "Product does not exist" });
           }
           await client.query(
             ` INSERT INTO consultJobRecommendedProduct
