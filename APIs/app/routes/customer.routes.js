@@ -60,5 +60,10 @@ module.exports = function (app) {
     [authJwt.verifyToken],
     customerController.placeOrder
   );
+  router.get(
+    "/orders",
+    [authJwt.verifyToken],
+    customerController.getOrders
+  );
   app.use("/apis/customer", router);
 };

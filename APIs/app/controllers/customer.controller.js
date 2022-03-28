@@ -758,3 +758,58 @@ exports.placeOrder = async (req, res) => {
     client.release();
   }
 };
+
+exports.getOrders = async (req, res) => {
+  const { userID } = req;
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+
+    const { rows: productorder } = await client.query(
+      ` SELECT *
+        FROM productorder
+        INNER JOIN (
+          SELECT "storeID" , "storeName"
+          FROM phamarcyDetail
+        ) AS "phamarcyDetail" USING ("storeID")
+        LEFT JOIN (
+          SELECT "orderID", array_agg(json_build_object(
+            'productID', "productID", 
+            'pricePerPiece', "pricePerPiece", 
+            'amount', "amount", 
+            'productName', "productName", 
+            'productMedia', "productMedia"
+          )) AS "products"
+          FROM   productordertoproduct
+          INNER JOIN product
+          AS product USING("productID")
+          LEFT JOIN (
+            SELECT DISTINCT on ("productID") 
+              "productID", "imageBase64" AS "productMedia"
+            FROM   productMedia
+            )  AS "productMedia" USING ("productID")
+          WHERE "isActive" = TRUE
+          GROUP BY "orderID"
+          ) AS "productordertoproduct" USING ("orderID")
+        WHERE "customerID" = ($1);`,
+      [userID]
+    );
+    if (!productorder) {
+      await client.query("ROLLBACK");
+      res.status(403).send({ message: "Permission Denied" });
+    }
+
+    await client.query("COMMIT");
+
+    return res.status(200).send(productorder);
+  } catch (err) {
+    await client.query("ROLLBACK");
+
+    console.log(err);
+
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};
