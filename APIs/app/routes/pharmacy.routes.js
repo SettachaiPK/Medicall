@@ -46,6 +46,18 @@ module.exports = function (app) {
     [authJwt.verifyToken, authJwt.isPharmacy],
     pharmacyController.getOrders
   );
+  
+  router.get(
+    "/order/:orderID",
+    [authJwt.verifyToken, authJwt.isPharmacy],
+    pharmacyController.getOrderDetail
+  );
+  
+  router.post(
+    "/order/confirm-delivery",
+    [authJwt.verifyToken, authJwt.isPharmacy],
+    pharmacyController.confirmSendOrder
+  );
 
   app.use("/apis/pharmacy", router);
 };

@@ -55,15 +55,17 @@ module.exports = function (app) {
     [authJwt.verifyToken],
     customerController.giveServiceReview
   );
-  router.post(
-    "/order",
-    [authJwt.verifyToken],
-    customerController.placeOrder
-  );
+  router.post("/order", [authJwt.verifyToken], customerController.placeOrder);
+  router.get("/orders", [authJwt.verifyToken], customerController.getOrders);
   router.get(
-    "/orders",
+    "/order/:orderID",
     [authJwt.verifyToken],
-    customerController.getOrders
+    customerController.getOrderdetail
+  );
+  router.post(
+    "/order/confirm-receive",
+    [authJwt.verifyToken],
+    customerController.confirmReceiveOrder
   );
   app.use("/apis/customer", router);
 };

@@ -1,4 +1,5 @@
 const { pool } = require("../config/db.config");
+const moment = require("moment");
 
 exports.getStoreDetail = async (req, res) => {
   const { userID } = req;
@@ -382,12 +383,123 @@ exports.getOrders = async (req, res) => {
     );
     if (!productorder) {
       await client.query("ROLLBACK");
-      res.status(403).send({ message: "Permission Denied" });
+      return res.status(403).send({ message: "Permission Denied" });
     }
 
     await client.query("COMMIT");
 
     return res.status(200).send(productorder);
+  } catch (err) {
+    await client.query("ROLLBACK");
+
+    console.log(err);
+
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};
+
+exports.getOrderDetail = async (req, res) => {
+  const {
+    userID,
+    params: { orderID },
+  } = req;
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+
+    const {
+      rows: [productorder],
+    } = await client.query(
+      ` SELECT *
+        FROM productorder
+        INNER JOIN 
+          (SELECT "storeID","ownerID" FROM phamarcyDetail) 
+        AS phamarcyDetail USING ("storeID")
+        LEFT JOIN (
+          SELECT "orderID", array_agg(json_build_object(
+            'productID', "productID", 
+            'pricePerPiece', "pricePerPiece", 
+            'amount', "amount", 
+            'productName', "productName"
+          )) AS "products"
+          FROM   productordertoproduct
+          INNER JOIN product
+          AS product USING("productID")
+          WHERE "isActive" = TRUE
+          GROUP BY "orderID"
+          ) AS "productordertoproduct" USING ("orderID")
+        WHERE "ownerID" = ($1)
+        AND "orderID" = $2;`,
+      [userID, orderID]
+    );
+    if (!productorder) {
+      await client.query("ROLLBACK");
+      return res.status(403).send({ message: "Permission Denied" });
+    }
+
+    await client.query("COMMIT");
+
+    return res.status(200).send(productorder);
+  } catch (err) {
+    await client.query("ROLLBACK");
+
+    console.log(err);
+
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};
+
+exports.confirmSendOrder = async (req, res) => {
+  const {
+    userID,
+    body: { orderID, deliveryNumber },
+  } = req;
+  const client = await pool.connect();
+  const now = moment()
+
+  try {
+    await client.query("BEGIN");
+
+    const {
+      rows: [productorder],
+    } = await client.query(
+      ` SELECT "orderStatus"
+        FROM productorder
+        INNER JOIN phamarcydetail
+        USING ("storeID")
+        WHERE "ownerID" = ($1)
+        AND "orderID" = $2;`,
+      [userID, orderID]
+    );
+    if (!productorder) {
+      await client.query("ROLLBACK");
+      return res.status(403).send({ message: "Permission Denied" });
+    } else if (productorder.orderStatus !== "paid") {
+      await client.query("ROLLBACK");
+      return res
+        .status(403)
+        .send({
+          message: `Can not set status of this order, Current status '${productorder.orderStatus}'`,
+        });
+    }
+    client.query(
+      ` UPDATE productorder
+        SET 
+          "orderStatus" = 'shipped',
+          "deliveryNumber" = ($1),
+          "deliveryDate" = $3
+        WHERE "orderID" = $2;`,
+      [deliveryNumber, orderID, now]
+    );
+
+    await client.query("COMMIT");
+
+    return res.status(200).send({ message: "Success", orderID });
   } catch (err) {
     await client.query("ROLLBACK");
 
