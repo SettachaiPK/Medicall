@@ -3,7 +3,11 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import LoginStep from "./LoginStep";
 import { IconButton, Drawer } from "@mui/material";
-import { Menu } from "@mui/icons-material";
+import { Button } from "@mui/material";
+import React from "react";
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Fade from '@mui/material/Fade';
 
 function Topnav({ user: { status, roles } }) {
   const [offsetY, setOffsetY] = useState(0);
@@ -23,12 +27,34 @@ function Topnav({ user: { status, roles } }) {
   const handleDrawerClose = () => {
     setDrawerOpen(false);
   };
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  
 
   const navItem = () => (
     <>
       <Link to="/">หน้าหลัก</Link>
       {roles.includes("consultant") && <Link to="/dashboard">กระดาน</Link>}
-      <Link to="/product">ซื้อเวชภัณฑ์</Link>
+      <Link to="/product" onClick={handleClick}>ซื้อเวชภัณฑ์</Link>
+      <Menu
+        id="fade-menu"
+        MenuListProps={{
+          'aria-labelledby': 'fade-button',
+        }}
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        TransitionComponent={Fade}
+      >
+        <MenuItem onClick={handleClose} sx={{fontSize:"0.9rem",color: "#f9b1c7"}}>ซื้อเวชภัณฑ์</MenuItem>
+        <MenuItem onClick={handleClose} sx={{fontSize:"0.9rem",color: "#f9b1c7"}}>จัดการเวชภัณฑ์</MenuItem>
+      </Menu>
       {/* <Link to="/hospital">ค้นหาสถานพยาบาล</Link> */}
       <Link to="/appointment">ประวัติการนัดหมาย</Link>
       {!status && (
