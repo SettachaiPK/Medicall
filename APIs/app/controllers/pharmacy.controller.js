@@ -365,6 +365,10 @@ exports.getOrders = async (req, res) => {
         INNER JOIN 
           (SELECT "storeID","ownerID" FROM phamarcyDetail) 
         AS phamarcyDetail USING ("storeID")
+        INNER JOIN 
+          (SELECT "firstName","lastName","userID" FROM userdetail) 
+        AS customerDetail 
+        ON "customerID" = "userID"
         LEFT JOIN (
           SELECT "orderID", array_agg(json_build_object(
             'productID', "productID", 

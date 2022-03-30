@@ -5,9 +5,9 @@ import LoginStep from "./LoginStep";
 import { IconButton, Drawer } from "@mui/material";
 import { Button } from "@mui/material";
 import React from "react";
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import Fade from '@mui/material/Fade';
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Fade from "@mui/material/Fade";
 
 function Topnav({ user: { status, roles } }) {
   const [offsetY, setOffsetY] = useState(0);
@@ -35,26 +35,42 @@ function Topnav({ user: { status, roles } }) {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  
 
   const navItem = () => (
     <>
       <Link to="/">หน้าหลัก</Link>
       {roles.includes("consultant") && <Link to="/dashboard">กระดาน</Link>}
-      <Link to="/product" onClick={handleClick}>ซื้อเวชภัณฑ์</Link>
-      <Menu
-        id="fade-menu"
-        MenuListProps={{
-          'aria-labelledby': 'fade-button',
-        }}
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        TransitionComponent={Fade}
-      >
-        <MenuItem onClick={handleClose} sx={{fontSize:"0.9rem",color: "#f9b1c7"}}>ซื้อเวชภัณฑ์</MenuItem>
-        <MenuItem onClick={handleClose} sx={{fontSize:"0.9rem",color: "#f9b1c7"}}>จัดการเวชภัณฑ์</MenuItem>
-      </Menu>
+      {!roles.includes("phamarcy") && (<Link to="/product">ซื้อเวชภัณฑ์</Link>)}
+      {roles.includes("phamarcy") && (
+        <>
+          <a onClick={handleClick}>ซื้อเวชภัณฑ์</a>
+          <Menu
+            id="fade-menu"
+            MenuListProps={{
+              "aria-labelledby": "fade-button",
+            }}
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            TransitionComponent={Fade}
+          >
+            <MenuItem
+              onClick={handleClose}
+              sx={{ fontSize: "0.9rem", color: "#f9b1c7" }}
+            >
+              <Link to="/product" onClick={handleClick}>
+                ซื้อเวชภัณฑ์
+              </Link>
+            </MenuItem>
+            <MenuItem
+              onClick={handleClose}
+              sx={{ fontSize: "0.9rem", color: "#f9b1c7" }}
+            >
+              <Link to="/product/manage">จัดการเวชภัณฑ์</Link>
+            </MenuItem>
+          </Menu>
+        </>
+      )}
       {/* <Link to="/hospital">ค้นหาสถานพยาบาล</Link> */}
       <Link to="/appointment">ประวัติการนัดหมาย</Link>
       {!status && (

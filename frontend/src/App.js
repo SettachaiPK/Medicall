@@ -49,14 +49,14 @@ function App() {
           <Route path="consultant/:id" element={<ConsultantDetailPage />} />
           <Route path="meeting/:jobID" element={<TestMeetingPage />} />
           <Route path="reviewpage" element={<ReviewPage />} />
-          <Route path="manageproduct" element={<ManageProduct />} />
+          <Route path="product/manage" element={<ManageProduct />} />
           <Route path="addproduct" element={<AddProduct />} />
           <Route path="editproduct" element={<EditProduct />} />
           <Route path="product" element={<StorePage />} />
           <Route path="cart" element={<Cart />} />
           <Route path="purchase" element={<PurchaseOrder />} />
           <Route path="orderdetail" element={<OrderDetail />} />
-          <Route path="manage-delivery" element={<DeliveryManagement />} />
+          <Route path="product/manage-delivery" element={<DeliveryManagement />} />
           {/* <Route exact path="/" element={<ProtectedRoute />}>
       <Router>
         <Topnav />

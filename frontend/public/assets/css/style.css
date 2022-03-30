@@ -52,9 +52,18 @@ body {
   padding: 14px 16px;
   text-decoration: none;
   font-size: medium;
+  cursor: pointer;
 }
 .MuiDrawer-paper a {
   text-align: right;
+}
+.MuiMenuItem-root a {
+  text-decoration: none;
+  color: #f9b1c7;
+}
+.MuiBox-root img {
+  width: 100%;
+  height: 100%;
 }
 
 .topnav a:hover {

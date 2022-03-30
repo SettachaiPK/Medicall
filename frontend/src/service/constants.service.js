@@ -64,6 +64,9 @@ export const server = {
   CONSULTANT_GET_SUMMARY: new AxiosModel({
     url: `consultant/summary`,
   }),
+  ///pharmacy///
+  PHARMACY_PRODUCT: new AxiosModel({ url: `pharmacy/products` }),
+  PHARMACY_ORDERS: new AxiosModel({ url: `pharmacy/orders` }),
   ///delete///
   confirmPayment: new AxiosModel({ url: `external/confirm-payment` }),
 };

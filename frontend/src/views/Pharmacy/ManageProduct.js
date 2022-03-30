@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 import ManageProductComponent from "../../components/ManageProductComponent";
 import { Avatar, Button, Typography } from "@mui/material";
 import { Box } from "@mui/system";
@@ -9,35 +11,45 @@ import AllInboxIcon from "@mui/icons-material/AllInbox";
 import { grey } from "@mui/material/colors";
 import { useNavigate } from "react-router-dom";
 import CustomSpeedDial from "../../components/CustomSpeedDial";
+import { actionGetProducts } from "../../actions/pharmacy.actions";
 
 const pharmacy_name = "pharmacy name";
-const product = [
-  { name: "Product_1", price: "50" },
-  { name: "Product_2", price: "100" },
-  { name: "Product_3", price: "1000" },
-  { name: "Product_4", price: "500" },
-  { name: "Product_5", price: "500" },
-  { name: "Product_6", price: "500" },
-  { name: "Product_7", price: "500" },
-  { name: "Product_8", price: "500" },
-];
 
 const classes = {
   icon: { color: "#AFE7E7" },
 };
 
-export default function ManageProduct() {
+function ManageProduct(props) {
   const navigate = useNavigate();
+
+  const [products, setProducts] = useState([
+    { productName: "Product_1", productPrice: "50", productMedia: null },
+    { productName: "Product_2", productPrice: "100", productMedia: null },
+    { productName: "Product_3", productPrice: "1000", productMedia: null },
+    { productName: "Product_4", productPrice: "500", productMedia: null },
+    { productName: "Product_5", productPrice: "500", productMedia: null },
+    { productName: "Product_6", productPrice: "500", productMedia: null },
+    { productName: "Product_7", productPrice: "500", productMedia: null },
+    { productName: "Product_8", productPrice: "500", productMedia: null },
+  ]);
 
   const speedDialActions = [
     {
       icon: <AllInboxIcon sx={classes.icon} />,
       name: "จัดการสินค้า",
       action: () => {
-        navigate(`/`);
+        navigate(`/product/manage-delivery`);
       },
     },
   ];
+
+  useEffect(() => {
+    async function fetchProducts() {
+      const res = await props.actionGetProducts();
+      setProducts(res);
+    }
+    fetchProducts();
+  }, []);
 
   return (
     <div>
@@ -84,11 +96,11 @@ export default function ManageProduct() {
             <AddCircleIcon sx={{ fontSize: 100, color: grey[400] }} />
           </IconButton>
         </Box>
-        {product.map((product_name, index) => {
+        {products.map((product, index) => {
           return (
             <Grid item xs={4} md={4} lg={3} xl={2} key={index}>
               <Box sx={{ justifyContent: "center", display: "flex" }}>
-                <ManageProductComponent key={index} product={product_name} />
+                <ManageProductComponent key={index} product={product} />
               </Box>
             </Grid>
           );
@@ -97,3 +109,14 @@ export default function ManageProduct() {
     </div>
   );
 }
+
+ManageProduct.defaultProps = {};
+ManageProduct.propTypes = {
+  actionGetProducts: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = (state) => ({});
+
+export default connect(mapStateToProps, {
+  actionGetProducts: actionGetProducts,
+})(ManageProduct);

@@ -1,6 +1,7 @@
-import React from 'react';
-import { Paper } from '@mui/material';
-import { Box } from '@mui/system';
+import React from "react";
+import PropTypes from "prop-types";
+import { Paper } from "@mui/material";
+import { Box } from "@mui/system";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -9,60 +10,73 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 
 function ccyFormat(num) {
-    return `${num.toFixed(2)}`;
-  }
-  
-  function priceRow(qty, unit) {
-    return qty * unit;
-  }
-  
-  function createRow(desc, qty, unit) {
-    const price = priceRow(qty, unit);
-    return { desc, qty, unit, price };
-  }
-  
-  
-  const rows = [
-    createRow("Paperclips (Box)", 100, 1.15),
-    createRow("Paper (Case)", 10, 45.99),
-    createRow("Waste Basket", 2, 17.99),
-  ];
-  
-  const customer ="customer name";
-  const id = "xx-xxxx";
+  return `${num.toFixed(2)}`;
+}
 
-export default function DeliveryOrderDetails() {
+export default function DeliveryOrderDetails(props) {
   return (
     <div>
-    <Box sx={{width:"45rem",m:"auto",p:"1rem"}}>
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 700 }} aria-label="spanning table">
-            <TableHead>
-              <TableRow>
-                <TableCell align="left" colSpan={3}>
-                  {customer} (ID:{id})
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>ชื่อสินค้า</TableCell>
-                <TableCell align="left">ราคา/ชิ้น</TableCell>
-                <TableCell align="left">จำนวน</TableCell>
-                <TableCell align="left">รวม(บาท)</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.map((row) => (
-                <TableRow key={row.desc}>
-                  <TableCell>{row.desc}</TableCell>
-                  <TableCell align="left">{row.qty}</TableCell>
-                  <TableCell align="left">{row.unit}</TableCell>
-                  <TableCell align="left">{ccyFormat(row.price)}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer> 
-    </Box>
+      {props.orders.map((order) => (
+        <>
+          {order.orderStatus === props.orderStats && (
+            <Box sx={{ width: "45rem", m: "auto", p: "1rem" }}>
+              <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 700 }} aria-label="spanning table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell align="left" colSpan={3}>
+                        {order.firstName} {order.lastName} (ID:
+                        {order.customerID})
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>ชื่อสินค้า</TableCell>
+                      <TableCell align="left">ราคา/ชิ้น</TableCell>
+                      <TableCell align="left">จำนวน</TableCell>
+                      <TableCell align="left">รวม(บาท)</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {order.products.map((product) => (
+                      <TableRow key={(order.orderID, product.productID)}>
+                        <TableCell>{product.productName}</TableCell>
+                        <TableCell align="left">
+                          {product.pricePerPiece}
+                        </TableCell>
+                        <TableCell align="left">{product.amount}</TableCell>
+                        <TableCell align="left">
+                          {ccyFormat(product.pricePerPiece * product.amount)}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                    <TableRow>
+                      <TableCell align="left" colSpan={1}>
+                        ช่องทางการจัดส่ง
+                      </TableCell>
+                      <TableCell align="left" colSpan={1}>
+                        {order.deliveryChannel}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell align="left" colSpan={1}>
+                        รวมทั้งหมด (บาท)
+                      </TableCell>
+                      <TableCell align="left" colSpan={1}>
+                        {ccyFormat(parseFloat(order.totalPrice))}
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Box>
+          )}
+        </>
+      ))}
     </div>
-  )
+  );
 }
+DeliveryOrderDetails.defaultProps = { orderStats: "paid", orders: [] };
+DeliveryOrderDetails.propTypes = {
+  orderStats: PropTypes.string,
+  orders: PropTypes.array,
+};

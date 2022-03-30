@@ -12,7 +12,6 @@ const processQueue = () => {
     failedQueue.forEach(prom => {
         axios(prom)
     })
-    
     failedQueue = [];
 }
 
