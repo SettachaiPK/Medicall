@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import LoginStep from "./LoginStep";
 import { IconButton, Drawer } from "@mui/material";
-import { Button } from "@mui/material";
+import { Box } from "@mui/material";
 import React from "react";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -40,10 +40,10 @@ function Topnav({ user: { status, roles } }) {
     <>
       <Link to="/">หน้าหลัก</Link>
       {roles.includes("consultant") && <Link to="/dashboard">กระดาน</Link>}
-      {!roles.includes("phamarcy") && (<Link to="/product">ซื้อเวชภัณฑ์</Link>)}
+      {!roles.includes("phamarcy") && <Link to="/product">ซื้อเวชภัณฑ์</Link>}
       {roles.includes("phamarcy") && (
         <>
-          <a onClick={handleClick}>ซื้อเวชภัณฑ์</a>
+          <Box onClick={handleClick}>ซื้อเวชภัณฑ์</Box>
           <Menu
             id="fade-menu"
             MenuListProps={{

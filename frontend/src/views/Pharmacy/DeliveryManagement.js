@@ -10,6 +10,7 @@ import DeliveryOrderDetails from "../../components/DeliveryOrderDetails";
 import { actionGetOrders } from "../../actions/pharmacy.actions";
 
 function DeliveryManagement(props) {
+  const { actionGetOrders } = props;
   const [value, setValue] = useState("1");
   const [orders, setOrders] = useState([]);
 
@@ -19,12 +20,12 @@ function DeliveryManagement(props) {
 
   useEffect(() => {
     async function fetchProducts() {
-      const res = await props.actionGetOrders();
+      const res = await actionGetOrders();
       console.log(res);
       setOrders(res);
     }
     fetchProducts();
-  }, []);
+  }, [actionGetOrders]);
 
   return (
     <div>
@@ -41,10 +42,10 @@ function DeliveryManagement(props) {
             <DeliveryOrderDetails orders={orders} orderStats="paid" />
           </TabPanel>
           <TabPanel value="2">
-            <DeliveryOrderDetails orders={orders} orderStats="shipped"/>
+            <DeliveryOrderDetails orders={orders} orderStats="shipped" />
           </TabPanel>
           <TabPanel value="3">
-            <DeliveryOrderDetails orders={orders} orderStats="received"/>
+            <DeliveryOrderDetails orders={orders} orderStats="received" />
           </TabPanel>
         </TabContext>
       </Box>

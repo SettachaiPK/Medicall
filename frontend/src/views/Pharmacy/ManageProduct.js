@@ -21,6 +21,7 @@ const classes = {
 
 function ManageProduct(props) {
   const navigate = useNavigate();
+  const { actionGetProducts } = props;
 
   const [products, setProducts] = useState([
     { productName: "Product_1", productPrice: "50", productMedia: null },
@@ -45,11 +46,11 @@ function ManageProduct(props) {
 
   useEffect(() => {
     async function fetchProducts() {
-      const res = await props.actionGetProducts();
+      const res = await actionGetProducts();
       setProducts(res);
     }
     fetchProducts();
-  }, []);
+  }, [actionGetProducts]);
 
   return (
     <div>

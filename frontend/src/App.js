@@ -28,15 +28,15 @@ const theme = createTheme({
 
 function App() {
   const dispatch = useDispatch();
-  const handleVerifyLogIn = async () => {
-    const res = await dispatch(actionVerifyLogIn());
-    if (res) {
-    }
-  };
 
   useEffect(() => {
+    async function handleVerifyLogIn() {
+      const res = await dispatch(actionVerifyLogIn());
+      if (res) {
+      }
+    }
     handleVerifyLogIn();
-  }, []);
+  }, [dispatch]);
   return (
     <ThemeProvider theme={theme}>
       <Router>
@@ -56,7 +56,10 @@ function App() {
           <Route path="cart" element={<Cart />} />
           <Route path="purchase" element={<PurchaseOrder />} />
           <Route path="orderdetail" element={<OrderDetail />} />
-          <Route path="product/manage-delivery" element={<DeliveryManagement />} />
+          <Route
+            path="product/manage-delivery"
+            element={<DeliveryManagement />}
+          />
           {/* <Route exact path="/" element={<ProtectedRoute />}>
       <Router>
         <Topnav />

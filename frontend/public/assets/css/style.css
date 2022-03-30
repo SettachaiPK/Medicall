@@ -45,7 +45,8 @@ body {
 }
 
 .topnav a,
-.MuiDrawer-paper a {
+.MuiDrawer-paper a,
+.nav-menu .MuiBox-root {
   float: left;
   color: #f9b1c7;
   text-align: center;
@@ -66,7 +67,8 @@ body {
   height: 100%;
 }
 
-.topnav a:hover {
+.topnav a:hover,
+.nav-menu .MuiBox-root:hover {
   border-bottom: 3px solid black;
 }
 
