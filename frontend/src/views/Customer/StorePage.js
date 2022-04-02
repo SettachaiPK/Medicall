@@ -25,7 +25,7 @@ function StorePage(props) {
       icon: <AccessTimeIcon sx={classes.icon} />,
       name: "สถานะสินค้า",
       action: () => {
-        navigate(`/menu`);
+        navigate(`/purchase`);
       },
     },
   ];

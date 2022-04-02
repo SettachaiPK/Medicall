@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { Paper } from "@mui/material";
 import { Box } from "@mui/system";
@@ -14,12 +15,18 @@ function ccyFormat(num) {
 }
 
 export default function DeliveryOrderDetails(props) {
+  const navigate = useNavigate();
   return (
     <div>
       {props.orders.map((order) => (
         <>
           {order.orderStatus === props.orderStats && (
-            <Box sx={{ width: "45rem", m: "auto", p: "1rem" }}>
+            <Box
+              sx={{ width: "45rem", m: "auto", p: "1rem" }}
+              onClick={() => {
+                navigate(`/orderdetail/${order.orderID}`);
+              }}
+            >
               <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 700 }} aria-label="spanning table">
                   <TableHead>

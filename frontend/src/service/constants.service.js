@@ -67,6 +67,7 @@ export const server = {
   ///pharmacy///
   PHARMACY_PRODUCT: new AxiosModel({ url: `pharmacy/products` }),
   PHARMACY_ORDERS: new AxiosModel({ url: `pharmacy/orders` }),
+  PHARMACY_ORDER_DETAIL: new AxiosModel({ url: `pharmacy/order` }),
   ///delete///
   confirmPayment: new AxiosModel({ url: `external/confirm-payment` }),
 };

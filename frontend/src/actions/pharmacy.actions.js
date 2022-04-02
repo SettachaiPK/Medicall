@@ -18,3 +18,12 @@ export const actionGetOrders = () => async () => {
     return [];
   }
 };
+export const actionGetOrderDetail = (orderID) => async () => {
+  try {
+    const { data } = await pharmacyService.getOrderDetail(orderID);
+    return data;
+  } catch (error) {
+    console.log(error.response.data.message || error.message);
+    return [];
+  }
+};

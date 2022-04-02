@@ -420,7 +420,7 @@ exports.getOrderDetail = async (req, res) => {
       ` SELECT *
         FROM productorder
         INNER JOIN 
-          (SELECT "storeID","ownerID" FROM phamarcyDetail) 
+          (SELECT "storeID","ownerID","storeName" FROM phamarcyDetail) 
         AS phamarcyDetail USING ("storeID")
         LEFT JOIN (
           SELECT "orderID", array_agg(json_build_object(

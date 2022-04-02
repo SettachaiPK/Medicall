@@ -15,7 +15,7 @@ import AddProduct from "./views/Pharmacy/AddProduct";
 import EditProduct from "./views/Pharmacy/EditProduct";
 import StorePage from "./views/Customer/StorePage";
 import Cart from "./views/Pharmacy/Cart";
-import PurchaseOrder from "./views/Pharmacy/PurchaseOrder";
+import PurchaseOrder from "./views/Customer/PurchaseOrder";
 import OrderDetail from "./views/Pharmacy/OrderDetail";
 import DeliveryManagement from "./views/Pharmacy/DeliveryManagement";
 
@@ -55,7 +55,7 @@ function App() {
           <Route path="product" element={<StorePage />} />
           <Route path="cart" element={<Cart />} />
           <Route path="purchase" element={<PurchaseOrder />} />
-          <Route path="orderdetail" element={<OrderDetail />} />
+          <Route path="orderdetail/:orderID" element={<OrderDetail />} />
           <Route
             path="product/manage-delivery"
             element={<DeliveryManagement />}
