@@ -15,11 +15,14 @@ import Checkbox from "@mui/material/Checkbox";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Button } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import { grey } from "@mui/material/colors";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
+import ButtonGroup from "@mui/material/ButtonGroup";
+import { useState } from "react";
 
-
-function createData( name, price, amount, total_price) {
+function createData(name, price, amount, total_price) {
   return {
     name,
     price,
@@ -34,7 +37,7 @@ const rows = [
   createData("Cupcake", 305, 3.7, 67),
   createData("Donut", 452, 25.0, 51),
   createData("Eclair", 262, 16.0, 24),
-  createData("Frozen yoghurt", 159, 6.0, 24)
+  createData("Frozen yoghurt", 159, 6.0, 24),
 ];
 
 // This method is created for cross-browser compatibility, if you don't
@@ -97,13 +100,7 @@ const headCells = [
 ];
 
 function EnhancedTableHead(props) {
-  const {
-    onSelectAllClick,
-    order,
-    orderBy,
-    numSelected,
-    rowCount
-  } = props;
+  const { onSelectAllClick, order, orderBy, numSelected, rowCount } = props;
 
   return (
     <TableHead>
@@ -123,7 +120,7 @@ function EnhancedTableHead(props) {
           <TableCell
             key={headCell.id}
             align={"left"}
-            padding={ "normal"}
+            padding={"normal"}
             sortDirection={orderBy === headCell.id ? order : false}
           >
             {headCell.label}
@@ -198,9 +195,8 @@ EnhancedTableToolbar.propTypes = {
 
 export default function EnhancedTable() {
   const [selected, setSelected] = React.useState([]);
-  const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('name');
-
+  const [order, setOrder] = React.useState("asc");
+  const [orderBy, setOrderBy] = React.useState("name");
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
@@ -232,71 +228,100 @@ export default function EnhancedTable() {
   };
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
-
+  const [count, setCount] = React.useState(1);
 
   return (
     <>
-    <Box sx={{ padding:"6rem" }}>
-      <Paper sx={{ width: "100%", mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} />
-        <TableContainer>
-          <Table
-            sx={{ minWidth: 750 }}
-            aria-labelledby="tableTitle"
-          >
-            <EnhancedTableHead
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              rowCount={rows.length}
-            />
-            <TableBody>
-              {/* if you don't need to support IE11, you can replace the `stableSort` call with:
+      <Box sx={{ padding: "6rem" }}>
+        <Paper sx={{ width: "100%", mb: 2 }}>
+          <EnhancedTableToolbar numSelected={selected.length} />
+          <TableContainer>
+            <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
+              <EnhancedTableHead
+                numSelected={selected.length}
+                order={order}
+                orderBy={orderBy}
+                onSelectAllClick={handleSelectAllClick}
+                rowCount={rows.length}
+              />
+              <TableBody>
+                {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                  rows.slice().sort(getComparator(order, orderBy)) */}
-              {stableSort(rows, getComparator(order, orderBy))
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
-                  const labelId = `enhanced-table-checkbox-${index}`;
+                {stableSort(rows, getComparator(order, orderBy)).map(
+                  (row, index) => {
+                    const isItemSelected = isSelected(row.name);
+                    const labelId = `enhanced-table-checkbox-${index}`;
 
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, row.name)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.name}
-                      selected={isItemSelected}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={isItemSelected}
-                          inputProps={{
-                            "aria-labelledby": labelId,
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell align="left">{row.name}</TableCell>
-                      <TableCell align="left">{row.price}</TableCell>
-                      <TableCell align="left">{row.amount}</TableCell>
-                      <TableCell align="left">{row.total_price}</TableCell>
-                    </TableRow>
-                  );
-                })}
-                <TableRow
-                >
+                    return (
+                      <TableRow
+                        hover
+                        onClick={(event) => handleClick(event, row.name)}
+                        role="checkbox"
+                        aria-checked={isItemSelected}
+                        tabIndex={-1}
+                        key={row.name}
+                        selected={isItemSelected}
+                      >
+                        <TableCell padding="checkbox">
+                          <Checkbox
+                            color="primary"
+                            checked={isItemSelected}
+                            inputProps={{
+                              "aria-labelledby": labelId,
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell align="left">{row.name}</TableCell>
+                        <TableCell align="left">{row.price}</TableCell>
+                        <TableCell align="left">
+                          <TextField value={count} sx={{width:"3rem", marginRight:"0.5rem"}}/>
+                          <ButtonGroup
+                          variant="text"
+                          orientation="vertical"
+                            sx={{
+                              width: "0.5rem",
+                            }}
+                          >
+                            <Button
+                              aria-label="increase"
+                              onClick={() => {
+                                setCount(count + 1);
+                              }}
+                            >
+                              <AddIcon fontSize="xsmall" />
+                            </Button>
+                            <Button
+                              aria-label="reduce"
+                              onClick={() => {
+                                setCount(Math.max(count - 1, 0));
+                              }}
+                            >
+                              <RemoveIcon fontSize="xsmall" />
+                            </Button>
+                            
+                          </ButtonGroup>
+                        </TableCell>
+                        <TableCell align="left">{row.total_price}</TableCell>
+                      </TableRow>
+                    );
+                  }
+                )}
+                <TableRow>
                   <TableCell colSpan={6} />
                 </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Paper>
-      
-    </Box>
-    <Box sx={{display: "flex",justifyContent: "flex-end",p:2,width: "90%"}}>
-            <Button sx={{ backgroundColor: "#FFC1C1", color: grey[500],height:"3rem"}}>สั่งซื้อสินค้า</Button>
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
+      </Box>
+      <Box
+        sx={{ display: "flex", justifyContent: "flex-end", p: 2, width: "90%" }}
+      >
+        <Button
+          sx={{ backgroundColor: "#FFC1C1", color: grey[500], height: "3rem" }}
+        >
+          สั่งซื้อสินค้า
+        </Button>
       </Box>
     </>
   );
