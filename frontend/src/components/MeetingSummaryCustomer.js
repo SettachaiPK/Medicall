@@ -20,6 +20,7 @@ function MeetingSummaryCustomer(props) {
     lastName: "",
     meetStartDate: "",
     price: "",
+    recommendedProducts: [],
   });
   useEffect(() => {
     async function fetch(jobID) {
@@ -32,6 +33,19 @@ function MeetingSummaryCustomer(props) {
     product_name: "product_name",
     pharmacy: "pharmacy",
     price: "price",
+  };
+  const handleChangeAmount = (index, value) => {
+    setSummary({
+      ...summary,
+      recommendedProducts: summary.recommendedProducts.map(
+        (product, indexP) => {
+          if (indexP === index) {
+            return { ...product, amount: value };
+          }
+          return product;
+        }
+      ),
+    });
   };
   return (
     <div>
@@ -133,46 +147,37 @@ function MeetingSummaryCustomer(props) {
           }}
         >
           สินค้าที่แนะนำ :
-          <Paper
-            sx={{
-              display: "flex",
-              justifyContent: "space-around",
-              alignItems: "center",
-              p: "1rem",
-              m: "1rem",
-            }}
-          >
-            <Typography>{product.product_name}</Typography>
-            <Typography>{product.pharmacy}</Typography>
-            <Typography>{product.price}</Typography>
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Typography>จำนวน : </Typography>
-              <TextField
-                variant="outlined"
-                sx={{ width: "4rem", ml: 2 }}
-              ></TextField>
-            </Box>
-            <Button sx={{textDecoration:"underline"}}>เพื่มลงตะกร้า</Button>
-          </Paper>
-        </Box>
-        <Box
-          sx={{
-            m: "0.5rem",
-            p: "1rem",
-            border: 1,
-            borderRadius: 1,
-            borderColor: grey[400],
-          }}
-        >
           {summary.recommendedProducts.map((product, index) => {
             return (
-              <>
-                <Typography key={index}>
-                  {product.productName} :{" "}
-                  {parseFloat(product.productPrice).toFixed(2)} :{" "}
-                  {product.amount}
+              <Paper
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-around",
+                  alignItems: "center",
+                  p: "1rem",
+                  m: "1rem",
+                }}
+              >
+                <Typography>{product.productName}</Typography>
+                <Typography>
+                  {parseFloat(product.productPrice).toFixed(2)}
                 </Typography>
-              </>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <Typography>จำนวน : </Typography>
+                  <TextField
+                    variant="outlined"
+                    sx={{ width: "4rem", ml: 2 }}
+                    type="number"
+                    value={product.amount}
+                    onChange={(e) => {
+                      handleChangeAmount(index, e.target.value);
+                    }}
+                  />
+                </Box>
+                <Button sx={{ textDecoration: "underline" }}>
+                  เพื่มลงตะกร้า
+                </Button>
+              </Paper>
             );
           })}
         </Box>
