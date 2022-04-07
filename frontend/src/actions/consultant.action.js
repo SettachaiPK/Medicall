@@ -1,5 +1,14 @@
+import { RecommendedProductsModel } from "../models";
 import * as consultantService from "../service/consultant.service";
-import { CONSULTANT_FETCH_DETAIL, CONSULTANT_FETCH_STATUS } from "./types";
+import {
+  CONSULTANT_FETCH_DETAIL,
+  CONSULTANT_FETCH_STATUS,
+  RECOMMENDED_PRODUCTS_FETCH_AMOUNT,
+  RECOMMENDED_PRODUCTS_FETCH_PRODUCTS,
+  RECOMMENDED_PRODUCTS_FETCH_STATUS,
+  RECOMMENDED_PRODUCTS_REMOVE,
+  RECOMMENDED_PRODUCTS_SELECT,
+} from "./types";
 
 export const actionGetServiceDetail = () => async (dispatch) => {
   try {
@@ -59,6 +68,13 @@ export const actionSubmitAdvice = (payload) => async (dispatch) => {
     return [];
   }
 };
+export const actionSubmitRecommendedProducts = (payload) => () => {
+  try {
+    consultantService.submitRecommendedProducts(payload);
+  } catch (error) {
+    console.log(error.response.data.message || error.message);
+  }
+};
 
 export const actionGetSummaryConsultant = (jobID) => async () => {
   try {
@@ -70,11 +86,76 @@ export const actionGetSummaryConsultant = (jobID) => async () => {
   }
 };
 
+export const actionGetProductsConsultant = (payload) => async (dispatch) => {
+  try {
+    await dispatch(reducerFetchRecommendedProductsStatus(true));
+    const { data } = await consultantService.getProductsConsultant(payload);
+    await dispatch(
+      reducerFetchRecommendedProducts(
+        data.map((product) => {
+          return { ...product, amount: 1 };
+        })
+      )
+    );
+    await dispatch(reducerFetchRecommendedProductsStatus(false));
+  } catch (error) {
+    await dispatch(reducerFetchRecommendedProductsStatus(false));
+    console.log(error);
+  }
+};
+
+export const actionFetchProductAmount = (payload) => (dispatch) => {
+  try {
+    dispatch(reducerFetchRecommendedProductsAmount(payload));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const actionSelectProduct = (payload) => (dispatch) => {
+  try {
+    dispatch(reducerSelectProduct(payload));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const actionRemoveProduct = (payload) => (dispatch) => {
+  try {
+    dispatch(reducerRemoveProduct(payload));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const reducerFetchConsultantDetail = (payload) => ({
   type: CONSULTANT_FETCH_DETAIL,
   payload,
 });
 export const reducerFetchConsultantStatus = (payload) => ({
   type: CONSULTANT_FETCH_STATUS,
+  payload,
+});
+export const reducerFetchRecommendedProducts = (payload) => ({
+  type: RECOMMENDED_PRODUCTS_FETCH_PRODUCTS,
+  payload,
+});
+export const reducerFetchRecommendedProductsStatus = (payload) => ({
+  type: RECOMMENDED_PRODUCTS_FETCH_STATUS,
+  payload,
+});
+
+export const reducerFetchRecommendedProductsAmount = (payload) => ({
+  type: RECOMMENDED_PRODUCTS_FETCH_AMOUNT,
+  payload,
+});
+
+export const reducerSelectProduct = (payload) => ({
+  type: RECOMMENDED_PRODUCTS_SELECT,
+  payload,
+});
+
+export const reducerRemoveProduct = (payload) => ({
+  type: RECOMMENDED_PRODUCTS_REMOVE,
   payload,
 });

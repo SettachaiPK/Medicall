@@ -61,8 +61,14 @@ export const server = {
   CONSULTANT_SUBMIT_ADVICE: new AxiosModel({
     url: `consultant/meetingEnd`,
   }),
+  CONSULTANT_SUBMIT_RECOMMENDED_PRODUCTS: new AxiosModel({
+    url: `consultant/recommended-product`,
+  }),
   CONSULTANT_GET_SUMMARY: new AxiosModel({
     url: `consultant/summary`,
+  }),
+  CONSULTANT_GET_PRODUCTS: new AxiosModel({
+    url: `consultant/products`,
   }),
   ///pharmacy///
   PHARMACY_PRODUCT: new AxiosModel({ url: `pharmacy/products` }),

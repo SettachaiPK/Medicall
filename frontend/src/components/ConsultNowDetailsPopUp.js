@@ -77,7 +77,7 @@ export default function ConsultNowDetailsPopUp(props) {
         },
       } = await createConsultJob(formData);
       handleClose();
-      await confirmPayment({ paymentID });
+      //await confirmPayment({ paymentID });
     } catch (err) {
       console.log(err);
     }
