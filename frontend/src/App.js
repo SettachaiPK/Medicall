@@ -18,7 +18,7 @@ import Cart from "./views/Pharmacy/Cart";
 import PurchaseOrder from "./views/Customer/PurchaseOrder";
 import OrderDetail from "./views/Pharmacy/OrderDetail";
 import DeliveryManagement from "./views/Pharmacy/DeliveryManagement";
-
+import MeetingSummaryCustomer from "./components/MeetingSummaryCustomer";
 const theme = createTheme({
   palette: { primary: { main: "#EEA9B8" } },
   typography: {
@@ -59,6 +59,10 @@ function App() {
           <Route
             path="product/manage-delivery"
             element={<DeliveryManagement />}
+          />
+          <Route
+            path="customer-summary"
+            element={<MeetingSummaryCustomer />}
           />
           {/* <Route exact path="/" element={<ProtectedRoute />}>
       <Router>

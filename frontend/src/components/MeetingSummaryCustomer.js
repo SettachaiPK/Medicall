@@ -7,6 +7,7 @@ import { Avatar } from "@mui/material";
 import { pink, grey } from "@mui/material/colors";
 import { actionGetJobSummary } from "../actions/customer.action";
 import moment from "moment";
+import { TextField } from "@mui/material";
 
 function MeetingSummaryCustomer(props) {
   const { jobID, actionGetJobSummary } = props;
@@ -27,13 +28,18 @@ function MeetingSummaryCustomer(props) {
     }
     fetch(jobID);
   }, [jobID, actionGetJobSummary]);
+  const product = {
+    product_name: "product_name",
+    pharmacy: "pharmacy",
+    price: "price",
+  };
   return (
     <div>
       <Paper
         elevation={4}
         sx={{
-          width: "40rem",
-          height: "40rem",
+          width: "60%",
+          height: "max-content",
           margin: "auto",
           padding: "3%",
           marginTop: "2%",
@@ -54,7 +60,7 @@ function MeetingSummaryCustomer(props) {
           }}
         >
           <Avatar
-            sx={{ bgcolor: grey[300], height: "4rem", width: "4rem" }}
+            sx={{ bgcolor: grey[300], height: "5rem", width: "5rem" }}
             src={`data:image/png;base64, ${summary.avatar}`}
           />
           <label style={{ padding: "0.5rem", fontSize: "18px" }}>
@@ -126,7 +132,28 @@ function MeetingSummaryCustomer(props) {
             borderColor: grey[400],
           }}
         >
-          สินค้าที่แนะนำ
+          สินค้าที่แนะนำ :
+          <Paper
+            sx={{
+              display: "flex",
+              justifyContent: "space-around",
+              alignItems: "center",
+              p: "1rem",
+              m: "1rem",
+            }}
+          >
+            <Typography>{product.product_name}</Typography>
+            <Typography>{product.pharmacy}</Typography>
+            <Typography>{product.price}</Typography>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Typography>จำนวน : </Typography>
+              <TextField
+                variant="outlined"
+                sx={{ width: "4rem", ml: 2 }}
+              ></TextField>
+            </Box>
+            <Button sx={{textDecoration:"underline"}}>เพื่มลงตะกร้า</Button>
+          </Paper>
         </Box>
       </Paper>
     </div>

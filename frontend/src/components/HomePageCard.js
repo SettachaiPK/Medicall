@@ -22,6 +22,7 @@ import { Box } from "@mui/system";
 import ShowReview from "./ShowReview";
 import ConsultNowDetailsPopUp from "./ConsultNowDetailsPopUp";
 import { grey } from "@mui/material/colors";
+import BookingConsultPopUp from "./BookingConsultPopUp";
 
 function HomePageCard({
   consultant: {
@@ -43,6 +44,7 @@ function HomePageCard({
   const navigate = useNavigate();
 
   const [openAdd, setOpenAdd] = useState(false);
+  const [openBook,setOpenBook] = useState(false);
   const [favorite, setFavorite] = useState(false);
 
   const handleOpenAdd = (event) => {
@@ -51,6 +53,14 @@ function HomePageCard({
   };
   const handleCloseAdd = () => {
     setOpenAdd(false);
+  };
+
+  const handleOpenBook = (event) => {
+    setOpenBook(true);
+    event.stopPropagation();
+  };
+  const handleCloseBook = () => {
+    setOpenBook(false);
   };
 
   const handleToggleFavorite = (event) => {
@@ -211,9 +221,9 @@ function HomePageCard({
           >
             <Button
               variant="contained "
+              onClick={handleOpenBook}
               endIcon={<img src="/assets/img/icon/calendar-edit.svg" alt="" />}
               sx={{ backgroundColor: "#AEEEEE", color: grey[600], px: 1 }}
-              disabled
             >
               จองล่วงหน้า
             </Button>
@@ -236,6 +246,10 @@ function HomePageCard({
           price={{ messagePrice, voiceCallPrice, videoCallPrice }}
           consultantID={userID}
         />
+<BookingConsultPopUp
+open={openBook} 
+onClose={handleCloseBook}
+/>
       </Paper>
     </>
   );
