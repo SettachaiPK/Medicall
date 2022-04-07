@@ -494,7 +494,7 @@ exports.getMeetingSummary = async (req, res) => {
     );
     if (!jobDetail) {
       await client.query("ROLLBACK");
-      res.status(403).send({ message: "Permission Denied" });
+      return res.status(403).send({ message: "Permission Denied" });
     }
     const { rows: recommendedProducts } = await client.query(
       ` SELECT * 

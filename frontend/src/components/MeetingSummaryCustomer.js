@@ -33,7 +33,6 @@ function MeetingSummaryCustomer(props) {
         elevation={4}
         sx={{
           width: "40rem",
-          height: "40rem",
           margin: "auto",
           padding: "3%",
           marginTop: "2%",
@@ -127,6 +126,27 @@ function MeetingSummaryCustomer(props) {
           }}
         >
           สินค้าที่แนะนำ
+        </Box>
+        <Box
+          sx={{
+            m: "0.5rem",
+            p: "1rem",
+            border: 1,
+            borderRadius: 1,
+            borderColor: grey[400],
+          }}
+        >
+          {summary.recommendedProducts.map((product, index) => {
+            return (
+              <>
+                <Typography key={index}>
+                  {product.productName} :{" "}
+                  {parseFloat(product.productPrice).toFixed(2)} :{" "}
+                  {product.amount}
+                </Typography>
+              </>
+            );
+          })}
         </Box>
       </Paper>
     </div>
