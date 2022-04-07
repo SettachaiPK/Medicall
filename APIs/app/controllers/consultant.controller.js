@@ -404,7 +404,8 @@ exports.getProducts = async (req, res) => {
           FROM   productMedia
           )  AS "productMedia" USING ("productID")
         WHERE "productName" LIKE $1
-        AND "isActive" = TRUE`,
+        AND "isActive" = TRUE
+        LIMIT 5`,
       [`%${search}%`]
     );
 
@@ -447,8 +448,9 @@ exports.submitRecommendedProduct = async (req, res) => {
       rows: [consultJobRecommendedProduct],
     } = await client.query(
       ` SELECT * 
-        FROM consultjobrecommendedproduct`,
-      []
+        FROM consultjobrecommendedproduct
+        WHERE "jobID" = $1`,
+      [jobID]
     );
     if (consultJobRecommendedProduct) {
       await client.query("ROLLBACK");
@@ -458,7 +460,7 @@ exports.submitRecommendedProduct = async (req, res) => {
     }
     if (recommendedProducts) {
       for (var i = 0; i < recommendedProducts.length; i++) {
-        const productID = recommendedProducts[i];
+        const { productID, amount } = recommendedProducts[i];
         if (isNaN(productID)) {
           await client.query("ROLLBACK");
           return res
@@ -480,9 +482,9 @@ exports.submitRecommendedProduct = async (req, res) => {
           }
           await client.query(
             ` INSERT INTO consultJobRecommendedProduct
-                ("jobID", "productID") 
-              VALUES ($1, $2);`,
-            [jobID, productID]
+                ("jobID", "productID", "amount") 
+              VALUES ($1, $2, $3);`,
+            [jobID, productID, amount]
           );
         }
       }

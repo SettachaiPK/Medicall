@@ -10,7 +10,10 @@ import {
   actionLeaveCall,
   actionEndMeeting,
 } from "../actions/consulting.action";
-import { actionSubmitAdvice } from "../actions/consultant.action";
+import {
+  actionSubmitAdvice,
+  actionSubmitRecommendedProducts,
+} from "../actions/consultant.action";
 
 const SocketContext = createContext();
 
@@ -43,6 +46,14 @@ const ContextProvider = (props) => {
       await props.actionSubmitAdvice({
         jobID: props.consulting.jobID,
         advice: props.consulting.advice,
+      });
+      await props.actionSubmitRecommendedProducts({
+        jobID: props.consulting.jobID,
+        recommendedProducts: props.recommendedProducts.selectedProducts.map(
+          (product) => {
+            return { productID: product.productID, amount: product.amount };
+          }
+        ),
       });
     }
     await props.actionLeaveCall(props.consulting.role);
@@ -112,6 +123,7 @@ ContextProvider.propTypes = {};
 const mapStateToProps = (state) => ({
   user: state.user,
   consulting: state.consulting,
+  recommendedProducts: state.recommendedProducts,
 });
 
 export default connect(mapStateToProps, {
@@ -121,6 +133,7 @@ export default connect(mapStateToProps, {
   actionEndMeeting: actionEndMeeting,
   actionLeaveCall: actionLeaveCall,
   actionSubmitAdvice: actionSubmitAdvice,
+  actionSubmitRecommendedProducts: actionSubmitRecommendedProducts,
 })(ContextProvider);
 
 export { SocketContext };
