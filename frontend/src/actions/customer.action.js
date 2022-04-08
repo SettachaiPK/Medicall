@@ -1,6 +1,6 @@
 import { OrderItemModel } from "../models";
 import * as customerService from "../service/customer.service";
-import { CART_INIT } from "./types";
+import { CART_ADD, CART_INIT } from "./types";
 
 export const actionGetOccupations = () => async (dispatch) => {
   try {
@@ -56,7 +56,6 @@ export const actionInitCart = () => async (dispatch) => {
     const cart = await localStorage.getItem(
       `${process.env.REACT_APP_PREFIX}_CART`
     );
-    console.log("init carts", cart);
     if (cart) {
       await dispatch(reducerInitCart(JSON.parse(cart)));
     }
@@ -74,8 +73,14 @@ export const actionSaveCart = (payload) => async () => {
 
 export const actionAddToCart = (payload) => async (dispatch) => {
   try {
-    const item = OrderItemModel(payload);
-    console.log("item carts", item);
+    const item = new OrderItemModel(payload);
+    dispatch(
+      reducerAddToCart({
+        item,
+        storeID: payload.storeID,
+        storeName: payload.storeName,
+      })
+    );
   } catch (error) {
     console.log(error);
   }
@@ -83,5 +88,10 @@ export const actionAddToCart = (payload) => async (dispatch) => {
 
 export const reducerInitCart = (payload) => ({
   type: CART_INIT,
+  payload,
+});
+
+export const reducerAddToCart = (payload) => ({
+  type: CART_ADD,
   payload,
 });

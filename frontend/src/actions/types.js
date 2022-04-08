@@ -22,3 +22,4 @@ export const RECOMMENDED_PRODUCTS_SELECT = "consultant/recommendedProducts/produ
 export const RECOMMENDED_PRODUCTS_REMOVE = "consultant/recommendedProducts/product/remove";
 /// Cart ///
 export const CART_INIT = "customer/cart/init";
+export const CART_ADD = "customer/cart/add";

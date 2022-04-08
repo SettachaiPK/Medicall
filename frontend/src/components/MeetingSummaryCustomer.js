@@ -172,7 +172,12 @@ function MeetingSummaryCustomer(props) {
                     }}
                   />
                 </Box>
-                <Button sx={{ textDecoration: "underline" }}>
+                <Button
+                  sx={{ textDecoration: "underline" }}
+                  onClick={() => {
+                    props.actionAddToCart(product);
+                  }}
+                >
                   เพื่มลงตะกร้า
                 </Button>
               </Paper>

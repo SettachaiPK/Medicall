@@ -500,7 +500,12 @@ exports.getMeetingSummary = async (req, res) => {
       ` SELECT * 
         FROM consultjobrecommendedproduct       
         INNER JOIN product
-        AS "product" USING ("productID")
+        AS "product" USING ("productID") 
+        INNER JOIN (
+          SELECT "storeName","storeID" 
+          FROM phamarcydetail
+        )
+        AS "storeDetail" USING ("storeID")
         LEFT JOIN (
           SELECT DISTINCT on ("productID") 
             "productID", "imageBase64" AS "productMedia"
@@ -881,7 +886,7 @@ exports.confirmReceiveOrder = async (req, res) => {
     body: { orderID },
   } = req;
   const client = await pool.connect();
-  const now = moment()
+  const now = moment();
 
   try {
     await client.query("BEGIN");
@@ -900,11 +905,9 @@ exports.confirmReceiveOrder = async (req, res) => {
       return res.status(403).send({ message: "Permission Denied" });
     } else if (productorder.orderStatus !== "shipped") {
       await client.query("ROLLBACK");
-      return res
-        .status(403)
-        .send({
-          message: `Can not set status of this order, Current status '${productorder.orderStatus}'`,
-        });
+      return res.status(403).send({
+        message: `Can not set status of this order, Current status '${productorder.orderStatus}'`,
+      });
     }
     client.query(
       ` UPDATE productorder
