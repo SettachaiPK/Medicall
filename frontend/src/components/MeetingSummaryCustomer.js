@@ -5,7 +5,10 @@ import { Button, Paper, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { Avatar } from "@mui/material";
 import { pink, grey } from "@mui/material/colors";
-import { actionGetJobSummary } from "../actions/customer.action";
+import {
+  actionAddToCart,
+  actionGetJobSummary,
+} from "../actions/customer.action";
 import moment from "moment";
 import { TextField } from "@mui/material";
 
@@ -29,11 +32,6 @@ function MeetingSummaryCustomer(props) {
     }
     fetch(jobID);
   }, [jobID, actionGetJobSummary]);
-  const product = {
-    product_name: "product_name",
-    pharmacy: "pharmacy",
-    price: "price",
-  };
   const handleChangeAmount = (index, value) => {
     setSummary({
       ...summary,
@@ -196,4 +194,5 @@ const mapStateToProps = (state) => ({});
 
 export default connect(mapStateToProps, {
   actionGetJobSummary: actionGetJobSummary,
+  actionAddToCart: actionAddToCart,
 })(MeetingSummaryCustomer);

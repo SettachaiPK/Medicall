@@ -1,8 +1,9 @@
-// User
+/// User ///
 export const USER_SIGNIN = "user/signin";
 export const USER_SIGNOUT = "user/signout";
 export const USER_OTP_UPDATE = "user/updateOTP";
 export const USER_FETCH_AVATAR = "user/avatar/fetch";
+/// Consulting ///
 export const CONSULTANT_FETCH_DETAIL = "consultant/service/fetch";
 export const CONSULTANT_FETCH_STATUS = "consultant/status/fetch";
 export const CONSULTING_INCOMING_CALL = "consulting/incoming";
@@ -13,8 +14,11 @@ export const CONSULTING_LEAVE_CALL = "consulting/leave";
 export const CONSULTING_LEAVE_CALL_CUSTOMER = "consulting/leave/customer";
 export const ON_CHANG_ADVICE = "consulting/advice";
 export const ON_CHANG_STEP = "consulting/step";
+/// Consultant ///
 export const RECOMMENDED_PRODUCTS_FETCH_STATUS = "consultant/recommendedProducts/status/fetch";
 export const RECOMMENDED_PRODUCTS_FETCH_PRODUCTS = "consultant/recommendedProducts/products/fetch";
 export const RECOMMENDED_PRODUCTS_FETCH_AMOUNT = "consultant/recommendedProducts/amount/fetch";
 export const RECOMMENDED_PRODUCTS_SELECT = "consultant/recommendedProducts/product/select";
 export const RECOMMENDED_PRODUCTS_REMOVE = "consultant/recommendedProducts/product/remove";
+/// Cart ///
+export const CART_INIT = "customer/cart/init";

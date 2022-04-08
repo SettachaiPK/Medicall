@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import { useEffect } from "react";
 //import ProtectedRoute from "./components/ProtectedRoute";
 import { HomePage, UserMenuPage, DashBoard, TestMeetingPage } from "./views";
@@ -19,6 +19,7 @@ import PurchaseOrder from "./views/Customer/PurchaseOrder";
 import OrderDetail from "./views/Pharmacy/OrderDetail";
 import DeliveryManagement from "./views/Pharmacy/DeliveryManagement";
 import MeetingSummaryCustomer from "./components/MeetingSummaryCustomer";
+import { actionInitCart, actionSaveCart } from "./actions/customer.action";
 const theme = createTheme({
   palette: { primary: { main: "#EEA9B8" } },
   typography: {
@@ -26,8 +27,9 @@ const theme = createTheme({
   },
 });
 
-function App() {
+function App(props) {
   const dispatch = useDispatch();
+  const { actionInitCart } = props;
 
   useEffect(() => {
     async function handleVerifyLogIn() {
@@ -36,7 +38,17 @@ function App() {
       }
     }
     handleVerifyLogIn();
-  }, [dispatch]);
+    actionInitCart();
+  }, [dispatch, actionInitCart]);
+  useEffect(() => {
+    window.addEventListener("unload", handleTabClosing);
+    return () => {
+      window.removeEventListener("unload", handleTabClosing);
+    };
+  });
+  const handleTabClosing = () => {
+    props.actionSaveCart(props.cart);
+  };
   return (
     <ThemeProvider theme={theme}>
       <Router>
@@ -60,10 +72,7 @@ function App() {
             path="product/manage-delivery"
             element={<DeliveryManagement />}
           />
-          <Route
-            path="customer-summary"
-            element={<MeetingSummaryCustomer />}
-          />
+          <Route path="customer-summary" element={<MeetingSummaryCustomer />} />
           {/* <Route exact path="/" element={<ProtectedRoute />}>
       <Router>
         <Topnav />
@@ -84,4 +93,11 @@ function App() {
   );
 }
 
-export default App;
+const mapStateToProps = (state) => ({
+  cart: state.cart,
+});
+
+export default connect(mapStateToProps, {
+  actionInitCart: actionInitCart,
+  actionSaveCart: actionSaveCart,
+})(App);

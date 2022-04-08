@@ -4,6 +4,7 @@ import authReducer from "./auth.reducer";
 import consultantReducer from "./consultant.reducer";
 import consultingReducer from "./consulting.reducer";
 import recommendedProductsReducer from "./recommendedProducts.reducer";
+import cartReducer from "./cart.reducer";
 
 export default combineReducers({
   user: userReducer,
@@ -11,4 +12,5 @@ export default combineReducers({
   consultant: consultantReducer,
   consulting: consultingReducer,
   recommendedProducts: recommendedProductsReducer,
+  cart: cartReducer,
 });
