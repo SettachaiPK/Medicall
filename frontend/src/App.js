@@ -20,6 +20,7 @@ import OrderDetail from "./views/Pharmacy/OrderDetail";
 import DeliveryManagement from "./views/Pharmacy/DeliveryManagement";
 import MeetingSummaryCustomer from "./components/MeetingSummaryCustomer";
 import { actionInitCart, actionSaveCart } from "./actions/customer.action";
+import DeliveredCustomer from "./views/Customer/DeliveredCustomer";
 const theme = createTheme({
   palette: { primary: { main: "#EEA9B8" } },
   typography: {
@@ -73,6 +74,7 @@ function App(props) {
             element={<DeliveryManagement />}
           />
           <Route path="customer-summary" element={<MeetingSummaryCustomer />} />
+          <Route path="customer-delivered" element={<DeliveredCustomer />} />
           {/* <Route exact path="/" element={<ProtectedRoute />}>
       <Router>
         <Topnav />
