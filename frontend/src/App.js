@@ -21,6 +21,7 @@ import DeliveryManagement from "./views/Pharmacy/DeliveryManagement";
 import MeetingSummaryCustomer from "./components/MeetingSummaryCustomer";
 import { actionInitCart, actionSaveCart } from "./actions/customer.action";
 import DeliveredCustomer from "./views/Customer/DeliveredCustomer";
+import CompleteAddProduct from "./components/CompleteAddProduct";
 const theme = createTheme({
   palette: { primary: { main: "#EEA9B8" } },
   typography: {
@@ -63,7 +64,7 @@ function App(props) {
           <Route path="meeting/:jobID" element={<TestMeetingPage />} />
           <Route path="reviewpage" element={<ReviewPage />} />
           <Route path="product/manage" element={<ManageProduct />} />
-          <Route path="addproduct" element={<AddProduct />} />
+          <Route path="product/addproduct" element={<AddProduct />} />
           <Route path="editproduct" element={<EditProduct />} />
           <Route path="product" element={<StorePage />} />
           <Route path="cart" element={<Cart />} />
@@ -75,6 +76,7 @@ function App(props) {
           />
           <Route path="customer-summary" element={<MeetingSummaryCustomer />} />
           <Route path="customer-delivered" element={<DeliveredCustomer />} />
+          <Route path="complete-addproduct" element={<CompleteAddProduct />} />
           {/* <Route exact path="/" element={<ProtectedRoute />}>
       <Router>
         <Topnav />

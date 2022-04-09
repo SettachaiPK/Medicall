@@ -12,8 +12,8 @@ import { grey } from "@mui/material/colors";
 import { useNavigate } from "react-router-dom";
 import CustomSpeedDial from "../../components/CustomSpeedDial";
 import { actionGetProducts } from "../../actions/pharmacy.actions";
+import { actionGetStoreDetail } from "../../actions/pharmacy.actions";
 
-const pharmacy_name = "pharmacy name";
 
 const classes = {
   icon: { color: "#AFE7E7" },
@@ -22,6 +22,7 @@ const classes = {
 function ManageProduct(props) {
   const navigate = useNavigate();
   const { actionGetProducts } = props;
+  const actionGetStoreDetail = props.actionGetStoreDetail;
 
   const [products, setProducts] = useState([
     { productName: "Product_1", productPrice: "50", productMedia: null },
@@ -33,6 +34,10 @@ function ManageProduct(props) {
     { productName: "Product_7", productPrice: "500", productMedia: null },
     { productName: "Product_8", productPrice: "500", productMedia: null },
   ]);
+
+  const [details,setDetails] = useState([
+    { storeName:"Name",location:"location",avatar:null,status: "active"}
+  ])
 
   const speedDialActions = [
     {
@@ -49,8 +54,13 @@ function ManageProduct(props) {
       const res = await actionGetProducts();
       setProducts(res);
     }
+    async function fetchDetail() {
+      const res = await actionGetStoreDetail();
+      setDetails(res);
+    }
+    fetchDetail();
     fetchProducts();
-  }, [actionGetProducts]);
+  }, [actionGetProducts,actionGetStoreDetail]);
 
   return (
     <div>
@@ -64,13 +74,13 @@ function ManageProduct(props) {
         }}
       >
         <Avatar
-          src="/broken-image.jpg"
+          src={`data:image/png;base64, ${details.avatar}`}
           sx={{ width: "4rem", height: "4rem" }}
         />
         <Button sx={{ fontSize: "x-small", fontWeight: 400 }}>
           เปลี่ยนรูปโปรไฟล์
         </Button>
-        <Typography sx={{ fontSize: "1.4rem" }}>{pharmacy_name}</Typography>
+        <Typography sx={{ fontSize: "1.4rem" }}>{details.storeName}</Typography>
       </Box>
       <Grid
         width={"80%"}
@@ -89,6 +99,7 @@ function ManageProduct(props) {
             alignItems: "center",
           }}
         >
+          <Button href="addproduct">
           <IconButton
             aria-label="Add Product"
             component="span"
@@ -96,6 +107,7 @@ function ManageProduct(props) {
           >
             <AddCircleIcon sx={{ fontSize: 100, color: grey[400] }} />
           </IconButton>
+          </Button>
         </Box>
         {products.map((product, index) => {
           return (
@@ -114,10 +126,12 @@ function ManageProduct(props) {
 ManageProduct.defaultProps = {};
 ManageProduct.propTypes = {
   actionGetProducts: PropTypes.func.isRequired,
+  actionGetStoreDetail:PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state) => ({});
 
 export default connect(mapStateToProps, {
   actionGetProducts: actionGetProducts,
+  actionGetStoreDetail:actionGetStoreDetail,
 })(ManageProduct);

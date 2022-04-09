@@ -27,3 +27,21 @@ export const actionGetOrderDetail = (orderID) => async () => {
     return [];
   }
 };
+export const actionGetStoreDetail = () => async () => {
+  try {
+    const { data } = await pharmacyService.getStoreDetail();
+    return data;
+  } catch (error) {
+    console.log(error.response.data.message || error.message);
+    return [];
+  }
+};
+  export const actionAddProduct = (payload) => async () => {
+    try {
+      const { data } = await pharmacyService.addProduct(payload);
+      return data;
+    } catch (error) {
+      console.log(error.response.data.message || error.message);
+      return [];
+    }
+  };
