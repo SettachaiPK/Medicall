@@ -15,11 +15,20 @@ export const CONSULTING_LEAVE_CALL_CUSTOMER = "consulting/leave/customer";
 export const ON_CHANG_ADVICE = "consulting/advice";
 export const ON_CHANG_STEP = "consulting/step";
 /// Consultant ///
-export const RECOMMENDED_PRODUCTS_FETCH_STATUS = "consultant/recommendedProducts/status/fetch";
-export const RECOMMENDED_PRODUCTS_FETCH_PRODUCTS = "consultant/recommendedProducts/products/fetch";
-export const RECOMMENDED_PRODUCTS_FETCH_AMOUNT = "consultant/recommendedProducts/amount/fetch";
-export const RECOMMENDED_PRODUCTS_SELECT = "consultant/recommendedProducts/product/select";
-export const RECOMMENDED_PRODUCTS_REMOVE = "consultant/recommendedProducts/product/remove";
+export const RECOMMENDED_PRODUCTS_FETCH_STATUS =
+  "consultant/recommendedProducts/status/fetch";
+export const RECOMMENDED_PRODUCTS_FETCH_PRODUCTS =
+  "consultant/recommendedProducts/products/fetch";
+export const RECOMMENDED_PRODUCTS_FETCH_AMOUNT =
+  "consultant/recommendedProducts/amount/fetch";
+export const RECOMMENDED_PRODUCTS_SELECT =
+  "consultant/recommendedProducts/product/select";
+export const RECOMMENDED_PRODUCTS_REMOVE =
+  "consultant/recommendedProducts/product/remove";
 /// Cart ///
 export const CART_INIT = "customer/cart/init";
 export const CART_ADD = "customer/cart/add";
+export const CART_INCREASE = "customer/cart/increase";
+export const CART_DELETE = "customer/cart/delete";
+export const CART_LOCATION_EDIT = "customer/cart/deliveryLocation/edit";
+export const CART_ORDER_DELETE = "customer/cart/order/delete";

@@ -699,7 +699,6 @@ exports.placeOrder = async (req, res) => {
         now,
       ]
     );
-    console.log(orderID);
 
     if (!items || items.length === 0) {
       await client.query("ROLLBACK");
@@ -728,7 +727,8 @@ exports.placeOrder = async (req, res) => {
             await client.query("ROLLBACK");
             return res.status(400).send({ message: "Product does not exist" });
           }
-          if (product.storeID !== storeID) {
+          if (String(product.storeID) !== String(storeID)) {
+            console.log(product.storeID, storeID);
             await client.query("ROLLBACK");
             return res
               .status(400)

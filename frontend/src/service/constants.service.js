@@ -49,6 +49,9 @@ export const server = {
   CUSTOMER_GIVE_REVIEW: new AxiosModel({
     url: `customer/review`,
   }),
+  CUSTOMER_ORDER: new AxiosModel({
+    url: `customer/order`,
+  }),
   ///consultant///
   consultantService: new AxiosModel({ url: `consultant/service` }),
   editConsultantStatus: new AxiosModel({ url: `consultant/online-status` }),

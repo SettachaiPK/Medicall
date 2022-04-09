@@ -12,7 +12,7 @@ exports.getStoreDetail = async (req, res) => {
     } = await client.query(
       ` SELECT *
           FROM phamarcyDetail
-          WHERE "userID" = $1 ;`,
+          WHERE "ownerID" = $1 ;`,
       [userID]
     );
 

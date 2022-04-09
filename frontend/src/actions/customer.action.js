@@ -1,6 +1,13 @@
 import { OrderItemModel } from "../models";
 import * as customerService from "../service/customer.service";
-import { CART_ADD, CART_INIT } from "./types";
+import {
+  CART_ADD,
+  CART_DELETE,
+  CART_INCREASE,
+  CART_INIT,
+  CART_LOCATION_EDIT,
+  CART_ORDER_DELETE,
+} from "./types";
 
 export const actionGetOccupations = () => async (dispatch) => {
   try {
@@ -86,12 +93,56 @@ export const actionAddToCart = (payload) => async (dispatch) => {
   }
 };
 
+export const actionCartItemIncrease = (payload) => (dispatch) => {
+  try {
+    dispatch(reducerCartItemIncrease(payload));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const actionCartItemDelete = (payload) => (dispatch) => {
+  try {
+    dispatch(reducerCartItemDelete(payload));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const actionPlaceOrder = (payload) => async (dispatch) => {
+  try {
+    const { data } = await customerService.placeOrder(payload);
+    dispatch(reducerCartLocationEdit(payload.deliveryLocation));
+    dispatch(
+      reducerCartOrderDelete({ storeID: payload.storeID, items: payload.items })
+    );
+    return data;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+};
 export const reducerInitCart = (payload) => ({
   type: CART_INIT,
   payload,
 });
-
 export const reducerAddToCart = (payload) => ({
   type: CART_ADD,
+  payload,
+});
+export const reducerCartItemIncrease = (payload) => ({
+  type: CART_INCREASE,
+  payload,
+});
+export const reducerCartItemDelete = (payload) => ({
+  type: CART_DELETE,
+  payload,
+});
+export const reducerCartLocationEdit = (payload) => ({
+  type: CART_LOCATION_EDIT,
+  payload,
+});
+export const reducerCartOrderDelete = (payload) => ({
+  type: CART_ORDER_DELETE,
   payload,
 });

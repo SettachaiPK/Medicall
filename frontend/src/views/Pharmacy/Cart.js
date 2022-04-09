@@ -21,6 +21,12 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import { useState } from "react";
+import { connect } from "react-redux";
+import {
+  actionCartItemDelete,
+  actionCartItemIncrease,
+} from "../../actions/customer.action";
+import { useNavigate } from "react-router-dom";
 
 function createData(name, price, amount, total_price) {
   return {
@@ -100,7 +106,14 @@ const headCells = [
 ];
 
 function EnhancedTableHead(props) {
-  const { onSelectAllClick, order, orderBy, numSelected, rowCount } = props;
+  const {
+    onSelectAllClick,
+    order,
+    orderBy,
+    numSelected,
+    rowCount,
+    isThisStore,
+  } = props;
 
   return (
     <TableHead>
@@ -108,8 +121,10 @@ function EnhancedTableHead(props) {
         <TableCell padding="checkbox">
           <Checkbox
             color="primary"
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
+            indeterminate={
+              numSelected > 0 && numSelected === rowCount && isThisStore
+            }
+            checked={rowCount > 0 && numSelected === rowCount && isThisStore}
             onChange={onSelectAllClick}
             inputProps={{
               "aria-label": "select all desserts",
@@ -137,26 +152,28 @@ EnhancedTableHead.propTypes = {
   order: PropTypes.oneOf(["asc", "desc"]).isRequired,
   orderBy: PropTypes.string.isRequired,
   rowCount: PropTypes.number.isRequired,
+  isThisStore: PropTypes.bool.isRequired,
 };
 
 const EnhancedTableToolbar = (props) => {
-  const { numSelected } = props;
+  const { numSelected, isThisStore } = props;
 
   return (
     <Toolbar
       sx={{
         pl: { sm: 2 },
         pr: { xs: 1, sm: 1 },
-        ...(numSelected > 0 && {
-          bgcolor: (theme) =>
-            alpha(
-              theme.palette.primary.main,
-              theme.palette.action.activatedOpacity
-            ),
-        }),
+        ...(numSelected > 0 &&
+          isThisStore && {
+            bgcolor: (theme) =>
+              alpha(
+                theme.palette.primary.main,
+                theme.palette.action.activatedOpacity
+              ),
+          }),
       }}
     >
-      {numSelected > 0 ? (
+      {numSelected > 0 && isThisStore ? (
         <Typography
           sx={{ flex: "1 1 100%" }}
           color="inherit"
@@ -172,18 +189,8 @@ const EnhancedTableToolbar = (props) => {
           id="tableTitle"
           component="div"
         >
-          {Pharmacy}
+          {props.tableName}
         </Typography>
-      )}
-
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <div></div>
       )}
     </Toolbar>
   );
@@ -191,40 +198,68 @@ const EnhancedTableToolbar = (props) => {
 
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
+  isThisStore: PropTypes.bool.isRequired,
 };
 
-export default function EnhancedTable() {
+function EnhancedTable(props) {
+  const { cart, actionCartItemDelete } = props;
+  const navigate = useNavigate();
   const [selected, setSelected] = React.useState([]);
+  const [selectedStore, setSelectedStore] = React.useState("");
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("name");
 
-  const handleSelectAllClick = (event) => {
+  const handleSelectAllClick = (event, storeID, items) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.name);
+      const newSelecteds = items.map((n) => n.productID);
       setSelected(newSelecteds);
+      setSelectedStore(storeID);
       return;
     }
     setSelected([]);
+    setSelectedStore("");
   };
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
+  const handleClick = (event, storeID, name) => {
     let newSelected = [];
+    if (storeID === selectedStore) {
+      const selectedIndex = selected.indexOf(name);
 
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
+      if (selectedIndex === -1) {
+        newSelected = newSelected.concat(selected, name);
+      } else if (selectedIndex === 0) {
+        newSelected = newSelected.concat(selected.slice(1));
+      } else if (selectedIndex === selected.length - 1) {
+        newSelected = newSelected.concat(selected.slice(0, -1));
+      } else if (selectedIndex > 0) {
+        newSelected = newSelected.concat(
+          selected.slice(0, selectedIndex),
+          selected.slice(selectedIndex + 1)
+        );
+      }
+    } else {
+      setSelectedStore(storeID);
+      newSelected.push(name);
     }
-
     setSelected(newSelected);
+  };
+  const handelDelete = (orderIndex, itemIndex, storeID, productID) => {
+    actionCartItemDelete({ orderIndex, itemIndex });
+    if (selectedStore === storeID) {
+      const selectedIndex = selected.indexOf(productID);
+      let newSelected = [];
+      if (selectedIndex === 0) {
+        newSelected = newSelected.concat(selected.slice(1));
+      } else if (selectedIndex === selected.length - 1) {
+        newSelected = newSelected.concat(selected.slice(0, -1));
+      } else if (selectedIndex > 0) {
+        newSelected = newSelected.concat(
+          selected.slice(0, itemIndex),
+          selected.slice(itemIndex + 1)
+        );
+      }
+      setSelected(newSelected);
+    }
   };
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
@@ -233,92 +268,113 @@ export default function EnhancedTable() {
   return (
     <>
       <Box sx={{ padding: "6rem" }}>
-        <Paper sx={{ width: "100%", mb: 2 }}>
-          <EnhancedTableToolbar numSelected={selected.length} />
-          <TableContainer>
-            <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
-              <EnhancedTableHead
+        {cart.orders.map((store, orderIndex) => {
+          return (
+            <Paper sx={{ width: "100%", mb: 2 }}>
+              <EnhancedTableToolbar
                 numSelected={selected.length}
-                order={order}
-                orderBy={orderBy}
-                onSelectAllClick={handleSelectAllClick}
-                rowCount={rows.length}
+                tableName={store.storeName}
+                isThisStore={store.storeID === selectedStore}
               />
-              <TableBody>
-                {/* if you don't need to support IE11, you can replace the `stableSort` call with:
+              <TableContainer>
+                <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
+                  <EnhancedTableHead
+                    numSelected={store.items.length}
+                    order={order}
+                    orderBy={orderBy}
+                    onSelectAllClick={(e) =>
+                      handleSelectAllClick(e, store.storeID, store.items)
+                    }
+                    rowCount={selected.length}
+                    isThisStore={store.storeID === selectedStore}
+                  />
+                  <TableBody>
+                    {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                  rows.slice().sort(getComparator(order, orderBy)) */}
-                {stableSort(rows, getComparator(order, orderBy)).map(
-                  (row, index) => {
-                    const isItemSelected = isSelected(row.name);
-                    const labelId = `enhanced-table-checkbox-${index}`;
+                    {store.items.map((row, itemIndex) => {
+                      const isItemSelected = isSelected(row.productID);
+                      const labelId = `enhanced-table-checkbox-${itemIndex}`;
 
-                    return (
-                      <TableRow
-                        hover
-                        onClick={(event) => handleClick(event, row.name)}
-                        role="checkbox"
-                        aria-checked={isItemSelected}
-                        tabIndex={-1}
-                        key={row.name}
-                        selected={isItemSelected}
-                      >
-                        <TableCell padding="checkbox">
-                          <Checkbox
-                            color="primary"
-                            checked={isItemSelected}
-                            inputProps={{
-                              "aria-labelledby": labelId,
-                            }}
-                          />
-                        </TableCell>
-                        <TableCell align="left">{row.name}</TableCell>
-                        <TableCell align="left">{row.price}</TableCell>
-                        <TableCell align="left">
-                          <TextField value={count} sx={{width:"3rem", marginRight:"0.5rem"}}/>
-                          <ButtonGroup
-                          variant="text"
-                          orientation="vertical"
-                            sx={{
-                              width: "0.5rem",
-                            }}
-                          >
-                            <Button
-                              aria-label="increase"
+                      return (
+                        <TableRow
+                          hover
+                          role="checkbox"
+                          aria-checked={isItemSelected}
+                          tabIndex={-1}
+                          key={row.productID}
+                          selected={isItemSelected}
+                        >
+                          <TableCell padding="checkbox">
+                            <Checkbox
+                              color="primary"
+                              checked={isItemSelected}
+                              onClick={(event) =>
+                                handleClick(event, store.storeID, row.productID)
+                              }
+                              inputProps={{
+                                "aria-labelledby": labelId,
+                              }}
+                            />
+                          </TableCell>
+                          <TableCell align="left">{row.productName}</TableCell>
+                          <TableCell align="left">
+                            {parseFloat(row.productPrice).toFixed(2)}
+                          </TableCell>
+                          <TableCell align="left">
+                            <TextField
+                              value={row.amount}
+                              onChange={(e) => {
+                                props.actionCartItemIncrease({
+                                  value: e.target.value,
+                                  orderIndex,
+                                  itemIndex,
+                                });
+                              }}
+                              sx={{ width: "5rem", marginRight: "0.5rem" }}
+                              type="number"
+                            />
+                          </TableCell>
+                          <TableCell align="left">
+                            {(
+                              parseFloat(row.productPrice) *
+                              parseFloat(row.amount)
+                            ).toFixed(2)}
+                          </TableCell>
+                          <TableCell align="center">
+                            <IconButton
                               onClick={() => {
-                                setCount(count + 1);
+                                handelDelete(
+                                  orderIndex,
+                                  itemIndex,
+                                  store.storeID,
+                                  row.productID
+                                );
                               }}
                             >
-                              <AddIcon fontSize="xsmall" />
-                            </Button>
-                            <Button
-                              aria-label="reduce"
-                              onClick={() => {
-                                setCount(Math.max(count - 1, 0));
-                              }}
-                            >
-                              <RemoveIcon fontSize="xsmall" />
-                            </Button>
-                            
-                          </ButtonGroup>
-                        </TableCell>
-                        <TableCell align="left">{row.total_price}</TableCell>
-                      </TableRow>
-                    );
-                  }
-                )}
-                <TableRow>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Paper>
+                              <DeleteIcon />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                    <TableRow>
+                      <TableCell colSpan={6} />
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Paper>
+          );
+        })}
       </Box>
       <Box
         sx={{ display: "flex", justifyContent: "flex-end", p: 2, width: "90%" }}
       >
         <Button
           sx={{ backgroundColor: "#FFC1C1", color: grey[500], height: "3rem" }}
+          onClick={() => {
+            navigate(`/purchase/${selectedStore}/${JSON.stringify(selected)}`);
+          }}
         >
           สั่งซื้อสินค้า
         </Button>
@@ -326,3 +382,13 @@ export default function EnhancedTable() {
     </>
   );
 }
+
+EnhancedTable.defaultProps = {};
+EnhancedTable.propTypes = {};
+
+const mapStateToProps = (state) => ({ cart: state.cart });
+
+export default connect(mapStateToProps, {
+  actionCartItemIncrease: actionCartItemIncrease,
+  actionCartItemDelete: actionCartItemDelete,
+})(EnhancedTable);

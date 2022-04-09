@@ -66,7 +66,7 @@ function App(props) {
           <Route path="editproduct" element={<EditProduct />} />
           <Route path="product" element={<StorePage />} />
           <Route path="cart" element={<Cart />} />
-          <Route path="purchase" element={<PurchaseOrder />} />
+          <Route path="purchase/:storeID/:items" element={<PurchaseOrder />} />
           <Route path="orderdetail/:orderID" element={<OrderDetail />} />
           <Route
             path="product/manage-delivery"

@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
@@ -27,20 +26,14 @@ const height = "10rem";
 function CallConsultant(props) {
   const { products, search, selectedProducts } = props.recommendedProducts;
   const { actionGetProductsConsultant } = props;
+  const [searchValue, setSearchValue] = useState("");
   const onChangeInput = (e) => {
     console.log("onChangeInput");
     props.actionChangeAdvice(e);
   };
-
-  const product = {
-    product_name: "product_name",
-    pharmacy: "pharmacy",
-    price: "price",
-  };
   useEffect(() => {
-    actionGetProductsConsultant(search);
-    console.log(search);
-  }, [actionGetProductsConsultant, search]);
+    actionGetProductsConsultant("");
+  }, [actionGetProductsConsultant]);
   useEffect(() => {
     console.log(selectedProducts);
   }, [selectedProducts]);
@@ -97,9 +90,18 @@ function CallConsultant(props) {
               </InputLabel>
               <OutlinedInput
                 id="outlined-adornment-Search"
+                value={searchValue}
+                onChange={(e) => {
+                  setSearchValue(e.target.value);
+                }}
                 endAdornment={
                   <InputAdornment position="end">
-                    <IconButton edge="end">
+                    <IconButton
+                      edge="end"
+                      onClick={() => {
+                        actionGetProductsConsultant(searchValue);
+                      }}
+                    >
                       <SearchIcon sx={{ color: "#FFC1C1" }} />
                     </IconButton>
                   </InputAdornment>
@@ -124,7 +126,7 @@ function CallConsultant(props) {
                 <Typography>{product.productName}</Typography>
                 <Typography>{product.storeName}</Typography>
                 <Typography>
-                  {parseFloat(product.productPrice).toFixed(4)}
+                  {parseFloat(product.productPrice).toFixed(2)}
                 </Typography>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                   <Typography>จำนวน : </Typography>
