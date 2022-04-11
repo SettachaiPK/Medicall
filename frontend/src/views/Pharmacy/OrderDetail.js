@@ -13,6 +13,8 @@ import TableRow from "@mui/material/TableRow";
 import { grey } from "@mui/material/colors";
 import { Button } from "@mui/material";
 import { actionGetOrderDetail } from "../../actions/pharmacy.actions";
+import { actionConfirmSend } from "../../actions/pharmacy.actions";
+import { useNavigate } from "react-router-dom";
 
 function ccyFormat(num) {
   num = parseFloat(num);
@@ -21,11 +23,18 @@ function ccyFormat(num) {
 
 function OrderDetail(props) {
   const { orderID } = useParams();
+  const deliveryNumber = "";
+  const navigate = useNavigate();
   const { actionGetOrderDetail } = props;
   const [orderDetail, setOrderDetail] = useState({
     products: [],
     totalPrice: "0.0",
   });
+  
+  const handleSubmit = () => {
+    props.actionConfirmSend({orderID:orderID,deliveryNumber:deliveryNumber});
+    navigate(`../product/manage-delivery`);
+  };
 
   useEffect(() => {
     async function fetchProducts() {
@@ -121,6 +130,7 @@ function OrderDetail(props) {
               height: "2rem",
               width: "6rem",
             }}
+            onClick = {handleSubmit}
           >
             จัดส่งแล้ว
           </Button>
@@ -133,10 +143,12 @@ function OrderDetail(props) {
 OrderDetail.defaultProps = {};
 OrderDetail.propTypes = {
   actionGetOrderDetail: PropTypes.func.isRequired,
+  actionConfirmSend: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({});
 
 export default connect(mapStateToProps, {
   actionGetOrderDetail: actionGetOrderDetail,
+  actionConfirmSend: actionConfirmSend,
 })(OrderDetail);

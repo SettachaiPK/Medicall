@@ -45,3 +45,33 @@ export const actionGetStoreDetail = () => async () => {
       return [];
     }
   };
+
+  export const actionEditProduct = (payload) => async () => {
+    try {
+      const { data } = await pharmacyService.editProduct(payload);
+      return data;
+    } catch (error) {
+      console.log(error.response.data.message || error.message);
+      return [];
+    }
+  };
+
+  export const actionConfirmSend = (payload) => async () => {
+    try {
+      const { data } = await pharmacyService.confirmSend(payload);
+      return data;
+    } catch (error) {
+      console.log(error.response.data.message || error.message);
+      return [];
+    }
+  };
+
+  export const actionDeleteProduct = (payload) => async () => {
+    try {
+      const { data } = await pharmacyService.deleteProduct(payload);
+      return data;
+    } catch (error) {
+      console.log(error.response.data.message || error.message);
+      return [];
+    }
+  };

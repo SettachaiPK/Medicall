@@ -2,8 +2,11 @@ import { Button, Paper, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { grey, pink } from "@mui/material/colors";
 import React from "react";
+import { useNavigate } from "react-router-dom";
+
 
 export default function ManageProductComponent(props) {
+  const navigate = useNavigate();
   return (
     <div>
       <Paper sx={{ p: "1rem", width: "fit-content" }}>
@@ -41,6 +44,9 @@ export default function ManageProductComponent(props) {
                 color: grey[500],
                 height: "1.5rem",
                 fontSize: "small",
+              }}
+              onClick={() => {
+                navigate(`/editproduct/${props.product.productID}`);
               }}
             >
               แก้ไข

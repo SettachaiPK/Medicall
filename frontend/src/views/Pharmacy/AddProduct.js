@@ -9,9 +9,11 @@ import { actionAddProduct } from "../../actions/pharmacy.actions";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const height = "10rem";
 function AddProduct(props) {
+  const navigate = useNavigate();
   const [products, setProducts] = useState({
     productName: "",
     productPrice: 0,
@@ -21,7 +23,8 @@ function AddProduct(props) {
     setProducts({ ...products, [field]: e.target.value });
   };
   const handleSubmit = () => {
-    props.actionAddProduct(products);
+    props.actionEditProduct(products);
+    navigate(`../complete-addproduct`);
   };
   return (
     <div
@@ -90,7 +93,6 @@ function AddProduct(props) {
         <Button
           sx={{ backgroundColor: "#FFC1C1", color: grey[500] }}
           onClick={handleSubmit}
-          href="complete-addproduct"
         >
           ยืนยัน
         </Button>
