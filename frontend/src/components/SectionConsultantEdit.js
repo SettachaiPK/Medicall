@@ -22,6 +22,7 @@ import SentimentDissatisfiedIcon from "@mui/icons-material/SentimentDissatisfied
 import SentimentSatisfiedIcon from "@mui/icons-material/SentimentSatisfied";
 import SentimentSatisfiedAltIcon from "@mui/icons-material/SentimentSatisfiedAltOutlined";
 import SentimentVerySatisfiedIcon from "@mui/icons-material/SentimentVerySatisfied";
+import { Box } from "@mui/system";
 
 function SectionConsultantEdit({ consultant, user }) {
   const dispatch = useDispatch();
@@ -126,7 +127,9 @@ function SectionConsultantEdit({ consultant, user }) {
 
   return (
     <>
-      <Avatar src={`data:image/png;base64, ${user.avatar}`} />
+    <Paper sx={{display:"flex",justifyContent: "center",width:"80%",m:"auto"}}>
+    <Box sx={{ display: "flex", flexDirection: "column",alignItems: "center",mr:8,mt:8}}>
+      <Avatar src={`data:image/png;base64, ${user.avatar}`} sx={{width:"7rem",height:"7rem"}}/>
       <input
         type="file"
         name="media"
@@ -143,32 +146,35 @@ function SectionConsultantEdit({ consultant, user }) {
         แก้ไขรูปภาพ
       </Button>
       <div style={{ display: "flex" }}>
-        <label>คะแนนรีวิวเฉลี่ย : </label>
-        <StyledRating
-          readOnly
-          sx={{ color: pink[100] }}
-          name="highlight-selected-only"
-          value={formValue.rating}
-          IconContainerComponent={IconContainer}
-          highlightSelectedOnly
-        />
-      </div>
-      <div style={{ display: "flex" }}>
         <Switch
           checked={checked}
           onChange={handleChecked}
           inputProps={{ "aria-label": "controlled" }}
-        />
+        />'
         <label>สถานะ: {formValue.onlineStatus} </label>
       </div>
-      <div className="Details_Box" style={{ width: "30%" }}>
+      </Box>
+
+      <Box sx={{mt:3}}>
+        <Box sx={{m:"auto",width:"100%", p:"1rem",display: "flex",alignItems: "center"}}>
+        <label>คะแนนรีวิวเฉลี่ย : </label>
+        <StyledRating
+          readOnly
+          sx={{ color: pink[100],ml:"1rem" }}
+          name="highlight-selected-only"
+          value={formValue.rating}
+          IconContainerComponent={IconContainer}
+          highlightSelectedOnly
+        /></Box>
+      <Paper sx={{display:"flex",p:"2rem"}}>   
+      <Box  sx={{display:"flex",flexDirection:"column"}}>
         <CreateableAutoComplete
           label="แผนก"
           optionsData={departmentOptions}
           value={department}
           setValue={setDepartment}
           variant="standard"
-          disabled
+          
         />
         <TextField
           variant="standard"
@@ -179,7 +185,7 @@ function SectionConsultantEdit({ consultant, user }) {
           name="infirmary"
           value={formValue.infirmary}
           onChange={handleChange}
-          disabled
+          
         />
         <TextField
           variant="standard"
@@ -190,10 +196,9 @@ function SectionConsultantEdit({ consultant, user }) {
           name="academy"
           value={formValue.academy}
           onChange={handleChange}
-          disabled
         />
         <TextField
-          variant="standard"
+          variant="outlined"
           margin="normal"
           sx={{ width: 300 }}
           label="รายละเอียด"
@@ -203,23 +208,13 @@ function SectionConsultantEdit({ consultant, user }) {
           multiline
           rows={4}
         />
-        <Paper
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            flexWrap: "wrap",
-            listStyle: "none",
-            p: 0.5,
-            m: 0,
-          }}
-          component="ul"
-        >
+        </Box>  
+        <Box sx={{display:"flex",flexDirection:"column",ml:5}}>
           {tags.map((data, index) => {
             return (
               <Chip key={index} label={data} onDelete={handleDeleteTag(data)} />
             );
           })}
-        </Paper>
         <TextField
           label="เพิ่ม tags"
           value={addTag}
@@ -275,7 +270,10 @@ function SectionConsultantEdit({ consultant, user }) {
             ยืนยัน
           </Button>
         )}
-      </div>
+      </Box>
+    </Paper>
+    </Box>
+    </Paper>
     </>
   );
 }

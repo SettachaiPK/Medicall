@@ -5,6 +5,9 @@
   "dependencies": {
     "@date-io/date-fns": "^1.3.13",
     "@date-io/moment": "^2.13.1",
+    "@devexpress/dx-react-core": "^3.0.2",
+    "@devexpress/dx-react-scheduler": "^3.0.2",
+    "@devexpress/dx-react-scheduler-material-ui": "^3.0.2",
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
     "@fortawesome/fontawesome-svg-core": "^1.3.0",

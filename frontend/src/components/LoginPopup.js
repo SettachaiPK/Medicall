@@ -64,7 +64,7 @@ function LoginPopup({ onSubmit }) {
             }}
             onClick={handleSubmit}
           >
-            เช้าสู่ระบบ
+            เข้าสู่ระบบ
           </Button>
         </div>
       </DialogActions>
