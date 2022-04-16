@@ -67,6 +67,12 @@ module.exports = function (app) {
     [authJwt.verifyToken, authJwt.isConsultant],
     consultantController.submitRecommendedProduct
   );
+  router.post(
+    "/schedule",
+    [authJwt.verifyToken, authJwt.isConsultant],
+    consultantController.createSchedule
+  );
+  
   
   app.use("/apis/consultant", router);
 };

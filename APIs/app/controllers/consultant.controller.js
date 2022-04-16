@@ -505,3 +505,92 @@ exports.submitRecommendedProduct = async (req, res) => {
     client.release();
   }
 };
+
+exports.createSchedule = async (req, res) => {
+  const { userID } = req;
+  let { scheduler } = req.body;
+  const client = await pool.connect();
+  let scheduleIDToDelete = [];
+
+  try {
+    await client.query("BEGIN");
+    const result = [];
+    const formatDate = scheduler.map(async ({ startDate, endDate }, i) => {
+      /* Find schedule with overlapping start time */
+      const { rows: startScheduled } = await client.query(
+        ` SELECT *
+          FROM schedule
+          WHERE "startDate" < $2
+          AND "endDate" > $2
+          AND "consultantID" = ($1)
+          ORDER BY "startDate" ASC;`,
+        [userID, startDate]
+      );
+      if (startScheduled.length > 0) {
+        /* Extend start date from soonest start date which is overlapping */
+        scheduler[i].startDate = moment(startScheduled[0].startDate);
+        /* Add id of overlapping schedule to delete array */
+        let newScheduleIDToDelete = await startScheduled.map(
+          ({ scheduleID }) => scheduleID
+        );
+        scheduleIDToDelete = scheduleIDToDelete.concat(newScheduleIDToDelete);
+      }
+      /* Find schedule with overlapping end time */
+      const { rows: endScheduled } = await client.query(
+        ` SELECT *
+          FROM schedule
+          WHERE "startDate" < $2
+          AND "endDate" > $2
+          AND "consultantID" = ($1)
+          ORDER BY "endDate" DESC;`,
+        [userID, endDate]
+      );
+      if (endScheduled.length > 0) {
+        /* Extend end date from farthest end date which is overlapping */
+        scheduler[i].endDate = moment(endScheduled[0].endDate);
+        /* Add id of overlapping schedule to delete array */
+        let newScheduleIDToDelete = await endScheduled.map(
+          ({ scheduleID }) => scheduleID
+        );
+        scheduleIDToDelete = scheduleIDToDelete.concat(newScheduleIDToDelete);
+      }
+    });
+    await Promise.all(formatDate);
+
+    /* Delete all schedule in delete array */
+    await client.query(
+      ` DELETE FROM schedule
+        WHERE "scheduleID" = ANY($1)`,
+      [scheduleIDToDelete]
+    );
+    /* Insert new schedule */
+    const insertNewData = scheduler.map(async ({ startDate, endDate }, i) => {
+      const {
+        rows: [schedule],
+      } = await client.query(
+        ` INSERT INTO schedule ("startDate","endDate","consultantID")
+          VALUES ($1,$2,$3)
+          RETURNING *`,
+        [
+          moment(startDate).format("YYYY-MM-DD HH:mm:ss"),
+          moment(endDate).format("YYYY-MM-DD HH:mm:ss"),
+          userID,
+        ]
+      );
+      result.push(schedule);
+    });
+    await Promise.all(insertNewData);
+
+    await client.query("COMMIT");
+
+    return res.status(200).send({ message: "Success", result });
+  } catch (err) {
+    await client.query("ROLLBACK");
+
+    console.log(err);
+
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};
