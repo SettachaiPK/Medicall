@@ -72,6 +72,11 @@ module.exports = function (app) {
     [authJwt.verifyToken, authJwt.isConsultant],
     consultantController.createSchedule
   );
+  router.get(
+    "/schedule",
+    [authJwt.verifyToken, authJwt.isConsultant],
+    consultantController.getSchedule
+  );
   
   
   app.use("/apis/consultant", router);

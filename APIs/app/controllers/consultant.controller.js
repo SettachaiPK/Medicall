@@ -577,7 +577,11 @@ exports.createSchedule = async (req, res) => {
           userID,
         ]
       );
-      result.push(schedule);
+      result.push({
+        ...schedule,
+        startDate: moment(schedule.startDate).add(7, "hours"),
+        endDate: moment(schedule.endDate).add(7, "hours"),
+      });
     });
     await Promise.all(insertNewData);
 
@@ -589,6 +593,39 @@ exports.createSchedule = async (req, res) => {
 
     console.log(err);
 
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};
+
+exports.getSchedule = async (req, res) => {
+  const { userID } = req;
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+    /* Query schedule */
+    const { rows: schedules } = await client.query(
+      ` SELECT *
+        FROM schedule
+        WHERE "consultantID" = ($1);`,
+      [userID]
+    );
+    console.log(schedules);
+    /* Add 7 hours (to local time) */
+    const result = schedules.map((schedule, i) => {
+      return {
+        ...schedule,
+        startDate: moment(schedule.startDate).add(7, "hours"),
+        endDate: moment(schedule.endDate).add(7, "hours"),
+      };
+    });
+    await client.query("COMMIT");
+    return res.status(200).send({ message: "Success", result });
+  } catch (err) {
+    await client.query("ROLLBACK");
+    console.log(err);
     return res.status(500).send(err);
   } finally {
     client.release();
