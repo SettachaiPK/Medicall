@@ -7,7 +7,11 @@ import {
   Appointments,
   AppointmentForm,
   AppointmentTooltip,
+  ViewSwitcher,
+  DayView,
   WeekView,
+  MonthView,
+  Toolbar,
   EditRecurrenceMenu,
   AllDayPanel,
   ConfirmationDialog,
@@ -257,7 +261,7 @@ export const appointments = [
       location: 'Room 1',
     },
   ];
-  
+
 
 export default class CalendarDashboard extends React.PureComponent {
     constructor(props) {
@@ -269,7 +273,12 @@ export default class CalendarDashboard extends React.PureComponent {
         addedAppointment: {},
         appointmentChanges: {},
         editingAppointment: undefined,
+        data: appointments,
+        currentViewName: 'work-week',
       };
+
+      this.currentViewNameChange = (currentViewName) => {
+        this.setState({ currentViewName }); }
   
       this.commitChanges = this.commitChanges.bind(this);
       this.changeAddedAppointment = this.changeAddedAppointment.bind(this);
@@ -306,10 +315,10 @@ export default class CalendarDashboard extends React.PureComponent {
         return { data };
       });
     }
-  
+
     render() {
       const {
-        currentDate, data, addedAppointment, appointmentChanges, editingAppointment,
+        currentDate, data, addedAppointment, appointmentChanges, editingAppointment, currentViewName 
       } = this.state;
   
       return (
@@ -320,6 +329,8 @@ export default class CalendarDashboard extends React.PureComponent {
           >
             <ViewState
               currentDate={currentDate}
+              currentViewName={currentViewName}
+              onCurrentViewNameChange={this.currentViewNameChange}
             />
             <EditingState
               onCommitChanges={this.commitChanges}
@@ -331,15 +342,26 @@ export default class CalendarDashboard extends React.PureComponent {
               onEditingAppointmentChange={this.changeEditingAppointment}
             />
             <WeekView
-              startDayHour={9}
-              endDayHour={17}
-            />
-            <AllDayPanel />
+            startDayHour={10}
+            endDayHour={19}
+          />
+          <WeekView
+            name="work-week"
+            displayName="Work Week"
+            excludedDays={[0, 6]}
+            startDayHour={9}
+            endDayHour={19}
+          />
+          <MonthView />
+          <DayView />
+
+          <Toolbar />
+          <ViewSwitcher />
+          <AllDayPanel /> 
             <EditRecurrenceMenu />
             <ConfirmationDialog />
-            <Appointments />
+            <Appointments/>
             <AppointmentTooltip
-              showOpenButton
               showDeleteButton
             />
             <AppointmentForm />
