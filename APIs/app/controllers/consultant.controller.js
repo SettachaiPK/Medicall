@@ -579,8 +579,8 @@ exports.createSchedule = async (req, res) => {
       );
       result.push({
         ...schedule,
-        startDate: moment(schedule.startDate).add(7, "hours"),
-        endDate: moment(schedule.endDate).add(7, "hours"),
+        startDate: moment(schedule.startDate).format(),
+        endDate: moment(schedule.endDate).format(),
       });
     });
     await Promise.all(insertNewData);
@@ -612,13 +612,12 @@ exports.getSchedule = async (req, res) => {
         WHERE "consultantID" = ($1);`,
       [userID]
     );
-    console.log(schedules);
-    /* Add 7 hours (to local time) */
+    /* Format time */
     const result = schedules.map((schedule, i) => {
       return {
         ...schedule,
-        startDate: moment(schedule.startDate).add(7, "hours"),
-        endDate: moment(schedule.endDate).add(7, "hours"),
+        startDate: moment(schedule.startDate).format(),
+        endDate: moment(schedule.endDate).format(),
       };
     });
     await client.query("COMMIT");

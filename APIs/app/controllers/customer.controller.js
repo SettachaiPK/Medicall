@@ -931,3 +931,43 @@ exports.confirmReceiveOrder = async (req, res) => {
     client.release();
   }
 };
+
+exports.getConsultantSchedule = async (req, res) => {
+  const { consultantID } = req.params;
+  const client = await pool.connect();
+  const tomorrow = moment()
+    .add(1, "days")
+    .set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
+
+  try {
+    await client.query("BEGIN");
+    /* Query schedule */
+    const { rows: schedules } = await client.query(
+      ` SELECT *
+        FROM schedule
+        WHERE "consultantID" = ($1)
+        AND "endDate" > $2
+        ORDER BY "startDate";`,
+      [consultantID, tomorrow]
+    );
+    /* Format and boundary date */
+    const result = schedules.map((schedule, i) => {
+      return {
+        ...schedule,
+        startDate:
+          moment(schedule.startDate) > tomorrow
+            ? moment(schedule.startDate).format()
+            : tomorrow.format(),
+        endDate: moment(schedule.endDate).format(),
+      };
+    });
+    await client.query("COMMIT");
+    return res.status(200).send({ message: "Success", result });
+  } catch (err) {
+    await client.query("ROLLBACK");
+    console.log(err);
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};

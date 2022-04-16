@@ -67,5 +67,10 @@ module.exports = function (app) {
     [authJwt.verifyToken],
     customerController.confirmReceiveOrder
   );
+  router.get(
+    "/consultant/schedule/:consultantID",
+    [authJwt.verifyToken],
+    customerController.getConsultantSchedule
+  );
   app.use("/apis/customer", router);
 };
