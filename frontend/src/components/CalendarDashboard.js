@@ -2,6 +2,7 @@
 import * as React from 'react';
 import Paper from '@mui/material/Paper';
 import { ViewState, EditingState } from '@devexpress/dx-react-scheduler';
+import { grey } from '@mui/material/colors';
 import {
   Scheduler,
   Appointments,
@@ -11,6 +12,8 @@ import {
   DayView,
   WeekView,
   MonthView,
+  DateNavigator,
+  TodayButton,
   Toolbar,
   EditRecurrenceMenu,
   AllDayPanel,
@@ -279,6 +282,7 @@ export default class CalendarDashboard extends React.PureComponent {
 
       this.currentViewNameChange = (currentViewName) => {
         this.setState({ currentViewName }); }
+      this.currentDateChange = (currentDate) => { this.setState({ currentDate }); };
   
       this.commitChanges = this.commitChanges.bind(this);
       this.changeAddedAppointment = this.changeAddedAppointment.bind(this);
@@ -325,11 +329,12 @@ export default class CalendarDashboard extends React.PureComponent {
         <Paper>
           <Scheduler
             data={data}
-            height={500}
+            height={600}
           >
             <ViewState
               currentDate={currentDate}
               currentViewName={currentViewName}
+              onCurrentDateChange={this.currentDateChange}
               onCurrentViewNameChange={this.currentViewNameChange}
             />
             <EditingState
@@ -356,6 +361,8 @@ export default class CalendarDashboard extends React.PureComponent {
           <DayView />
 
           <Toolbar />
+          <DateNavigator />
+          <TodayButton />
           <ViewSwitcher />
           <AllDayPanel /> 
             <EditRecurrenceMenu />
