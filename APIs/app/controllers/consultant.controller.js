@@ -630,3 +630,47 @@ exports.getSchedule = async (req, res) => {
     client.release();
   }
 };
+
+exports.deleteSchedule = async (req, res) => {
+  const { userID } = req;
+  const { scheduleID } = req.params;
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+    /* Query schedule */
+    const {
+      rows: [schedule],
+    } = await client.query(
+      ` SELECT *
+        FROM schedule
+        WHERE "scheduleID" = $1;`,
+      [scheduleID]
+    );
+    /* Return error if schedule not found */
+    if (!schedule) {
+      await client.query("ROLLBACK");
+      return res.status(404).send({ message: "Schedule not found" });
+    }
+    /* Return error if schedule not belong to this user */
+    if (schedule.consultantID !== userID) {
+      await client.query("ROLLBACK");
+      return res.status(403).send({ message: "Permission Denied" });
+    }
+    /* Delete schedule */
+    await client.query(
+      ` DELETE
+        FROM schedule
+        WHERE "scheduleID" = $1;`,
+      [scheduleID]
+    );
+    await client.query("COMMIT");
+    return res.status(200).send({ message: "Success", schedule });
+  } catch (err) {
+    await client.query("ROLLBACK");
+    console.log(err);
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};

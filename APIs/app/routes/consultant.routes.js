@@ -77,7 +77,11 @@ module.exports = function (app) {
     [authJwt.verifyToken, authJwt.isConsultant],
     consultantController.getSchedule
   );
-  
-  
+  router.delete(
+    "/schedule/:scheduleID",
+    [authJwt.verifyToken, authJwt.isConsultant],
+    consultantController.deleteSchedule
+  );
+
   app.use("/apis/consultant", router);
 };
