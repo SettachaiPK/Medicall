@@ -971,3 +971,195 @@ exports.getConsultantSchedule = async (req, res) => {
     client.release();
   }
 };
+
+exports.bookConsultJob = async (req, res) => {
+  let {
+    userID,
+    body: {
+      reservePeriod_m,
+      symptomDetail,
+      communicationChannel,
+      consultantID,
+      expectedPrice,
+      paymentChannel,
+      scheduleDate,
+    },
+    files,
+  } = req;
+
+  const client = await pool.connect();
+  const schduleStartDate = moment(scheduleDate).format("YYYY-MM-DD HH:mm:ss");
+  const schduleEndDate = moment(scheduleDate)
+    .add(reservePeriod_m, "minutes")
+    .format("YYYY-MM-DD HH:mm:ss");
+
+  try {
+    await client.query("BEGIN");
+    /* Return error if communication channel is invalid */
+    if (!["voice", "video"].includes(communicationChannel)) {
+      await client.query("ROLLBACK");
+      return res.status(400).send({ message: "Invalid communication channel" });
+    }
+    /* Return error if reserve period time is invalid */
+    if (reservePeriod_m === 0 || reservePeriod_m % 15 !== 0) {
+      await client.query("ROLLBACK");
+      return res.status(400).send({ message: "Invalid time period" });
+    }
+    /* Return error if start time is invalid */
+    if (moment(scheduleDate).minutes() % 15 !== 0) {
+      await client.query("ROLLBACK");
+      return res.status(400).send({ message: "Invalid start time. Please select time at minute [0, 15, 30, 45]" });
+    }
+    /* Query price */
+    const {
+      rows: [{ basePrice }],
+    } = await client.query(
+      `
+    SELECT ${
+      communicationChannel === "message"
+        ? '"messagePrice"'
+        : communicationChannel === "voice"
+        ? '"voiceCallPrice"'
+        : '"videoCallPrice"'
+    } AS "basePrice" 
+    FROM consultantService 
+    WHERE "userID" = $1`,
+      [consultantID]
+    );
+    /* Return error if expected price not match real price */
+    if ((reservePeriod_m / 15) * basePrice != expectedPrice) {
+      return res
+        .status(400)
+        .send({ message: "Price have been changed.Please try again" });
+    }
+    /* Query bookable time */
+    const {
+      rows: [bookableSchedule],
+    } = await client.query(
+      ` SELECT *
+        FROM schedule
+        WHERE "consultantID" = $1
+        AND "startDate" <= $2
+        AND "endDate" >= $3
+        AND "scheduleStatus" = 'bookable';`,
+      [consultantID, schduleStartDate, schduleEndDate]
+    );
+    /* Return error if booking time is invalid */
+    if (!bookableSchedule) {
+      await client.query("ROLLBACK");
+      return res.status(400).send({ message: "Schedule date is unbookable" });
+    }
+    /* Create new payment */
+    const {
+      rows: [paymentDetail],
+    } = await client.query(
+      `
+    INSERT INTO payment ("channel", "price","ref1","ref2","createDate","expireDate")
+    VALUES ($1, $2, $3, $4, $5, $6)
+    RETURNING *`,
+      [
+        paymentChannel,
+        expectedPrice,
+        "ref1",
+        "ref2",
+        moment(),
+        moment().add(5, "minutes"),
+      ]
+    );
+    /* Create new schedule */
+    const {
+      rows: [schedule],
+    } = await client.query(
+      ` INSERT INTO schedule ("startDate","endDate","consultantID","scheduleStatus")
+        VALUES ($1,$2,$3,'booked')
+        RETURNING *`,
+      [schduleStartDate, schduleEndDate, consultantID]
+    );
+    /* Create consult job */
+    const {
+      rows: [jobDetail],
+    } = await client.query(
+      `
+    INSERT INTO consultJob 
+      ("schduleDate", "reservePeriod_m","symptomDetail","communicationChannel","consultantID","customerID","paymentID","scheduleID","jobStatus")
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'paid')
+    RETURNING *`,
+      [
+        schduleStartDate,
+        reservePeriod_m,
+        symptomDetail,
+        communicationChannel,
+        consultantID,
+        userID,
+        paymentDetail.paymentID,
+        schedule.scheduleID,
+      ]
+    );
+    /* Store media file */
+    if (files) {
+      const { media } = await files;
+      var images = [];
+      if (media.length) {
+        images = media;
+      } else {
+        images = [media];
+      }
+      images.forEach(async (image) => {
+        if (!image.name.match(/\.(jpg|jpeg|png)$/i)) {
+          await client.query("ROLLBACK");
+          return res.status(415).send({ message: "wrong file type" });
+        }
+        if (image.truncated) {
+          await client.query("ROLLBACK");
+          return res.status(413).send({ message: "file too large" });
+        }
+        await client.query(
+          `
+        INSERT INTO symptomMedia ("jobID", "imageBase64")
+        VALUES ($1, $2)`,
+          [jobDetail.jobID, image.data.toString("base64")]
+        );
+      });
+    }
+    /* Split old bookable time */
+    const bookableStartDate = moment(bookableSchedule.startDate).format(
+      "YYYY-MM-DD HH:mm:ss"
+    );
+    const bookableEndDate = moment(bookableSchedule.endDate).format(
+      "YYYY-MM-DD HH:mm:ss"
+    );
+    /* Insert time before booking */
+    if (schduleStartDate !== bookableStartDate) {
+      await client.query(
+        ` INSERT INTO schedule ("startDate","endDate","consultantID")
+          VALUES ($1,$2,$3)
+          RETURNING *`,
+        [bookableStartDate, schduleStartDate, consultantID]
+      );
+    }
+    /* Insert time after booking */
+    if (schduleEndDate !== bookableEndDate) {
+      await client.query(
+        ` INSERT INTO schedule ("startDate","endDate","consultantID")
+          VALUES ($1,$2,$3)
+          RETURNING *`,
+        [schduleEndDate, bookableEndDate, consultantID]
+      );
+    }
+    /* Delete old bookable time */
+    await client.query(
+      ` DELETE FROM schedule
+        WHERE "scheduleID" = $1`,
+      [bookableSchedule.scheduleID]
+    );
+    /* Return success */
+    await client.query("COMMIT");
+    return res.status(200).send({ jobDetail, paymentDetail, schedule });
+  } catch (err) {
+    await client.query("ROLLBACK");
+    console.log(err);
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};

@@ -29,7 +29,11 @@ module.exports = function (app) {
     [authJwt.verifyToken],
     customerController.createConsultJobNow
   );
-
+  router.post(
+    "/book-consult-job",
+    [authJwt.verifyToken],
+    customerController.bookConsultJob
+  );
   router.get(
     "/summary/:jobID",
     [authJwt.verifyToken],
