@@ -19,6 +19,9 @@ pool.query("SELECT NOW()", (err, res) => {
 //enable dotenv
 require("dotenv").config();
 
+//enable cron
+require("./app/cron/cron-jobs");
+
 // give permission for fetch resource
 // https://acoshift.me/2019/0004-web-cors.html
 // https://stackabuse.com/handling-cors-with-node-js/
