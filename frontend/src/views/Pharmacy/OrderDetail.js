@@ -59,7 +59,7 @@ function OrderDetail(props) {
             <Table sx={{ minWidth: 700 }} aria-label="spanning table">
               <TableHead>
                 <TableRow>
-                  <TableCell align="left" colSpan={3}>
+                  <TableCell align="left" colSpan={5}>
                     {orderDetail.storeName}
                   </TableCell>
                 </TableRow>
@@ -85,18 +85,17 @@ function OrderDetail(props) {
                 ))}
 
                 <TableRow>
-                  <TableCell rowSpan={3} />
-                  <TableCell colSpan={2}>Subtotal</TableCell>
+                  <TableCell colSpan={3}>Subtotal</TableCell>
                   <TableCell align="left">
                     {ccyFormat(orderDetail.totalPrice)}
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell colSpan={2}>Shipping Cost</TableCell>
+                  <TableCell colSpan={3}>Shipping Cost</TableCell>
                   <TableCell align="left">{ccyFormat(0)}</TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell colSpan={2}>Total</TableCell>
+                  <TableCell colSpan={3}>Total</TableCell>
                   <TableCell align="left">
                     {ccyFormat(orderDetail.totalPrice)}
                   </TableCell>

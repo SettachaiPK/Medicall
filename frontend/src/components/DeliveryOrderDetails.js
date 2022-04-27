@@ -31,7 +31,7 @@ export default function DeliveryOrderDetails(props) {
                 <Table sx={{ minWidth: 700 }} aria-label="spanning table">
                   <TableHead>
                     <TableRow>
-                      <TableCell align="left" colSpan={3}>
+                      <TableCell align="left" colSpan={5}>
                         {order.firstName} {order.lastName} (ID:
                         {order.customerID})
                       </TableCell>
@@ -57,7 +57,7 @@ export default function DeliveryOrderDetails(props) {
                       </TableRow>
                     ))}
                     <TableRow>
-                      <TableCell align="left" colSpan={1}>
+                      <TableCell align="left" colSpan={3}>
                         ช่องทางการจัดส่ง
                       </TableCell>
                       <TableCell align="left" colSpan={1}>
@@ -65,7 +65,7 @@ export default function DeliveryOrderDetails(props) {
                       </TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell align="left" colSpan={1}>
+                      <TableCell align="left" colSpan={3}>
                         รวมทั้งหมด (บาท)
                       </TableCell>
                       <TableCell align="left" colSpan={1}>

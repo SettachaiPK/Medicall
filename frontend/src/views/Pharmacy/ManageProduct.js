@@ -111,7 +111,7 @@ function ManageProduct(props) {
         </Box>
         {products.map((product, index) => {
           return (
-            <Grid item xs={4} md={4} lg={3} xl={2} key={index}>
+            <Grid item xs={6} md={4} lg={3} xl={2} key={index}>
               <Box sx={{ justifyContent: "center", display: "flex" }}>
                 <ManageProductComponent key={index} product={product} />
               </Box>

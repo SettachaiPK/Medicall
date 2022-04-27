@@ -16,7 +16,7 @@ import Button from "@mui/material/Button";
 import Rating from "@mui/material/Rating";
 import Paper from "@mui/material/Paper";
 import Chip from "@mui/material/Chip";
-import { Avatar } from "@mui/material";
+import { Avatar, Grid } from "@mui/material";
 import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
 import SentimentDissatisfiedIcon from "@mui/icons-material/SentimentDissatisfied";
 import SentimentSatisfiedIcon from "@mui/icons-material/SentimentSatisfied";
@@ -127,6 +127,9 @@ function SectionConsultantEdit({ consultant, user }) {
 
   return (
     <>
+    <Grid container
+          rowSpacing={0}
+          columnSpacing={{ xs: 0, sm: 0, md: 0, lg: 0 }}>
     <Paper sx={{display:"flex",justifyContent: "center",width:"80%",m:"auto"}}>
     <Box sx={{ display: "flex", flexDirection: "column",alignItems: "center",mr:8,mt:8}}>
       <Avatar src={`data:image/png;base64, ${user.avatar}`} sx={{width:"7rem",height:"7rem"}}/>
@@ -274,6 +277,7 @@ function SectionConsultantEdit({ consultant, user }) {
     </Paper>
     </Box>
     </Paper>
+    </Grid>
     </>
   );
 }
