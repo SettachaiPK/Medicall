@@ -32,3 +32,5 @@ export const CART_INCREASE = "customer/cart/increase";
 export const CART_DELETE = "customer/cart/delete";
 export const CART_LOCATION_EDIT = "customer/cart/deliveryLocation/edit";
 export const CART_ORDER_DELETE = "customer/cart/order/delete";
+/// Appointments ///
+export const BOOKED_SCHEDULE_FETCH = "appointment/booked/fetch";

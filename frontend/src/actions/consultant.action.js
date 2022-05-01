@@ -1,6 +1,8 @@
 import { RecommendedProductsModel } from "../models";
+import { AppointmentItemModel } from "../models/consultant/appointment.model";
 import * as consultantService from "../service/consultant.service";
 import {
+  BOOKED_SCHEDULE_FETCH,
   CONSULTANT_FETCH_DETAIL,
   CONSULTANT_FETCH_STATUS,
   RECOMMENDED_PRODUCTS_FETCH_AMOUNT,
@@ -128,6 +130,36 @@ export const actionRemoveProduct = (payload) => (dispatch) => {
   }
 };
 
+export const actionFetchBookedSchedule = () => async (dispatch) => {
+  try {
+    const {
+      data: { result },
+    } = await consultantService.getBookedSchedule();
+    const appointments = result.map(
+      ({
+        scheduleID,
+        communicationChannel,
+        firstName,
+        lastName,
+        startDate,
+        endDate,
+      }) =>
+        new AppointmentItemModel(
+          scheduleID,
+          `สนทนา${
+            communicationChannel == "voice" ? "เสียง" : "วิดีโอ"
+          } กับคุณ ${firstName} ${lastName}`,
+          new Date(startDate),
+          new Date(endDate)
+        )
+    );
+    console.log(appointments);
+    dispatch(reducerFetchBookedSchedule(appointments));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const reducerFetchConsultantDetail = (payload) => ({
   type: CONSULTANT_FETCH_DETAIL,
   payload,
@@ -157,5 +189,10 @@ export const reducerSelectProduct = (payload) => ({
 
 export const reducerRemoveProduct = (payload) => ({
   type: RECOMMENDED_PRODUCTS_REMOVE,
+  payload,
+});
+
+export const reducerFetchBookedSchedule = (payload) => ({
+  type: BOOKED_SCHEDULE_FETCH,
   payload,
 });

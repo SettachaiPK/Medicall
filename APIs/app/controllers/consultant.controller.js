@@ -718,3 +718,39 @@ exports.editSchedule = async (req, res) => {
     client.release();
   }
 };
+
+exports.getBookedSchedule = async (req, res) => {
+  const { userID } = req;
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+    /* Query booked schedule */
+    const { rows: schedules } = await client.query(
+      ` SELECT "scheduleID","startDate","endDate","communicationChannel","firstName","lastName"
+        FROM schedule
+        INNER JOIN consultjob
+        USING ("scheduleID")
+        INNER JOIN userdetail
+        ON consultjob."customerID" = userdetail."userID"
+        WHERE schedule."consultantID" = ($1)
+        AND "scheduleStatus" = 'booked';`,
+      [userID]
+    );
+    /* Format time */
+    const result = schedules.map((schedule, i) => {
+      return {
+        ...schedule,
+        startDate: moment(schedule.startDate).format(),
+        endDate: moment(schedule.endDate).format(),
+      };
+    });
+    await client.query("COMMIT");
+    return res.status(200).send({ message: "Success", result });
+  } catch (err) {
+    await client.query("ROLLBACK");
+    console.log(err);
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};

@@ -73,13 +73,18 @@ export const server = {
   CONSULTANT_GET_PRODUCTS: new AxiosModel({
     url: `consultant/products`,
   }),
+  CONSULTANT_GET_BOOKED_SCHEDULE: new AxiosModel({
+    url: `consultant/schedule/booked`,
+  }),
   ///pharmacy///
   PHARMACY_PRODUCT: new AxiosModel({ url: `pharmacy/products` }),
   PHARMACY_ORDERS: new AxiosModel({ url: `pharmacy/orders` }),
   PHARMACY_ORDER_DETAIL: new AxiosModel({ url: `pharmacy/order` }),
   PHARMACY_DETAIL: new AxiosModel({ url: `pharmacy/store-detail` }),
   PHARMACY_ADD_PRODUCT: new AxiosModel({ url: `pharmacy/product` }),
-  PHARMACY_CONFIRM_SEND: new AxiosModel({ url: `pharmacy/order/confirm-delivery` }),
+  PHARMACY_CONFIRM_SEND: new AxiosModel({
+    url: `pharmacy/order/confirm-delivery`,
+  }),
   PHARMACY_DELETE: new AxiosModel({ url: `pharmacy/product` }),
   ///delete///
   confirmPayment: new AxiosModel({ url: `external/confirm-payment` }),
