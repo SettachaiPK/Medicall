@@ -1,6 +1,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import moment from "moment";
 import Paper from "@mui/material/Paper";
 import { ViewState, EditingState } from "@devexpress/dx-react-scheduler";
 import { grey } from "@mui/material/colors";
@@ -26,8 +27,8 @@ class CalendarDashboard extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      data: this.props.appointments.booked,
-      currentDate: "2018-06-27",
+      data: [],
+      currentDate: moment().format("YYYY-MM-DD"),
 
       addedAppointment: {},
       appointmentChanges: {},
@@ -46,10 +47,6 @@ class CalendarDashboard extends React.PureComponent {
     this.changeAddedAppointment = this.changeAddedAppointment.bind(this);
     this.changeAppointmentChanges = this.changeAppointmentChanges.bind(this);
     this.changeEditingAppointment = this.changeEditingAppointment.bind(this);
-  }
-
-  componentDidMount() {
-    this.props.actionFetchBookedSchedule();
   }
 
   changeAddedAppointment(addedAppointment) {
@@ -89,12 +86,12 @@ class CalendarDashboard extends React.PureComponent {
   render() {
     const {
       currentDate,
-      data,
       addedAppointment,
       appointmentChanges,
       editingAppointment,
       currentViewName,
     } = this.state;
+    const data = this.props.appointments.booked;
 
     return (
       <Paper>
@@ -144,11 +141,8 @@ class CalendarDashboard extends React.PureComponent {
 CalendarDashboard.defaultProps = {};
 CalendarDashboard.propTypes = {
   appointments: PropTypes.object.isRequired,
-  actionFetchBookedSchedule: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({ appointments: state.appointments });
 
-export default connect(mapStateToProps, {
-  actionFetchBookedSchedule: actionFetchBookedSchedule,
-})(CalendarDashboard);
+export default connect(mapStateToProps, {})(CalendarDashboard);

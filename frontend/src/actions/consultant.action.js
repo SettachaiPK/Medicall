@@ -146,9 +146,9 @@ export const actionFetchBookedSchedule = () => async (dispatch) => {
       }) =>
         new AppointmentItemModel(
           scheduleID,
-          `สนทนา${
+          `ให้คำปรึกษาคุณ ${firstName} ${lastName} ประเภทสนทนา${
             communicationChannel == "voice" ? "เสียง" : "วิดีโอ"
-          } กับคุณ ${firstName} ${lastName}`,
+          }`,
           new Date(startDate),
           new Date(endDate)
         )

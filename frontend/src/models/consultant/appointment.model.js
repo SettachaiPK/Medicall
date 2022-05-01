@@ -1,6 +1,6 @@
 export class AppointmentsModel {
   constructor() {
-    this.booked = [new AppointmentItemModel()];
+    this.booked = [];
   }
 }
 export class AppointmentItemModel {
