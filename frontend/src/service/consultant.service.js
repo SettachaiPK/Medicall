@@ -191,3 +191,21 @@ export function getBookedSchedule() {
       });
   });
 }
+export function getSchedule() {
+  const Axiosmodel = server.CONSULTANT_GET_SCHEDULE;
+
+  return new Promise((resolve, reject) => {
+    httpClient({
+      method: "GET",
+      url: Axiosmodel.url,
+      withCredentials: true,
+      config: Axiosmodel,
+    })
+      .then((res) => {
+        resolve(res);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}

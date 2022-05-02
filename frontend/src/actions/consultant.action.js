@@ -10,6 +10,7 @@ import {
   RECOMMENDED_PRODUCTS_FETCH_STATUS,
   RECOMMENDED_PRODUCTS_REMOVE,
   RECOMMENDED_PRODUCTS_SELECT,
+  SCHEDULE_FETCH,
 } from "./types";
 
 export const actionGetServiceDetail = () => async (dispatch) => {
@@ -143,6 +144,7 @@ export const actionFetchBookedSchedule = () => async (dispatch) => {
         lastName,
         startDate,
         endDate,
+        scheduleStatus,
       }) =>
         new AppointmentItemModel(
           scheduleID,
@@ -150,11 +152,32 @@ export const actionFetchBookedSchedule = () => async (dispatch) => {
             communicationChannel == "voice" ? "เสียง" : "วิดีโอ"
           }`,
           new Date(startDate),
-          new Date(endDate)
+          new Date(endDate),
+          scheduleStatus
         )
     );
-    console.log(appointments);
     dispatch(reducerFetchBookedSchedule(appointments));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const actionFetchSchedule = () => async (dispatch) => {
+  try {
+    const {
+      data: { result },
+    } = await consultantService.getSchedule();
+    const appointments = result.map(
+      ({ scheduleID, startDate, endDate, scheduleStatus }) =>
+        new AppointmentItemModel(
+          scheduleID,
+          scheduleStatus == "booked" ? "ถูกจองแล้ว" : "เปิดให้จอง",
+          new Date(startDate),
+          new Date(endDate),
+          scheduleStatus
+        )
+    );
+    dispatch(reducerFetchSchedule(appointments));
   } catch (error) {
     console.log(error);
   }
@@ -194,5 +217,10 @@ export const reducerRemoveProduct = (payload) => ({
 
 export const reducerFetchBookedSchedule = (payload) => ({
   type: BOOKED_SCHEDULE_FETCH,
+  payload,
+});
+
+export const reducerFetchSchedule = (payload) => ({
+  type: SCHEDULE_FETCH,
   payload,
 });

@@ -726,7 +726,7 @@ exports.getBookedSchedule = async (req, res) => {
     await client.query("BEGIN");
     /* Query booked schedule */
     const { rows: schedules } = await client.query(
-      ` SELECT "scheduleID","startDate","endDate","communicationChannel","firstName","lastName"
+      ` SELECT "scheduleID","startDate","endDate","communicationChannel","firstName","lastName","scheduleStatus"
         FROM schedule
         INNER JOIN consultjob
         USING ("scheduleID")

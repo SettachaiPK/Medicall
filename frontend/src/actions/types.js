@@ -34,3 +34,4 @@ export const CART_LOCATION_EDIT = "customer/cart/deliveryLocation/edit";
 export const CART_ORDER_DELETE = "customer/cart/order/delete";
 /// Appointments ///
 export const BOOKED_SCHEDULE_FETCH = "appointment/booked/fetch";
+export const SCHEDULE_FETCH = "appointment/fetch";

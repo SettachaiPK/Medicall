@@ -76,6 +76,9 @@ export const server = {
   CONSULTANT_GET_BOOKED_SCHEDULE: new AxiosModel({
     url: `consultant/schedule/booked`,
   }),
+  CONSULTANT_GET_SCHEDULE: new AxiosModel({
+    url: `consultant/schedule`,
+  }),
   ///pharmacy///
   PHARMACY_PRODUCT: new AxiosModel({ url: `pharmacy/products` }),
   PHARMACY_ORDERS: new AxiosModel({ url: `pharmacy/orders` }),

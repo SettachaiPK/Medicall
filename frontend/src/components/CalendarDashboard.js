@@ -20,6 +20,7 @@ import {
   EditRecurrenceMenu,
   AllDayPanel,
   ConfirmationDialog,
+  Resources,
 } from "@devexpress/dx-react-scheduler-material-ui";
 import { actionFetchBookedSchedule } from "../actions/consultant.action";
 
@@ -29,7 +30,16 @@ class CalendarDashboard extends React.PureComponent {
     this.state = {
       data: [],
       currentDate: moment().format("YYYY-MM-DD"),
-
+      resources: [
+        {
+          fieldName: "status",
+          title: "Status",
+          instances: [
+            { id: "booked", text: "Booked", color: "#ec407a" },
+            { id: "bookable", text: "Bookable", color: "#64b5f6" },
+          ],
+        },
+      ],
       addedAppointment: {},
       appointmentChanges: {},
       editingAppointment: undefined,
@@ -90,6 +100,7 @@ class CalendarDashboard extends React.PureComponent {
       appointmentChanges,
       editingAppointment,
       currentViewName,
+      resources,
     } = this.state;
     const data = this.props.appointments.booked;
 
@@ -132,6 +143,7 @@ class CalendarDashboard extends React.PureComponent {
           <Appointments />
           <AppointmentTooltip showDeleteButton />
           <AppointmentForm />
+          <Resources data={resources} mainResourceName="status" />
         </Scheduler>
       </Paper>
     );
