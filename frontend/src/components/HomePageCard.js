@@ -23,6 +23,7 @@ import ShowReview from "./ShowReview";
 import ConsultNowDetailsPopUp from "./ConsultNowDetailsPopUp";
 import { grey } from "@mui/material/colors";
 import BookingConsultPopUp from "./BookingConsultPopUp";
+import { actionFetchConsultantSchedule } from "../actions/customer.action";
 
 function HomePageCard({
   consultant: {
@@ -40,11 +41,12 @@ function HomePageCard({
     avatar,
     rating,
   },
+  actionFetchConsultantSchedule,
 }) {
   const navigate = useNavigate();
 
   const [openAdd, setOpenAdd] = useState(false);
-  const [openBook,setOpenBook] = useState(false);
+  const [openBook, setOpenBook] = useState(false);
   const [favorite, setFavorite] = useState(false);
 
   const handleOpenAdd = (event) => {
@@ -56,6 +58,7 @@ function HomePageCard({
   };
 
   const handleOpenBook = (event) => {
+    actionFetchConsultantSchedule(userID);
     setOpenBook(true);
     event.stopPropagation();
   };
@@ -246,10 +249,12 @@ function HomePageCard({
           price={{ messagePrice, voiceCallPrice, videoCallPrice }}
           consultantID={userID}
         />
-<BookingConsultPopUp
-open={openBook} 
-onClose={handleCloseBook}
-/>
+        <BookingConsultPopUp
+          open={openBook}
+          onClose={handleCloseBook}
+          price={{ messagePrice, voiceCallPrice, videoCallPrice }}
+          consultantID={userID}
+        />
       </Paper>
     </>
   );
@@ -275,4 +280,6 @@ HomePageCard.propTypes = {};
 
 const mapStateToProps = (state) => ({});
 
-export default connect(mapStateToProps, {})(HomePageCard);
+export default connect(mapStateToProps, {
+  actionFetchConsultantSchedule: actionFetchConsultantSchedule,
+})(HomePageCard);

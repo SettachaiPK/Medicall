@@ -11,6 +11,7 @@ body {
 .section-container {
   margin: 2rem 3rem;
 }
+
 .grid-container-wrapper {
   margin: 4rem auto 4rem auto;
   width: 400px;
@@ -31,6 +32,10 @@ body {
 
 .mt-2 {
   margin-top: 16px !important;
+}
+
+.mb-1 {
+  margin-bottom: 8px !important;
 }
 
 .topnav {
@@ -55,13 +60,16 @@ body {
   font-size: medium;
   cursor: pointer;
 }
+
 .MuiDrawer-paper a {
   text-align: right;
 }
+
 .MuiMenuItem-root a {
   text-decoration: none;
   color: #f9b1c7;
 }
+
 .MuiBox-root img {
   width: 100%;
   height: 100%;
@@ -78,21 +86,26 @@ body {
   color: #f9b1c7;
   font-size: larger;
 }
+
 .nav-drawer-icon {
   padding: 0 10px;
 }
+
 @media screen and (max-width: 700px) {
   .nav-menu {
     display: none;
   }
+
   .nav-drawer-icon {
     display: flex;
   }
 }
+
 @media screen and (min-width: 700px) {
   .nav-menu {
     display: flex;
   }
+
   .nav-drawer-icon {
     display: none;
   }
@@ -132,11 +145,13 @@ body {
   white-space: nowrap;
   width: 1px;
 }
+
 .react-tel-input {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
+
 .react-tel-input .form-control {
   width: 35em;
   height: 40px;
@@ -184,21 +199,25 @@ body {
   transition: opacity 0.25s;
   display: none;
 }
+
 .blind-fold.active {
   opacity: 1;
   pointer-events: all;
   display: block;
 }
-.blind-fold > .wrapper {
+
+.blind-fold>.wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   height: 100%;
 }
+
 button.MuiButton-root {
   pointer-events: initial;
 }
+
 .video-active {
   background-color: hsla(0, 4%, 5%, 0.733);
   height: 25rem;
@@ -211,6 +230,7 @@ button.MuiButton-root {
   display: flex;
   justify-content: center;
 }
+
 .favbar-wrapper {
   width: 700px;
   height: 40px;

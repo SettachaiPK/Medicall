@@ -6,6 +6,7 @@ import consultingReducer from "./consulting.reducer";
 import recommendedProductsReducer from "./recommendedProducts.reducer";
 import cartReducer from "./cart.reducer";
 import appointmentsReducer from "./appointments.reducer";
+import customerBookingReducer from "./customerBooking.reducer";
 
 export default combineReducers({
   user: userReducer,
@@ -15,4 +16,5 @@ export default combineReducers({
   recommendedProducts: recommendedProductsReducer,
   cart: cartReducer,
   appointments: appointmentsReducer,
+  customerBooking: customerBookingReducer,
 });

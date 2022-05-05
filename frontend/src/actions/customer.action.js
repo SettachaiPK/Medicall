@@ -7,6 +7,7 @@ import {
   CART_INIT,
   CART_LOCATION_EDIT,
   CART_ORDER_DELETE,
+  CONSULTANT_SCHEDULE_FETCH,
 } from "./types";
 
 export const actionGetOccupations = () => async (dispatch) => {
@@ -122,6 +123,16 @@ export const actionPlaceOrder = (payload) => async (dispatch) => {
     return false;
   }
 };
+
+export const actionFetchConsultantSchedule = (consultantID) => async (dispatch) => {
+  try {
+    const { data } = await customerService.getConsultantSchedule(consultantID);
+    dispatch(reducerFetchConsultantSchedule(data.result));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const reducerInitCart = (payload) => ({
   type: CART_INIT,
   payload,
@@ -144,5 +155,9 @@ export const reducerCartLocationEdit = (payload) => ({
 });
 export const reducerCartOrderDelete = (payload) => ({
   type: CART_ORDER_DELETE,
+  payload,
+});
+export const reducerFetchConsultantSchedule = (payload) => ({
+  type: CONSULTANT_SCHEDULE_FETCH,
   payload,
 });

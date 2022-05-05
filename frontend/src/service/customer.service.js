@@ -98,6 +98,26 @@ export function createConsultJob(data) {
   });
 }
 
+export function bookConsultJob(data) {
+  const Axiosmodel = server.CONSULT_JOB_BOOK;
+
+  return new Promise((resolve, reject) => {
+    httpClient({
+      method: "POST",
+      url: Axiosmodel.url,
+      withCredentials: true,
+      config: Axiosmodel,
+      data,
+    })
+      .then((res) => {
+        resolve(res);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}
+
 export function confirmPayment(data) {
   const Axiosmodel = server.confirmPayment;
 
@@ -225,6 +245,24 @@ export function placeOrder(data) {
       withCredentials: true,
       config: Axiosmodel,
       data,
+    })
+      .then((res) => {
+        resolve(res);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}
+export function getConsultantSchedule(consultantID) {
+  const Axiosmodel = server.CUSTOMER_GET_CONSULTANT_SCHEDULE;
+
+  return new Promise((resolve, reject) => {
+    httpClient({
+      method: "GET",
+      url: Axiosmodel.url.replace(":consultantID", consultantID),
+      withCredentials: true,
+      config: Axiosmodel,
     })
       .then((res) => {
         resolve(res);

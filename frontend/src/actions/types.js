@@ -14,6 +14,7 @@ export const CONSULTING_LEAVE_CALL = "consulting/leave";
 export const CONSULTING_LEAVE_CALL_CUSTOMER = "consulting/leave/customer";
 export const ON_CHANG_ADVICE = "consulting/advice";
 export const ON_CHANG_STEP = "consulting/step";
+export const CONSULTANT_SCHEDULE_FETCH = "consulting/consultant_schedule";
 /// Consultant ///
 export const RECOMMENDED_PRODUCTS_FETCH_STATUS =
   "consultant/recommendedProducts/status/fetch";

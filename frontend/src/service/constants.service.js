@@ -37,6 +37,9 @@ export const server = {
   CONSULT_JOB: new AxiosModel({
     url: `customer/consult-job`,
   }),
+  CONSULT_JOB_BOOK: new AxiosModel({
+    url: `customer/book-consult-job`,
+  }),
   meetStart: new AxiosModel({
     url: `customer/consult-job/start`,
   }),
@@ -52,6 +55,10 @@ export const server = {
   CUSTOMER_ORDER: new AxiosModel({
     url: `customer/order`,
   }),
+  CUSTOMER_GET_CONSULTANT_SCHEDULE: new AxiosModel({
+    url: `customer/consultant/schedule/:consultantID`,
+  }),
+
   ///consultant///
   consultantService: new AxiosModel({ url: `consultant/service` }),
   editConsultantStatus: new AxiosModel({ url: `consultant/online-status` }),
