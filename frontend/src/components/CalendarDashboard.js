@@ -43,7 +43,7 @@ class CalendarDashboard extends React.PureComponent {
       addedAppointment: {},
       appointmentChanges: {},
       editingAppointment: undefined,
-      currentViewName: "work-week",
+      currentViewName: "Week",
     };
 
     this.currentViewNameChange = (currentViewName) => {
@@ -113,23 +113,7 @@ class CalendarDashboard extends React.PureComponent {
             onCurrentDateChange={this.currentDateChange}
             onCurrentViewNameChange={this.currentViewNameChange}
           />
-          <EditingState
-            onCommitChanges={this.commitChanges}
-            addedAppointment={addedAppointment}
-            onAddedAppointmentChange={this.changeAddedAppointment}
-            appointmentChanges={appointmentChanges}
-            onAppointmentChangesChange={this.changeAppointmentChanges}
-            editingAppointment={editingAppointment}
-            onEditingAppointmentChange={this.changeEditingAppointment}
-          />
           <WeekView startDayHour={0} endDayHour={24} />
-          <WeekView
-            name="work-week"
-            displayName="Work Week"
-            excludedDays={[0, 6]}
-            startDayHour={9}
-            endDayHour={19}
-          />
           <MonthView />
           <DayView />
 
@@ -137,12 +121,8 @@ class CalendarDashboard extends React.PureComponent {
           <DateNavigator />
           <TodayButton />
           <ViewSwitcher />
-          <AllDayPanel />
-          <EditRecurrenceMenu />
-          <ConfirmationDialog />
           <Appointments />
-          <AppointmentTooltip showDeleteButton />
-          <AppointmentForm />
+          <AppointmentTooltip />
           <Resources data={resources} mainResourceName="status" />
         </Scheduler>
       </Paper>
