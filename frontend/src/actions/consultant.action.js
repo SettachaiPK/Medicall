@@ -10,6 +10,7 @@ import {
   RECOMMENDED_PRODUCTS_FETCH_STATUS,
   RECOMMENDED_PRODUCTS_REMOVE,
   RECOMMENDED_PRODUCTS_SELECT,
+  SCHEDULE_DELETE,
   SCHEDULE_FETCH,
 } from "./types";
 
@@ -183,6 +184,15 @@ export const actionFetchSchedule = () => async (dispatch) => {
   }
 };
 
+export const actionDeleteSchedule = (scheduleID) => async (dispatch) => {
+  try {
+    consultantService.deleteSchedule(scheduleID);
+    dispatch(reducerDeleteSchedule(scheduleID));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const reducerFetchConsultantDetail = (payload) => ({
   type: CONSULTANT_FETCH_DETAIL,
   payload,
@@ -222,5 +232,10 @@ export const reducerFetchBookedSchedule = (payload) => ({
 
 export const reducerFetchSchedule = (payload) => ({
   type: SCHEDULE_FETCH,
+  payload,
+});
+
+export const reducerDeleteSchedule = (payload) => ({
+  type: SCHEDULE_DELETE,
   payload,
 });

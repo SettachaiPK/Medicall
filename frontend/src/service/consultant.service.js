@@ -209,3 +209,21 @@ export function getSchedule() {
       });
   });
 }
+export function deleteSchedule(scheduleID) {
+  const Axiosmodel = server.CONSULTANT_DELETE_SCHEDULE;
+
+  return new Promise((resolve, reject) => {
+    httpClient({
+      method: "DELETE",
+      url: Axiosmodel.url.replace(":scheduleID", scheduleID),
+      withCredentials: true,
+      config: Axiosmodel,
+    })
+      .then((res) => {
+        resolve(res);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}

@@ -36,3 +36,4 @@ export const CART_ORDER_DELETE = "customer/cart/order/delete";
 /// Appointments ///
 export const BOOKED_SCHEDULE_FETCH = "appointment/booked/fetch";
 export const SCHEDULE_FETCH = "appointment/fetch";
+export const SCHEDULE_DELETE = "appointment/delete";

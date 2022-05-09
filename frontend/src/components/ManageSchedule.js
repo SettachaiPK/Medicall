@@ -21,7 +21,10 @@ import {
   ConfirmationDialog,
   Resources,
 } from "@devexpress/dx-react-scheduler-material-ui";
-import { actionFetchSchedule } from "../actions/consultant.action";
+import {
+  actionDeleteSchedule,
+  actionFetchSchedule,
+} from "../actions/consultant.action";
 
 export const appointments = [
   {
@@ -85,6 +88,7 @@ class ManageSchedule extends React.PureComponent {
   }
 
   commitChanges({ added, changed, deleted }) {
+    console.log("commit change");
     this.setState((state) => {
       let { data } = state;
       if (added) {
@@ -100,7 +104,8 @@ class ManageSchedule extends React.PureComponent {
         );
       }
       if (deleted !== undefined) {
-        data = data.filter((appointment) => appointment.id !== deleted);
+        console.log("delete", deleted);
+        this.props.actionDeleteSchedule(deleted);
       }
       return { data };
     });
@@ -121,7 +126,6 @@ class ManageSchedule extends React.PureComponent {
       <Paper sx={{ width: "70rem", m: "auto", mt: 3 }}>
         <Scheduler data={data} height={660}>
           <ViewState
-            currentDate={currentDate}
             currentViewName={currentViewName}
             onCurrentDateChange={this.currentDateChange}
             onCurrentViewNameChange={this.currentViewNameChange}
@@ -136,11 +140,6 @@ class ManageSchedule extends React.PureComponent {
             onEditingAppointmentChange={this.changeEditingAppointment}
           />
           <WeekView />
-          <WeekView
-            name="work-week"
-            displayName="Work Week"
-            excludedDays={[0, 6]}
-          />
           <MonthView />
           <DayView />
 
@@ -170,4 +169,5 @@ const mapStateToProps = (state) => ({ appointments: state.appointments });
 
 export default connect(mapStateToProps, {
   actionFetchSchedule: actionFetchSchedule,
+  actionDeleteSchedule: actionDeleteSchedule,
 })(ManageSchedule);
