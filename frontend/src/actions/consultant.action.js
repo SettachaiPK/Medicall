@@ -202,6 +202,15 @@ export const actionPatchSchedule = (scheduleID, data) => async (dispatch) => {
   }
 };
 
+export const actionCreateSchedule = (data) => async (dispatch) => {
+  try {
+    await consultantService.createSchedule(data);
+    await dispatch(actionFetchSchedule());
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const reducerFetchConsultantDetail = (payload) => ({
   type: CONSULTANT_FETCH_DETAIL,
   payload,

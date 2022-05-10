@@ -246,3 +246,22 @@ export function patchSchedule(scheduleID, data) {
       });
   });
 }
+export function createSchedule(data) {
+  const Axiosmodel = server.CONSULTANT_GET_SCHEDULE;
+
+  return new Promise((resolve, reject) => {
+    httpClient({
+      method: "POST",
+      url: Axiosmodel.url,
+      withCredentials: true,
+      config: Axiosmodel,
+      data,
+    })
+      .then((res) => {
+        resolve(res);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}

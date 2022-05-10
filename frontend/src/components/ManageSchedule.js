@@ -1,6 +1,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import moment from "moment";
 import Paper from "@mui/material/Paper";
 import { ViewState, EditingState } from "@devexpress/dx-react-scheduler";
 import { grey } from "@mui/material/colors";
@@ -22,6 +23,7 @@ import {
   Resources,
 } from "@devexpress/dx-react-scheduler-material-ui";
 import {
+  actionCreateSchedule,
   actionDeleteSchedule,
   actionFetchSchedule,
   actionPatchSchedule,
@@ -92,12 +94,17 @@ class ManageSchedule extends React.PureComponent {
     this.setState((state) => {
       let { data } = state;
       if (added) {
-        const startingAddedId =
-          data.length > 0 ? data[data.length - 1].id + 1 : 0;
-        data = [...data, { id: startingAddedId, ...added }];
+        const addedData = {
+          scheduler: [
+            {
+              startDate: moment(added.startDate).format(),
+              endDate: moment(added.endDate).format(),
+            },
+          ],
+        };
+        this.props.actionCreateSchedule(addedData);
       }
       if (changed) {
-        console.log("change", Object.keys(changed), changed);
         this.props.actionPatchSchedule(
           Object.keys(changed)[0],
           changed[Object.keys(changed)[0]]
@@ -170,4 +177,5 @@ export default connect(mapStateToProps, {
   actionFetchSchedule: actionFetchSchedule,
   actionDeleteSchedule: actionDeleteSchedule,
   actionPatchSchedule: actionPatchSchedule,
+  actionCreateSchedule: actionCreateSchedule,
 })(ManageSchedule);
