@@ -24,6 +24,7 @@ import {
 import {
   actionDeleteSchedule,
   actionFetchSchedule,
+  actionPatchSchedule,
 } from "../actions/consultant.action";
 
 export const appointments = [
@@ -88,7 +89,6 @@ class ManageSchedule extends React.PureComponent {
   }
 
   commitChanges({ added, changed, deleted }) {
-    console.log("commit change");
     this.setState((state) => {
       let { data } = state;
       if (added) {
@@ -97,14 +97,13 @@ class ManageSchedule extends React.PureComponent {
         data = [...data, { id: startingAddedId, ...added }];
       }
       if (changed) {
-        data = data.map((appointment) =>
-          changed[appointment.id]
-            ? { ...appointment, ...changed[appointment.id] }
-            : appointment
+        console.log("change", Object.keys(changed), changed);
+        this.props.actionPatchSchedule(
+          Object.keys(changed)[0],
+          changed[Object.keys(changed)[0]]
         );
       }
       if (deleted !== undefined) {
-        console.log("delete", deleted);
         this.props.actionDeleteSchedule(deleted);
       }
       return { data };
@@ -170,4 +169,5 @@ const mapStateToProps = (state) => ({ appointments: state.appointments });
 export default connect(mapStateToProps, {
   actionFetchSchedule: actionFetchSchedule,
   actionDeleteSchedule: actionDeleteSchedule,
+  actionPatchSchedule: actionPatchSchedule,
 })(ManageSchedule);

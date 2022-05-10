@@ -87,6 +87,11 @@ module.exports = function (app) {
     [authJwt.verifyToken, authJwt.isConsultant],
     consultantController.deleteSchedule
   );
+  router.patch(
+    "/schedule/:scheduleID",
+    [authJwt.verifyToken, authJwt.isConsultant],
+    consultantController.editSchedule
+  );
 
   app.use("/apis/consultant", router);
 };

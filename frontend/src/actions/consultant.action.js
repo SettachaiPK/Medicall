@@ -193,6 +193,15 @@ export const actionDeleteSchedule = (scheduleID) => async (dispatch) => {
   }
 };
 
+export const actionPatchSchedule = (scheduleID, data) => async (dispatch) => {
+  try {
+    await consultantService.patchSchedule(scheduleID, data);
+    await dispatch(actionFetchSchedule());
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const reducerFetchConsultantDetail = (payload) => ({
   type: CONSULTANT_FETCH_DETAIL,
   payload,

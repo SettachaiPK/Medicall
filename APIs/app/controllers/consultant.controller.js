@@ -677,8 +677,15 @@ exports.deleteSchedule = async (req, res) => {
 
 exports.editSchedule = async (req, res) => {
   const { userID } = req;
-  const { scheduleID } = req.body;
+  const { scheduleID } = req.params;
+  let { endDate, startDate } = req.body;
   const client = await pool.connect();
+  if (endDate) {
+    endDate = moment(endDate).format();
+  }
+  if (startDate) {
+    startDate = moment(startDate).format();
+  }
 
   try {
     await client.query("BEGIN");
@@ -701,15 +708,74 @@ exports.editSchedule = async (req, res) => {
       await client.query("ROLLBACK");
       return res.status(403).send({ message: "Permission Denied" });
     }
-    /* Delete schedule */
-    await client.query(
-      ` DELETE
+    /* Return error if schedule not bookable one */
+    if (schedule.scheduleStatus !== "bookable") {
+      await client.query("ROLLBACK");
+      return res
+        .status(404)
+        .send({ message: "Unable to change this schedule with this type" });
+    }
+    if (startDate) {
+      /* Find schedule with overlapping start time */
+      const {
+        rows: [startScheduled],
+      } = await client.query(
+        ` SELECT *
         FROM schedule
-        WHERE "scheduleID" = $1;`,
-      [scheduleID]
+        WHERE "startDate" < $2
+        AND "endDate" > $2
+        AND "consultantID" = ($1)
+        AND "scheduleID" != $3
+        ORDER BY "startDate" ASC;`,
+        [userID, startDate, scheduleID]
+      );
+      if (startScheduled) {
+        await client.query("ROLLBACK");
+        return res.status(404).send({ message: "Unable to change start date" });
+      }
+    }
+    if (endDate) {
+      /* Find schedule with overlapping end time */
+      const {
+        rows: [endScheduled],
+      } = await client.query(
+        ` SELECT *
+          FROM schedule
+          WHERE "startDate" < $2
+          AND "endDate" > $2
+          AND "consultantID" = ($1)
+          AND "scheduleID" != $3
+          ORDER BY "endDate" DESC;`,
+        [userID, endDate, scheduleID]
+      );
+      if (endScheduled) {
+        await client.query("ROLLBACK");
+        return res.status(404).send({ message: "Unable to change end date" });
+      }
+    }
+    /* Update schedule */
+    const dependency = [scheduleID];
+    if (startDate) {
+      dependency.push(startDate);
+    }
+    if (endDate) {
+      dependency.push(endDate);
+    }
+    const { rows: updated } = await client.query(
+      ` UPDATE schedule
+        SET ${
+          endDate & startDate
+            ? '"startDate" = $2, "endDate" = $3'
+            : startDate
+            ? `"startDate" = $2`
+            : '"endDate" = $2'
+        }
+        WHERE "scheduleID" = $1
+        RETURNING *;`,
+      dependency
     );
     await client.query("COMMIT");
-    return res.status(200).send({ message: "Success", schedule });
+    return res.status(200).send({ message: "Success", updated });
   } catch (err) {
     await client.query("ROLLBACK");
     console.log(err);

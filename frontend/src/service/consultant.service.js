@@ -227,3 +227,22 @@ export function deleteSchedule(scheduleID) {
       });
   });
 }
+export function patchSchedule(scheduleID, data) {
+  const Axiosmodel = server.CONSULTANT_DELETE_SCHEDULE;
+
+  return new Promise((resolve, reject) => {
+    httpClient({
+      method: "PATCH",
+      url: Axiosmodel.url.replace(":scheduleID", scheduleID),
+      withCredentials: true,
+      config: Axiosmodel,
+      data,
+    })
+      .then((res) => {
+        resolve(res);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}
