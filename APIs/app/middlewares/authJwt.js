@@ -5,7 +5,7 @@ const { pool } = require("../config/db.config");
 /** Check token by get access token first.
  * Then return the confirm message.
  */
-verifyToken = async (req, res, next) => {
+const verifyToken = async (req, res, next) => {
   try {
     const token = req.cookies.accessToken;
     if (!token) {
@@ -33,7 +33,7 @@ verifyToken = async (req, res, next) => {
   }
 };
 
-isAdmin = async (req, res, next) => {
+const isAdmin = async (req, res, next) => {
   const { userID } = req;
   try {
     const { rows: adminRows } = await pool.query(
@@ -56,7 +56,7 @@ isAdmin = async (req, res, next) => {
   }
 };
 
-isConsultant = async (req, res, next) => {
+const isConsultant = async (req, res, next) => {
   const { userID } = req;
   try {
     const { rows: consultantRows } = await pool.query(
@@ -79,7 +79,7 @@ isConsultant = async (req, res, next) => {
   }
 };
 
-isPharmacy = async (req, res, next) => {
+const isPharmacy = async (req, res, next) => {
   const { userID } = req;
   try {
     const { rows: pharmacyRows } = await pool.query(

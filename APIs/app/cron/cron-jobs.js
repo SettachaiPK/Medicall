@@ -36,3 +36,4 @@ const meetScheduleCron = cron.schedule(
   }
 );
 meetScheduleCron.start();
+module.exports = meetScheduleCron;

@@ -61,7 +61,9 @@ require("./app/routes/external.routes")(app);
 
 // set port, listen for requests
 const port = process.env.SERVER_PORT;
-server = app.listen(port, () => console.log("server running on port " + port));
+const server = app.listen(port, () =>
+  console.log("server running on port " + port)
+);
 
 //connect to socketIO
 
@@ -156,4 +158,4 @@ io.on("connection", (socket) => {
 //   });*/
 // });
 
-module.exports = app;
+module.exports = { app, server };
