@@ -9,6 +9,7 @@ import {
   actionStartMeeting,
   actionLeaveCall,
   actionEndMeeting,
+  actionChangeStream,
 } from "../actions/consulting.action";
 import {
   actionSubmitAdvice,
@@ -26,27 +27,52 @@ const ContextProvider = (props) => {
   const userVideo = useRef();
   const connectionRef = useRef();
 
+  const stream = props.consulting.stream;
+
+  /* Handle accept call button press */
   const socketAcceptCall = () => {
-    socket.emit("acceptCall", {
-      to: props.consulting.destination,
-      jobID: props.consulting.jobID,
-    });
+    /* Get media device resource */
+    navigator.mediaDevices
+      .getUserMedia({
+        video: props.consulting.type === "video" ? true : false,
+        audio: true,
+      })
+      .then((currentStream) => {
+        props.actionChangeStream(currentStream);
+        myVideo.current.srcObject = currentStream;
+        /* Emit accept call to server */
+        socket.emit("acceptCall", {
+          to: props.consulting.destination,
+          jobID: props.consulting.jobID,
+        });
+      });
   };
 
   const handleLeaveCall = () => {
+    /* Emit leave call to server */
     socket.emit("leaveCall", {
       to: props.consulting.destination,
     });
+    /* Call api to confirm call ended */
     props.actionEndMeeting(props.consulting.jobID);
+    /* Ahead to leave call process */
     leaveCall();
   };
 
   const leaveCall = async () => {
+    /* After calling */
+    /* Stop media device */
+    myVideo.current.srcObject.getTracks().forEach(function (track) {
+      track.stop();
+    });
+    /* If user is consultant */
     if (props.consulting.role === "consultant") {
+      /* Save advice to server */
       await props.actionSubmitAdvice({
         jobID: props.consulting.jobID,
         advice: props.consulting.advice,
       });
+      /* Save recommend product to server */
       await props.actionSubmitRecommendedProducts({
         jobID: props.consulting.jobID,
         recommendedProducts: props.recommendedProducts.selectedProducts.map(
@@ -57,6 +83,34 @@ const ContextProvider = (props) => {
       });
     }
     await props.actionLeaveCall(props.consulting.role);
+  };
+
+  const startStream = () => {
+    /* Start streaming process */
+    console.log("firing stream here", stream);
+    /* Create new peer for customer */
+    const peer = new Peer({ initiator: true, trickle: false, stream });
+
+    /* Send stream signal to consultant */
+    peer.on("signal", (data) => {
+      socket.emit("fireStream", {
+        userToCall: props.consulting.destination,
+        signalData: data,
+      });
+    });
+
+    /* Set userVideo ref to be destination stream */
+    peer.on("stream", (currentStream) => {
+      userVideo.current.srcObject = currentStream;
+    });
+
+    /* Prepare for returning stream */
+    socket.on("receiveStream", ({ signalData }) => {
+      console.log("customer receive stream signal", signalData);
+      peer.signal(signalData);
+    });
+
+    connectionRef.current = peer;
   };
 
   useEffect(() => {
@@ -88,6 +142,8 @@ const ContextProvider = (props) => {
     }
   }, [props.user.userID]);
 
+  /* When both self and destination ready */
+  /* Start streaming */
   useEffect(() => {
     console.log(
       props.consulting.isSelfReady,
@@ -99,9 +155,39 @@ const ContextProvider = (props) => {
       props.consulting.role === "customer"
     ) {
       console.log("start connect streaming");
+      startStream();
       props.actionStartMeeting(props.consulting.jobID);
     }
   }, [props.consulting.isSelfReady, props.consulting.isDestinationReady]);
+
+  /* Get ready for receive incoming stream (consultant) */
+  useEffect(() => {
+    if (stream && props.consulting.role == "consultant") {
+      console.log("new stream");
+      socket.on("receiveStream", ({ signalData }) => {
+        console.log("consultant receive stream signal", signalData);
+        /* Create new peer for consultant */
+        const peer = new Peer({ initiator: false, trickle: false, stream });
+
+        /* Send stream signal to destination */
+        peer.on("signal", (data) => {
+          socket.emit("fireStream", {
+            userToCall: props.consulting.destination,
+            signalData: data,
+          });
+        });
+
+        /* Store destination signal to userVideo */
+        peer.on("stream", (currentStream) => {
+          userVideo.current.srcObject = currentStream;
+        });
+
+        peer.signal(signalData);
+
+        connectionRef.current = peer;
+      });
+    }
+  }, [stream]);
 
   return (
     <SocketContext.Provider
@@ -134,6 +220,7 @@ export default connect(mapStateToProps, {
   actionLeaveCall: actionLeaveCall,
   actionSubmitAdvice: actionSubmitAdvice,
   actionSubmitRecommendedProducts: actionSubmitRecommendedProducts,
+  actionChangeStream: actionChangeStream,
 })(ContextProvider);
 
 export { SocketContext };

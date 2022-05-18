@@ -88,7 +88,13 @@ function CallComponent(props) {
             title={customerDetail.firstName + " " + customerDetail.lastName}
           />
           <CardMedia>
-            <video className="video-active" playsInline muted autoPlay />
+            <video
+              className="video-active"
+              playsInline
+              muted
+              autoPlay
+              ref={context.myVideo}
+            />
           </CardMedia>
           <CardActions sx={{ display: "flex", justifyContent: "space-around" }}>
             <Checkbox
@@ -124,7 +130,13 @@ function CallComponent(props) {
             title={consultantDetail.firstName + " " + consultantDetail.lastName}
           />
           <CardMedia>
-            <video className="video-active" playsInline muted autoPlay />
+            <video
+              className="video-active"
+              playsInline
+              muted
+              autoPlay
+              ref={context.userVideo}
+            />
           </CardMedia>
         </Card>
       </Box>
@@ -132,7 +144,7 @@ function CallComponent(props) {
   );
 }
 
-CallComponent.defaultProps = {  };
+CallComponent.defaultProps = {};
 CallComponent.propTypes = {
   consulting: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,

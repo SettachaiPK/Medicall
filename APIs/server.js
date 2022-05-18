@@ -61,6 +61,7 @@ require("./app/routes/external.routes")(app);
 
 // set port, listen for requests
 const port = process.env.SERVER_PORT;
+
 const server = app.listen(port, () =>
   console.log("server running on port " + port)
 );
@@ -108,6 +109,9 @@ io.on("connection", (socket) => {
   socket.on("leaveCall", ({ to }) => {
     socket.to(to).emit("leaveCall", {});
   });
+  socket.on("fireStream", ({ userToCall, signalData }) => {
+    io.to(userToCall).emit("receiveStream", { signalData });
+  });
 });
 
 // io.on("connection", (socket) => {
@@ -124,11 +128,6 @@ io.on("connection", (socket) => {
 
 //   socket.on("userReady", ({ to }) => {
 //     io.to(to).emit("userReady", {});
-//   });
-
-//   socket.on("callUser", ({ userToCall, from, signalData }) => {
-//     console.log("calling", userToCall);
-//     io.to(userToCall).emit("callUser", { from, signalData });
 //   });
 
 //   socket.on("answerCall", (data) => {

@@ -60,6 +60,7 @@ exports.verifyOTP = async (req, res) => {
 
   const client = await pool.connect();
   const now = moment();
+  console.log("verifyOTP");
 
   try {
     await client.query("BEGIN");

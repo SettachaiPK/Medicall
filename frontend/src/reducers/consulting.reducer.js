@@ -8,6 +8,7 @@ import {
   ON_CHANG_ADVICE,
   CONSULTING_LEAVE_CALL_CUSTOMER,
   ON_CHANG_STEP,
+  ON_CHANG_STREAM,
 } from "../actions/types";
 
 const initialState = new ConsultingModel();
@@ -52,6 +53,8 @@ const consultingReducer = (state = initialState, action) => {
       return { ...state, advice: action.payload };
     case ON_CHANG_STEP:
       return { ...state, step: action.payload };
+    case ON_CHANG_STREAM:
+      return { ...state, stream: action.payload };
     default:
       return state;
   }

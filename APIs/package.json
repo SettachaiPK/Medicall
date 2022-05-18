@@ -4,12 +4,15 @@
   "description": "for education",
   "main": "index.js",
   "scripts": {
-    "test": "jest --detectOpenHandles --forceExit"
+    "test": "jest --verbose --forceExit --detectOpenHandles --watchAll"
   },
   "jest": {
     "transform": {
       "^.+\\.[t|j]sx?$": "babel-jest"
     },
+    "setupFiles": [
+      "./app/config/db.config.js"
+    ],
     "setupFilesAfterEnv": [
       "./setupTests.js"
     ]
