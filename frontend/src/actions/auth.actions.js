@@ -38,7 +38,7 @@ export const actionSignUpCustomer = (payload) => async (dispatch) => {
   try {
     const { data } = await authService.signUpCustomer(payload);
     dispatch(actionVerifyLogIn());
-    alert(data.message);
+    //alert(data.message);
     return data.message;
   } catch (error) {
     alert(error.response.data.message || error.message);

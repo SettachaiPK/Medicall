@@ -541,7 +541,7 @@ exports.checkPendingPhamarcy = async (req, res) => {
   const { userID } = req;
   try {
     const { rows: phamarcyDetail } = await pool.query(
-      ` SELECT "userID"
+      ` SELECT *
         FROM phamarcyDetail
         WHERE "status" = 'waiting approval'
         AND "ownerID" = ($1);`,
