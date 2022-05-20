@@ -1,4 +1,7 @@
 {
+    "name": "medicall",
+    "version": "1.0.0",
+    "description": "capstone exp",
     "scripts": {
         "build": "npm install  && cd APIs && npm install  && cd ../frontend && npm install && npm run build",
         "server": "cd APIs && node server.js",
