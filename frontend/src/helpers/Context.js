@@ -18,7 +18,13 @@ import {
 
 const SocketContext = createContext();
 
-const socket = io(`${process.env.REACT_APP_API_URL}`, {
+const api_url = "";
+if (process.env.NODE_ENV !== "production") {
+  api_url = process.env.REACT_APP_API_URL;
+} else {
+  api_url = process.env.REACT_APP_PRODUCTION_API_URL;
+}
+const socket = io(`${api_url}`, {
   autoConnect: false,
 });
 
