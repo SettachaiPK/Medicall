@@ -1,6 +1,11 @@
 {
     "scripts": {
-        "build": "cd APIs && npm install  && cd ../frontend && npm install && npm run build",
-        "start": "node APIs/server.js && cd frontend && npm start"
+        "build": "npm install  && cd APIs && npm install  && cd ../frontend && npm install && npm run build",
+        "server": "cd APIs && node server.js",
+        "client": "cd frontend && npm start",
+        "start": "concurrently \"npm run server\" \"npm run client\""
+    },
+    "devDependencies": {
+        "concurrently": "^7.2.0"
     }
 }
