@@ -4,7 +4,9 @@
   "description": "for education",
   "main": "index.js",
   "scripts": {
-    "test": "jest --verbose --forceExit --detectOpenHandles --watchAll"
+    "test": "jest --verbose --forceExit --detectOpenHandles --watchAll",
+    "dev": "node server.js",
+    "build": "tsc -p ."
   },
   "jest": {
     "transform": {
