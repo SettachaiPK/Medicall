@@ -1,0 +1,6 @@
+{
+    "scripts": {
+        "build": "cd APIs && npm install  && cd ../frontend && npm install && npm run build",
+        "start": "node APIs/server.js"
+    }
+}
