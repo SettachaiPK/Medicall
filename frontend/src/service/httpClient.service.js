@@ -23,7 +23,12 @@ axios.interceptors.request.use((request) => {
   let Config = request.config;
 
   if (!isAbsoluteURLRegex.test(request.url)) {
-    console.log(process.env.NODE_ENV, API_URL);
+    console.log(
+      process.env.NODE_ENV,
+      process.env.REACT_APP_API_URL,
+      process.env.REACT_APP_PRODUCTION_API_URL,
+      API_URL
+    );
     if (Config.param !== null)
       request.url = join(API_URL, request.url, Config.param);
     else request.url = join(API_URL, request.url);
