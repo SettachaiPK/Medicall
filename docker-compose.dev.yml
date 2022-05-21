@@ -13,6 +13,8 @@ services:
         image: settachaipk/mern-frontend:latest
         environment:
             - CHOKIDAR_USEPOLLING=true
+        env_file:
+            - ./frontend/.env
 
     backend:
         image: settachaipk/mern-backend:latest
