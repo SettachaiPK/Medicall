@@ -19,6 +19,8 @@ WORKDIR /app
 
 ENV NODE_ENV production
 ENV PORT 3000
+ENV REACT_APP_PRODUCTION_API_URL /backend
+ENV REACT_APP_PREFIX MEDICALL_
 
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nextjs -u 1001
