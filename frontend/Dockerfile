@@ -9,6 +9,11 @@ RUN yarn install --frozen-lockfile --network-timeout 100000
 # Rebuild the source code only when needed
 FROM node:14-alpine AS builder
 WORKDIR /app 
+
+ENV NODE_ENV production
+ENV PORT 3000
+ENV REACT_APP_PRODUCTION_API_URL /backend
+ENV REACT_APP_PREFIX MEDICALL_
 COPY . .
 COPY --from=deps /app/node_modules ./node_modules
 RUN yarn build && yarn install --production --ignore-scripts --prefer-offline --network-timeout 100000
@@ -16,11 +21,6 @@ RUN yarn build && yarn install --production --ignore-scripts --prefer-offline --
 # Production image, copy all the files and run next
 FROM node:14-alpine AS runner
 WORKDIR /app
-
-ENV NODE_ENV production
-ENV PORT 3000
-ENV REACT_APP_PRODUCTION_API_URL /backend
-ENV REACT_APP_PREFIX MEDICALL_
 
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nextjs -u 1001
