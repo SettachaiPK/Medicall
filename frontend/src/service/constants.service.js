@@ -8,7 +8,7 @@ export const UPLOAD_PHOTO_FAIL_MESSAGE =
   "An error has occurred. The photo was unable to upload.";
 export const NOT_CONNECT_NETWORK = "NOT_CONNECT_NETWORK";
 
-const api_url = "";
+let api_url = "";
 if (process.env.NODE_ENV !== "production") {
   api_url = process.env.REACT_APP_API_URL;
 } else {

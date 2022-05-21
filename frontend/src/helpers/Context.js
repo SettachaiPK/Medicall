@@ -18,7 +18,7 @@ import {
 
 const SocketContext = createContext();
 
-const api_url = "";
+let api_url = "";
 if (process.env.NODE_ENV !== "production") {
   api_url = process.env.REACT_APP_API_URL;
 } else {
