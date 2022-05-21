@@ -27,6 +27,7 @@ axios.interceptors.request.use((request) => {
       process.env.NODE_ENV,
       process.env.REACT_APP_API_URL,
       process.env.REACT_APP_PRODUCTION_API_URL,
+      process.env.REACT_APP_PREFIX,
       API_URL
     );
     if (Config.param !== null)
