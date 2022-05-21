@@ -1,0 +1,47 @@
+version: "3.8"
+services:
+    nginx:
+        image: settachaipk/mern-nginx:latest
+        restart: always
+        depends_on:
+            - frontend
+            - backend
+        ports:
+            - "80:80"
+
+    frontend:
+        image: settachaipk/mern-frontend:latest
+        environment:
+            - CHOKIDAR_USEPOLLING=true
+            - PORT=3000
+            - REACT_APP_API_URL=http://localhost:5000
+            - REACT_APP_PRODUCTION_API_URL=/backend
+            - REACT_APP_PREFIX=MEDICALL_
+
+    backend:
+        image: settachaipk/mern-backend:latest
+        environment:
+            - SERVER_PORT=${SERVER_PORT}
+            - CLIENT_URL=${CLIENT_URL}
+            - DOMAIN=${DOMAIN}
+            - TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
+            - TWILIO_API_KEY=${TWILIO_API_KEY}
+            - TWILIO_API_SECRET=${TWILIO_API_SECRET}
+            - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
+            - REFRESH_TOKEN_SECRET=${REFRESH_TOKEN_SECRET}
+            - RESET_PASSWORD_SECRET=${RESET_PASSWORD_SECRET}
+            - ACCESS_TOKEN_LIFE=${ACCESS_TOKEN_LIFE}
+            - REFRESH_TOKEN_LIFE=${REFRESH_TOKEN_LIFE}
+            - DB_USER=${DB_USER}
+            - DB_HOST=${DB_HOST}
+            - DB_DATABASE=${DB_DATABASE}
+            - DB_PASSWORD=${DB_PASSWORD}
+            - DB_PORT=${DB_PORT}
+            - BASE_MESSAGE_PRICE=${BASE_MESSAGE_PRICE}
+            - BASE_VOICE_PRICE=${BASE_VOICE_PRICE}
+            - BASE_VIDEO_PRICE=${BASE_VIDEO_PRICE}
+            - BASE_CONSULTANT_AVATAR=${BASE_CONSULTANT_AVATAR}
+            - ROLE_ADMIN=${ROLE_ADMIN}
+            - ROLE_CUSTOMER=${ROLE_CUSTOMER}
+            - ROLE_CONSULTANT=${ROLE_CONSULTANT}
+            - ROLE_PHAMARCY=${ROLE_PHAMARCY}
