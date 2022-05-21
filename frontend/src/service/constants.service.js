@@ -14,7 +14,7 @@ if (process.env.NODE_ENV !== "production") {
 } else {
   api_url = process.env.REACT_APP_PRODUCTION_API_URL;
 }
-export const API_URL = `${api_url}apis/`;
+export const API_URL = `${api_url}/apis/`;
 
 export const server = {
   ///auth///
