@@ -82,10 +82,18 @@ function CallComponent(props) {
             avatar={
               <Avatar
                 sx={{ bgcolor: pink[100] }}
-                src={`data:image/png;base64, ${customerDetail.avatar}`}
+                src={`data:image/png;base64, ${
+                  role === "customer"
+                    ? customerDetail.avatar
+                    : consultantDetail.avatar
+                }`}
               ></Avatar>
             }
-            title={customerDetail.firstName + " " + customerDetail.lastName}
+            title={
+              role === "customer"
+                ? customerDetail.firstName + " " + customerDetail.lastName
+                : consultantDetail.firstName + " " + consultantDetail.lastName
+            }
           />
           <CardMedia>
             <video
@@ -124,10 +132,18 @@ function CallComponent(props) {
             avatar={
               <Avatar
                 sx={{ bgcolor: pink[100] }}
-                src={`data:image/png;base64, ${consultantDetail.avatar}`}
+                src={`data:image/png;base64, ${
+                  role !== "customer"
+                    ? customerDetail.avatar
+                    : consultantDetail.avatar
+                }`}
               ></Avatar>
             }
-            title={consultantDetail.firstName + " " + consultantDetail.lastName}
+            title={
+              role !== "customer"
+                ? customerDetail.firstName + " " + customerDetail.lastName
+                : consultantDetail.firstName + " " + consultantDetail.lastName
+            }
           />
           <CardMedia>
             <video
