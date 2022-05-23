@@ -68,10 +68,14 @@ const ContextProvider = (props) => {
   const leaveCall = async () => {
     console.log("myVideo", myVideo.current);
     /* After calling */
-    /* Stop media device */
-    myVideo.current.srcObject.getTracks().forEach(function (track) {
-      track.stop();
-    });
+    /* If cam still active */
+    if (myVideo.current) {
+      /* Stop media device */
+      myVideo.current.srcObject.getTracks().forEach(function (track) {
+        track.stop();
+      });
+    }
+
     /* If user is consultant */
     if (props.consulting.role === "consultant") {
       /* Save advice to server */
@@ -149,13 +153,9 @@ const ContextProvider = (props) => {
     }
   }, [props.user.userID]);
 
-  /* When both self and destination ready */
-  /* Start streaming */
   useEffect(() => {
-    console.log(
-      props.consulting.isSelfReady,
-      props.consulting.isDestinationReady
-    );
+    /* When both self and destination ready */
+    /* Customer start streaming after his cam ready */
     if (
       props.consulting.isSelfReady &&
       props.consulting.isDestinationReady &&
