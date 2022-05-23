@@ -99,8 +99,8 @@ function CallComponent(props) {
             <video
               className="video-active"
               playsInline
-              muted
               autoPlay
+              muted
               ref={context.myVideo}
             />
           </CardMedia>
@@ -149,7 +149,6 @@ function CallComponent(props) {
             <video
               className="video-active"
               playsInline
-              muted
               autoPlay
               ref={context.userVideo}
             />
