@@ -66,6 +66,7 @@ const ContextProvider = (props) => {
   };
 
   const leaveCall = async () => {
+    console.log("myVideo", myVideo.current);
     /* After calling */
     /* Stop media device */
     myVideo.current.srcObject.getTracks().forEach(function (track) {
@@ -158,13 +159,18 @@ const ContextProvider = (props) => {
     if (
       props.consulting.isSelfReady &&
       props.consulting.isDestinationReady &&
-      props.consulting.role === "customer"
+      props.consulting.role === "customer" &&
+      stream
     ) {
       console.log("start connect streaming");
       startStream();
       props.actionStartMeeting(props.consulting.jobID);
     }
-  }, [props.consulting.isSelfReady, props.consulting.isDestinationReady]);
+  }, [
+    props.consulting.isSelfReady,
+    props.consulting.isDestinationReady,
+    stream,
+  ]);
 
   /* Get ready for receive incoming stream (consultant) */
   useEffect(() => {
