@@ -153,13 +153,9 @@ const ContextProvider = (props) => {
     }
   }, [props.user.userID]);
 
-  /* When both self and destination ready */
-  /* Start streaming */
   useEffect(() => {
-    console.log(
-      props.consulting.isSelfReady,
-      props.consulting.isDestinationReady
-    );
+    /* When both self and destination ready */
+    /* Customer start streaming after his cam ready */
     if (
       props.consulting.isSelfReady &&
       props.consulting.isDestinationReady &&
