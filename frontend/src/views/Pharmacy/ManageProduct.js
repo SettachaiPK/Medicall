@@ -67,7 +67,7 @@ function ManageProduct(props) {
           src={`data:image/png;base64, ${details.avatar}`}
           sx={{ width: "4rem", height: "4rem" }}
         />
-        <Button sx={{ fontSize: "x-small", fontWeight: 400 }}>
+        <Button sx={{ fontSize: "x-small", fontWeight: 400 }} disabled>
           เปลี่ยนรูปโปรไฟล์
         </Button>
         <Typography sx={{ fontSize: "1.4rem" }}>{details.storeName}</Typography>
