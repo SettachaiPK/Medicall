@@ -9,6 +9,7 @@ import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import { Avatar } from "@mui/material";
 import { Button } from "@mui/material";
+import moment from "moment";
 
 function MenuProfile({ user }) {
   const dispatch = useDispatch();
@@ -65,24 +66,28 @@ function MenuProfile({ user }) {
               label="เบอร์โทรศัพท์"
               name="phoneNumber"
               value={profile.phoneNumber || ""}
+              disabled
             />
             <TextField
               margin="normal"
               label="ชื่อ"
               name="firstName"
               value={profile.firstName || ""}
+              disabled
             />
             <TextField
               margin="normal"
               label="นามสกุล"
               name="lastName"
               value={profile.lastName || ""}
+              disabled
             />
             <TextField
               margin="normal"
               label="วันเกิด"
               name="birthDate"
-              value={profile.birthDate || ""}
+              value={moment(profile.birthDate).format("DD/MM/YYYY") || ""}
+              disabled
             />
             <FormControl margin="normal" sx={{ pl: 1 }}>
               <FormLabel id="demo-controlled-radio-buttons-group">
@@ -98,11 +103,13 @@ function MenuProfile({ user }) {
                   value="female"
                   control={<Radio />}
                   label="หญิง"
+                  disabled
                 />
                 <FormControlLabel
                   value="male"
                   control={<Radio />}
                   label="ชาย"
+                  disabled
                 />
               </RadioGroup>
             </FormControl>
@@ -119,18 +126,21 @@ function MenuProfile({ user }) {
               label="โรคประจำตัว"
               name="congenitalDisease"
               value={profile.congenitalDisease || ""}
+              disabled
             />
             <TextField
               margin="normal"
               label="ประวัติการแพ้ยา"
               name="drugAllergy"
               value={profile.drugAllergy || ""}
+              disabled
             />
             <TextField
               margin="normal"
               label="ยาที่ทานอยู่"
               name="drugInUse"
               value={profile.drugInUse || ""}
+              disabled
             />
           </div>
         </div>
