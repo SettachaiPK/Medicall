@@ -88,6 +88,7 @@ function CommonRegistPopup(props) {
                 name="firstName"
                 value={firstName}
                 onChange={handleChange}
+                className='w-100'
               />
               <TextField
                 required
@@ -96,18 +97,20 @@ function CommonRegistPopup(props) {
                 name="lastName"
                 value={lastName}
                 onChange={handleChange}
+                className='w-100'
               />
-              <LocalizationProvider dateAdapter={DateAdapter}>
-                <DesktopDatePicker
-                  label="วันเกิด"
+              <LocalizationProvider dateAdapter={DateAdapter}
+              >
+                <DesktopDatePicker label="วันเกิด"
                   value={birthDate}
                   onChange={(newValue) => {
                     setFormValue({ ...formValue, ["birthDate"]: newValue });
                   }}
-                  renderInput={(params) => <TextField {...params} />}
+                  renderInput={(params) => <TextField
+                    className='w-100' {...params} />}
                 />
               </LocalizationProvider>
-              <FormControl sx={{ pl:1}}>
+              <FormControl sx={{ pl: 1 }}>
                 <FormLabel id="demo-controlled-radio-buttons-group">
                   เพศกำเนิด
                 </FormLabel>
@@ -140,6 +143,7 @@ function CommonRegistPopup(props) {
                 name="weight"
                 value={weight}
                 onChange={handleChange}
+                className='w-100'
               />
               <TextField
                 id="outlined-number"
@@ -151,6 +155,7 @@ function CommonRegistPopup(props) {
                 name="height"
                 value={height}
                 onChange={handleChange}
+                className='w-100'
               />
               <TextField
                 id="outlined-multiline-static"
@@ -160,6 +165,7 @@ function CommonRegistPopup(props) {
                 name="congenitalDisease"
                 value={congenitalDisease}
                 onChange={handleChange}
+                className='w-100'
               />
               <TextField
                 id="outlined-multiline-static"
@@ -169,6 +175,7 @@ function CommonRegistPopup(props) {
                 name="drugAllergy"
                 value={drugAllergy}
                 onChange={handleChange}
+                className='w-100'
               />
               <TextField
                 id="outlined-multiline-static"
@@ -178,6 +185,7 @@ function CommonRegistPopup(props) {
                 name="drugInUse"
                 value={drugInUse}
                 onChange={handleChange}
+                className='w-100'
               />
             </div>
           </Box>
@@ -188,7 +196,7 @@ function CommonRegistPopup(props) {
           <div style={{
             display: "flex",
             justifyContent: "flex-end",
-            paddingRight:"4rem",
+            paddingRight: "4rem",
           }}>
             <Button
               sx={{
