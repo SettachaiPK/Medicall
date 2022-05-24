@@ -206,6 +206,7 @@ function SectionConsultantEdit({ consultant, user }) {
                   value={department}
                   setValue={setDepartment}
                   variant="standard"
+                  disabled
                 />
                 <TextField
                   variant="standard"
@@ -216,6 +217,7 @@ function SectionConsultantEdit({ consultant, user }) {
                   name="infirmary"
                   value={formValue.infirmary}
                   onChange={handleChange}
+                  disabled
                 />
                 <TextField
                   variant="standard"
@@ -226,6 +228,7 @@ function SectionConsultantEdit({ consultant, user }) {
                   name="academy"
                   value={formValue.academy}
                   onChange={handleChange}
+                  disabled
                 />
                 <TextField
                   variant="outlined"
