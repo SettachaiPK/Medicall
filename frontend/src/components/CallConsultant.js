@@ -126,7 +126,7 @@ function CallConsultant(props) {
                 <Typography>{product.productName}</Typography>
                 <Typography>{product.storeName}</Typography>
                 <Typography>
-                  {parseFloat(product.productPrice).toFixed(2)}
+                  {parseFloat(product.productPrice).toFixed(2)}฿
                 </Typography>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                   <Typography>จำนวน : </Typography>
@@ -159,16 +159,40 @@ function CallConsultant(props) {
             {selectedProducts.map((product, index) => {
               return (
                 <Box key={"s" + String(index)}>
-                  <Typography sx={{ ml: "3rem" }}>
-                    {product.productName} amount: {product.amount}
-                    <IconButton
-                      aria-label="delete"
-                      onClick={() => {
-                        props.actionRemoveProduct(index);
+                  <Typography sx={{ ml: "3rem", mr: "1rem" }}>
+                    <Paper
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-around",
+                        alignItems: "center",
+                        p: "2rem",
+                        m: "1rem",
                       }}
+                      key={index}
                     >
-                      <DeleteIcon />
-                    </IconButton>
+                      <Typography>{product.productName}</Typography>
+                      <Typography>{product.storeName}</Typography>
+                      <Typography>
+                        {parseFloat(product.productPrice).toFixed(2)}฿
+                      </Typography>
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <Typography>จำนวน : </Typography>
+                        <TextField
+                          variant="outlined"
+                          sx={{ width: "4rem", ml: 2 }}
+                          type="number"
+                          value={product.amount}
+                        ></TextField>
+                      </Box>
+                      <Button
+                        sx={{ textDecoration: "underline" }}
+                        onClick={() => {
+                          props.actionRemoveProduct(index);
+                        }}
+                      >
+                        ลบ
+                      </Button>
+                    </Paper>
                   </Typography>
                 </Box>
               );

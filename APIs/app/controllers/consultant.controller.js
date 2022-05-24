@@ -227,6 +227,7 @@ exports.jobMeetingEnd = async (req, res) => {
     const actualPeriod = moment
       .duration(now.diff(moment(meetStartDate)))
       .asMinutes();
+    console.log(moment(meetStartDate), now.format(), actualPeriod);
     const {
       rows: [result],
     } = await client.query(
@@ -235,7 +236,7 @@ exports.jobMeetingEnd = async (req, res) => {
         WHERE "jobID" = ($2) 
         AND "consultantID" = ($1)
         RETURNING "jobID";`,
-      [userID, jobID, advice, now, actualPeriod]
+      [userID, jobID, advice, now.format(), actualPeriod]
     );
 
     await client.query("COMMIT");

@@ -97,6 +97,9 @@ export const server = {
   }),
   ///pharmacy///
   PHARMACY_PRODUCT: new AxiosModel({ url: `pharmacy/products` }),
+  PHARMACY_PRODUCT_SINGLE: new AxiosModel({
+    url: `pharmacy/product/:productID`,
+  }),
   PHARMACY_ORDERS: new AxiosModel({ url: `pharmacy/orders` }),
   PHARMACY_ORDER_DETAIL: new AxiosModel({ url: `pharmacy/order` }),
   PHARMACY_DETAIL: new AxiosModel({ url: `pharmacy/store-detail` }),

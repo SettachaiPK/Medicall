@@ -65,6 +65,7 @@ exports.addProduct = async (req, res) => {
     );
 
     if (files) {
+      console.log("files", files);
       const { media } = await files;
       if (media.length) {
         console.log("files");
@@ -308,6 +309,66 @@ exports.getProducts = async (req, res) => {
   }
 };
 
+exports.getSingleProduct = async (req, res) => {
+  const { userID } = req;
+  const { productID } = req.params;
+  const client = await pool.connect();
+
+  try {
+    // Begin query
+    await client.query("BEGIN");
+    console.log("start");
+    // Check if user own a store
+    const {
+      rows: [{ storeID }],
+    } = await client.query(
+      ` SELECT "storeID"
+        FROM phamarcyDetail
+        WHERE "ownerID" = ($1)`,
+      [userID]
+    );
+    // Not own any store return error
+    if (!storeID) {
+      await client.query("ROLLBACK");
+      res.status(403).send({ message: "Permission Denied" });
+    }
+    console.log("found store", storeID);
+    // Query product in store
+    const {
+      rows: [product],
+    } = await client.query(
+      ` SELECT * 
+        FROM product   
+        LEFT JOIN (
+          SELECT DISTINCT ON ("productID")
+            "productID", "imageBase64" AS "productMedia"
+          FROM   productMedia
+          )  AS "productMedia" USING ("productID")
+        WHERE "storeID" = ($1)
+        AND "productID" = $2
+        AND "isActive" = TRUE`,
+      [storeID, productID]
+    );
+    console.log("product");
+    // If product not found
+    if (!product) {
+      await client.query("ROLLBACK");
+      res.status(403).send({ message: "Permission Denied" });
+    }
+
+    await client.query("COMMIT");
+
+    return res.status(200).send(product);
+  } catch (err) {
+    await client.query("ROLLBACK");
+
+    console.log(err);
+
+    return res.status(500).send(err);
+  } finally {
+    client.release();
+  }
+};
 exports.getProductDetail = async (req, res) => {
   const { userID } = req;
   const client = await pool.connect();
@@ -464,7 +525,7 @@ exports.confirmSendOrder = async (req, res) => {
     body: { orderID, deliveryNumber },
   } = req;
   const client = await pool.connect();
-  const now = moment()
+  const now = moment();
 
   try {
     await client.query("BEGIN");
@@ -485,11 +546,9 @@ exports.confirmSendOrder = async (req, res) => {
       return res.status(403).send({ message: "Permission Denied" });
     } else if (productorder.orderStatus !== "paid") {
       await client.query("ROLLBACK");
-      return res
-        .status(403)
-        .send({
-          message: `Can not set status of this order, Current status '${productorder.orderStatus}'`,
-        });
+      return res.status(403).send({
+        message: `Can not set status of this order, Current status '${productorder.orderStatus}'`,
+      });
     }
     client.query(
       ` UPDATE productorder

@@ -52,6 +52,7 @@ export const actionGetJobSummary = (jobID) => async (dispatch) => {
 
 export const actionGiveReview = (payload) => async (dispatch) => {
   try {
+    console.log(payload);
     const { data } = await customerService.giveReview(payload);
     return data;
   } catch (error) {
@@ -124,14 +125,17 @@ export const actionPlaceOrder = (payload) => async (dispatch) => {
   }
 };
 
-export const actionFetchConsultantSchedule = (consultantID) => async (dispatch) => {
-  try {
-    const { data } = await customerService.getConsultantSchedule(consultantID);
-    dispatch(reducerFetchConsultantSchedule(data.result));
-  } catch (error) {
-    console.log(error);
-  }
-};
+export const actionFetchConsultantSchedule =
+  (consultantID) => async (dispatch) => {
+    try {
+      const { data } = await customerService.getConsultantSchedule(
+        consultantID
+      );
+      dispatch(reducerFetchConsultantSchedule(data.result));
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
 export const reducerInitCart = (payload) => ({
   type: CART_INIT,

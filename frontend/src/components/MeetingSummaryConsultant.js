@@ -124,7 +124,7 @@ function MeetingSummaryConsultant(props) {
                 เวลา: {moment(summary.meetStartDate).format("HH.mm")}
               </label>
               <label>
-                เวลาทั้งหมด: {(summary.actualPeriod / 60).toFixed(2)} นาที
+                เวลาทั้งหมด: {parseFloat(summary.actualPeriod).toFixed(2)} นาที
               </label>
             </Box>
             <Box sx={{ display: "grid" }}>

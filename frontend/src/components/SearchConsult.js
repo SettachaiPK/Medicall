@@ -24,7 +24,6 @@ function SearchConsult(props) {
             id="tags-standard"
             options={top100Films}
             getOptionLabel={(option) => option.title}
-            defaultValue={[top100Films[0]]}
             renderInput={(params) => (
               <TextField {...params} variant="outlined" placeholder="Search" />
             )}

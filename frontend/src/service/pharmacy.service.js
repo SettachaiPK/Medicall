@@ -19,6 +19,24 @@ export function getProducts() {
       });
   });
 }
+export function getProductSingle(productID) {
+  const Axiosmodel = server.PHARMACY_PRODUCT_SINGLE;
+
+  return new Promise((resolve, reject) => {
+    httpClient({
+      method: "GET",
+      url: Axiosmodel.url.replace(":productID", productID),
+      config: Axiosmodel,
+      withCredentials: true,
+    })
+      .then((res) => {
+        resolve(res);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}
 export function getOrders() {
   const Axiosmodel = server.PHARMACY_ORDERS;
 

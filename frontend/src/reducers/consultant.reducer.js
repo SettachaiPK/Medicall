@@ -12,7 +12,7 @@ const consultantReducer = (state = initialState, action) => {
       return action.payload;
     case CONSULTANT_FETCH_STATUS:
       console.log(state + action.payload);
-      return state + action.payload;
+      return { ...state, onlineStatus: action.payload };
     default:
       return state;
   }
