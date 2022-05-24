@@ -15,12 +15,12 @@ const height = "10rem";
 function AddProduct(props) {
   const navigate = useNavigate();
   const hiddenFileInput = useRef(null);
+  const [files, setFiles] = useState(null);
   const [products, setProducts] = useState({
     productName: "",
     productPrice: 0,
     productDetail: "",
   });
-  const [files, setFiles] = useState(null);
   const handleChangeAddProduct = (e, field) => {
     setProducts({ ...products, [field]: e.target.value });
   };

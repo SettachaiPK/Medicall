@@ -7,7 +7,13 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
+.css-1kbmavd .TextEditor-title,
+.css-1kbmavd .Layout-booleanEditors,
+.css-1kbmavd .Layout-labelWithMargins,
+.css-1kbmavd .Layout-notesEditor,
+.css-1kbmavd .ResourceEditor-selectBox {
+  display: none !important;
+}
 .section-container {
   margin: 2rem 3rem;
 }
@@ -206,7 +212,7 @@ body {
   display: block;
 }
 
-.blind-fold>.wrapper {
+.blind-fold > .wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
