@@ -547,7 +547,7 @@ exports.jobMeetingStart = async (req, res) => {
         AND "jobStatus" = 'paid'
         AND "customerID" = $3
         RETURNING "meetStartDate", "reservePeriod_m";`,
-      [jobID, now, userID]
+      [jobID, now.format(), userID]
     );
 
     if (!result) {
@@ -584,7 +584,7 @@ exports.jobMeetingEnd = async (req, res) => {
         WHERE "jobID" = $1
         AND "jobStatus" = 'meeting'
         RETURNING "meetStartDate", "meetEndDate";`,
-      [jobID, now]
+      [jobID, now.format()]
     );
 
     if (!result) {
@@ -1008,7 +1008,10 @@ exports.bookConsultJob = async (req, res) => {
     /* Return error if start time is invalid */
     if (moment(scheduleDate).minutes() % 15 !== 0) {
       await client.query("ROLLBACK");
-      return res.status(400).send({ message: "Invalid start time. Please select time at minute [0, 15, 30, 45]" });
+      return res.status(400).send({
+        message:
+          "Invalid start time. Please select time at minute [0, 15, 30, 45]",
+      });
     }
     /* Query price */
     const {

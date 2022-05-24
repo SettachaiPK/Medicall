@@ -109,25 +109,25 @@ function ReviewPage(props) {
             label="อธิบายเพิ่มเติมเกี่ยวกับความพึงพอใจของคุณ..."
             value={comment}
             variant="outlined"
-            onChange={(event, newValue) => {
-              setComment(newValue);
+            onChange={(event) => {
+              setComment(event.target.value);
             }}
           />
         </Box>
-        <Box sx={{display:"flex",justifyContent:"flex-end",p:"0.5rem"}}>
-        <Button
-         sx={{backgroundColor: "#FFC1C1",color: grey[500],px:1}}
-          onClick={() => {
-            props.actionGiveReview({
-              jobID: props.jobID,
-              rating: rating,
-              reason: comment,
-            });
-            props.actionChangeStep(2);
-          }}
-        >
-          ยืนยัน
-        </Button>
+        <Box sx={{ display: "flex", justifyContent: "flex-end", p: "0.5rem" }}>
+          <Button
+            sx={{ backgroundColor: "#FFC1C1", color: grey[500], px: 1 }}
+            onClick={() => {
+              props.actionGiveReview({
+                jobID: props.jobID,
+                rating: rating,
+                reason: comment,
+              });
+              props.actionChangeStep(2);
+            }}
+          >
+            ยืนยัน
+          </Button>
         </Box>
       </Paper>
     </div>
