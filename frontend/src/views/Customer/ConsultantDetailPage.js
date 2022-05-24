@@ -29,8 +29,9 @@ import SentimentVerySatisfiedIcon from "@mui/icons-material/SentimentVerySatisfi
 import Rating from "@mui/material/Rating";
 import { styled } from "@mui/material/styles";
 import PropTypes from "prop-types";
-import GradeIcon from '@mui/icons-material/Grade';
+import GradeIcon from "@mui/icons-material/Grade";
 import { Chip } from "@mui/material";
+import moment from "moment";
 
 function ConsultantDetailPage() {
   const { id } = useParams();
@@ -73,22 +74,21 @@ function ConsultantDetailPage() {
       label: "Very Satisfied",
     },
   };
-  
+
   const StyledRating = styled(Rating)({
     "& .MuiRating-iconHover": {
       color: "#ff6d75",
     },
   });
-  
+
   function IconContainer(props) {
     const { value, ...other } = props;
     return <span {...other}>{customIcons[value].icon}</span>;
   }
-  
+
   IconContainer.propTypes = {
     value: PropTypes.number.isRequired,
   };
-  
 
   const fetchDetail = useCallback(async () => {
     const { data } = await getConsultantDetail(id);
@@ -127,25 +127,27 @@ function ConsultantDetailPage() {
           <div>
             <Chip size="small" label={department} sx={{ mb: 1 }} />
             <div className="text-icon-wrapper">
-            <img
+              <img
                 src="/assets/img/icon/Pin_duotone.svg"
                 className="home-card-icon"
                 alt=""
               />
-            <Typography sx={{fontSize:"80%"}}>{infirmary}</Typography>
+              <Typography sx={{ fontSize: "80%" }}>{infirmary}</Typography>
             </div>
             <div className="text-icon-wrapper">
-            <img
+              <img
                 src="/assets/img/icon/Square academic cap.svg"
                 className="home-card-icon"
                 alt=""
               />
-            <Typography sx={{fontSize:"80%"}}>{academy}</Typography>
+              <Typography sx={{ fontSize: "80%" }}>{academy}</Typography>
             </div>
           </div>
-          <div style={{display:"flex", alignItems:"center"}}>
-          <Typography sx={{fontSize:"2rem"}}>{parseFloat(rating).toFixed(2)}</Typography>
-          <GradeIcon sx={{ color: pink[100], fontSize: 20 }}/>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <Typography sx={{ fontSize: "2rem" }}>
+              {parseFloat(rating).toFixed(2)}
+            </Typography>
+            <GradeIcon sx={{ color: pink[100], fontSize: 20 }} />
           </div>
         </Paper>
         <br />
@@ -156,7 +158,10 @@ function ConsultantDetailPage() {
           }}
         >
           <Accordion>
-            <AccordionDetails expandIcon={<ExpandMore />} sx={{minHeight:"7rem"}}>
+            <AccordionDetails
+              expandIcon={<ExpandMore />}
+              sx={{ minHeight: "7rem" }}
+            >
               <Typography>{detail}</Typography>
             </AccordionDetails>
           </Accordion>
@@ -168,15 +173,15 @@ function ConsultantDetailPage() {
             }}
           >
             <Box sx={{ display: "grid", justifyItems: "center" }}>
-                  <MessageIcon sx={{ color: pink[100], fontSize: 35 }} />
+              <MessageIcon sx={{ color: pink[100], fontSize: 35 }} />
               {messagePrice}
             </Box>
             <Box sx={{ display: "grid", justifyItems: "center" }}>
-                  <VideocamIcon sx={{ color: pink[100], fontSize: 35 }} />
+              <VideocamIcon sx={{ color: pink[100], fontSize: 35 }} />
               {voiceCallPrice}
             </Box>
             <Box sx={{ display: "grid", justifyItems: "center" }}>
-                  <CallIcon sx={{ color: pink[100], fontSize: 35 }} />
+              <CallIcon sx={{ color: pink[100], fontSize: 35 }} />
               {videoCallPrice}
             </Box>
           </Box>
@@ -201,18 +206,20 @@ function ConsultantDetailPage() {
               {reviews.map((review, index) => (
                 <ListItem button key={index}>
                   <ListItemText
-                    primary={<StyledRating
-                      readOnly
-                      sx={{ color: pink[100] }}
-                      name="highlight-selected-only"
-                      value={review.rating}
-                      IconContainerComponent={IconContainer}
-                      highlightSelectedOnly
-                    />}
+                    primary={
+                      <StyledRating
+                        readOnly
+                        sx={{ color: pink[100] }}
+                        name="highlight-selected-only"
+                        value={review.rating}
+                        IconContainerComponent={IconContainer}
+                        highlightSelectedOnly
+                      />
+                    }
                     secondary={
                       <React.Fragment>
                         <Typography>เหตุผล: {review.reason}</Typography>
-                        วันที่สร้าง: {review.createDate}
+                        วันที่สร้าง: {moment(review.createDate).format('DD-MM-YYYY : HH.mm')}
                       </React.Fragment>
                     }
                   />
@@ -237,4 +244,3 @@ function ConsultantDetailPage() {
 }
 
 export default ConsultantDetailPage;
-
