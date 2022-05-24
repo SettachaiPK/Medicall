@@ -14,7 +14,6 @@ import CustomSpeedDial from "../../components/CustomSpeedDial";
 import { actionGetProducts } from "../../actions/pharmacy.actions";
 import { actionGetStoreDetail } from "../../actions/pharmacy.actions";
 
-
 const classes = {
   icon: { color: "#AFE7E7" },
 };
@@ -24,20 +23,11 @@ function ManageProduct(props) {
   const { actionGetProducts } = props;
   const actionGetStoreDetail = props.actionGetStoreDetail;
 
-  const [products, setProducts] = useState([
-    { productName: "Product_1", productPrice: "50", productMedia: null },
-    { productName: "Product_2", productPrice: "100", productMedia: null },
-    { productName: "Product_3", productPrice: "1000", productMedia: null },
-    { productName: "Product_4", productPrice: "500", productMedia: null },
-    { productName: "Product_5", productPrice: "500", productMedia: null },
-    { productName: "Product_6", productPrice: "500", productMedia: null },
-    { productName: "Product_7", productPrice: "500", productMedia: null },
-    { productName: "Product_8", productPrice: "500", productMedia: null },
-  ]);
+  const [products, setProducts] = useState([]);
 
-  const [details,setDetails] = useState([
-    { storeName:"Name",location:"location",avatar:null,status: "active"}
-  ])
+  const [details, setDetails] = useState([
+    { storeName: "Name", location: "location", avatar: null, status: "active" },
+  ]);
 
   const speedDialActions = [
     {
@@ -60,7 +50,7 @@ function ManageProduct(props) {
     }
     fetchDetail();
     fetchProducts();
-  }, [actionGetProducts,actionGetStoreDetail]);
+  }, [actionGetProducts, actionGetStoreDetail]);
 
   return (
     <div>
@@ -82,43 +72,45 @@ function ManageProduct(props) {
         </Button>
         <Typography sx={{ fontSize: "1.4rem" }}>{details.storeName}</Typography>
       </Box>
-      <Grid
-        width={"80%"}
-        margin="auto"
-        container
-        rowSpacing={3}
-        columnSpacing={0}
-      >
-        <Box
-          sx={{
-            width: "10rem",
-            height: "8rem",
-            p: "1rem",
-            margin: "auto",
-            display: "flex",
-            alignItems: "center",
-          }}
+      {products.length > 0 && (
+        <Grid
+          width={"80%"}
+          margin="auto"
+          container
+          rowSpacing={3}
+          columnSpacing={0}
         >
-          <Button href="addproduct">
-          <IconButton
-            aria-label="Add Product"
-            component="span"
-            sx={{ width: "100%" }}
+          <Box
+            sx={{
+              width: "10rem",
+              height: "8rem",
+              p: "1rem",
+              margin: "auto",
+              display: "flex",
+              alignItems: "center",
+            }}
           >
-            <AddCircleIcon sx={{ fontSize: 100, color: grey[400] }} />
-          </IconButton>
-          </Button>
-        </Box>
-        {products.map((product, index) => {
-          return (
-            <Grid item xs={6} md={4} lg={3} xl={2} key={index}>
-              <Box sx={{ justifyContent: "center", display: "flex" }}>
-                <ManageProductComponent key={index} product={product} />
-              </Box>
-            </Grid>
-          );
-        })}
-      </Grid>
+            <Button href="addproduct">
+              <IconButton
+                aria-label="Add Product"
+                component="span"
+                sx={{ width: "100%" }}
+              >
+                <AddCircleIcon sx={{ fontSize: 100, color: grey[400] }} />
+              </IconButton>
+            </Button>
+          </Box>
+          {products.map((product, index) => {
+            return (
+              <Grid item xs={6} md={4} lg={3} xl={2} key={index}>
+                <Box sx={{ justifyContent: "center", display: "flex" }}>
+                  <ManageProductComponent key={index} product={product} />
+                </Box>
+              </Grid>
+            );
+          })}
+        </Grid>
+      )}
     </div>
   );
 }
@@ -126,12 +118,12 @@ function ManageProduct(props) {
 ManageProduct.defaultProps = {};
 ManageProduct.propTypes = {
   actionGetProducts: PropTypes.func.isRequired,
-  actionGetStoreDetail:PropTypes.func.isRequired
+  actionGetStoreDetail: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({});
 
 export default connect(mapStateToProps, {
   actionGetProducts: actionGetProducts,
-  actionGetStoreDetail:actionGetStoreDetail,
+  actionGetStoreDetail: actionGetStoreDetail,
 })(ManageProduct);
