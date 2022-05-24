@@ -195,7 +195,9 @@ export default function ConsultNowDetailsPopUp(props) {
               </Box>
             </Box>
             <Box sx={{ marginTop: "3%", padding: "3%" }}>
-              <label>ระยะเวลาที่ต้องการปรึกษา : </label>
+              <label>
+                ระยะเวลาที่ต้องการปรึกษา : {form.reservePeriod_m} นาที
+              </label>
               <Slider
                 sx={{ color: pink[100] }}
                 aria-label="Time Range"

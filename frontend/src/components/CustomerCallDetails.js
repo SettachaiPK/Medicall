@@ -67,7 +67,12 @@ function CustomerCallDetails(props) {
             อายุ: {profile.age.years} ปี
           </Typography>
           <Typography sx={{ pb: 1, fontSize: 16 }}>
-            เพศกำเนิด: {profile.sex}
+            เพศกำเนิด:{" "}
+            {profile.sex === "male"
+              ? "ชาย"
+              : profile.sex === "female"
+              ? "หญิง"
+              : ""}
           </Typography>
           <Typography sx={{ pb: 1, fontSize: 16 }}>
             โรคประจำตัว: {profile.congenitalDisease}{" "}

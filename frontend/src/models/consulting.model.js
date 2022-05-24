@@ -12,7 +12,7 @@ export class ConsultingModel {
     this.StartTime = "00.00";
     this.EndTime = "00.00";
     this.TotalTime = "15 min";
-    this.advice = "advice";
+    this.advice = "";
     this.stream = null;
   }
 }
