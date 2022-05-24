@@ -10,7 +10,11 @@ import { FormControl } from "@mui/material";
 function LoginPopup({ onSubmit }) {
   const [phoneNumber, setPhoneNumber] = useState("");
   const handleSubmit = () => {
-    onSubmit({ phoneNumber });
+    if (phoneNumber.length > 9) {
+      onSubmit({ phoneNumber });
+    } else {
+      alert("Phone number much be at least 10 character");
+    }
   };
   return (
     <>
