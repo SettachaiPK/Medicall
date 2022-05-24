@@ -127,157 +127,188 @@ function SectionConsultantEdit({ consultant, user }) {
 
   return (
     <>
-    <Grid container
-          rowSpacing={0}
-          columnSpacing={{ xs: 0, sm: 0, md: 0, lg: 0 }}>
-    <Paper sx={{display:"flex",justifyContent: "center",width:"80%",m:"auto"}}>
-    <Box sx={{ display: "flex", flexDirection: "column",alignItems: "center",mr:8,mt:8}}>
-      <Avatar src={`data:image/png;base64, ${user.avatar}`} sx={{width:"7rem",height:"7rem"}}/>
-      <input
-        type="file"
-        name="media"
-        accept="image/png, image/jpeg"
-        ref={hiddenFileInput}
-        onChange={handleChangeAvatar}
-        hidden
-      />
-      <Button
-        onClick={() => {
-          hiddenFileInput.current.click();
-        }}
+      <Grid
+        container
+        rowSpacing={0}
+        columnSpacing={{ xs: 0, sm: 0, md: 0, lg: 0 }}
       >
-        แก้ไขรูปภาพ
-      </Button>
-      <div style={{ display: "flex" }}>
-        <Switch
-          checked={checked}
-          onChange={handleChecked}
-          inputProps={{ "aria-label": "controlled" }}
-        />'
-        <label>สถานะ: {formValue.onlineStatus} </label>
-      </div>
-      </Box>
-
-      <Box sx={{mt:3}}>
-        <Box sx={{m:"auto",width:"100%", p:"1rem",display: "flex",alignItems: "center"}}>
-        <label>คะแนนรีวิวเฉลี่ย : </label>
-        <StyledRating
-          readOnly
-          sx={{ color: pink[100],ml:"1rem" }}
-          name="highlight-selected-only"
-          value={formValue.rating}
-          IconContainerComponent={IconContainer}
-          highlightSelectedOnly
-        /></Box>
-      <Paper sx={{display:"flex",p:"2rem"}}>   
-      <Box  sx={{display:"flex",flexDirection:"column"}}>
-        <CreateableAutoComplete
-          label="แผนก"
-          optionsData={departmentOptions}
-          value={department}
-          setValue={setDepartment}
-          variant="standard"
-          
-        />
-        <TextField
-          variant="standard"
-          margin="normal"
-          sx={{ width: 300 }}
-          required
-          label="สถานพยาบาล/คลินิก"
-          name="infirmary"
-          value={formValue.infirmary}
-          onChange={handleChange}
-          
-        />
-        <TextField
-          variant="standard"
-          margin="normal"
-          sx={{ width: 300 }}
-          required
-          label="สถานศึกษา"
-          name="academy"
-          value={formValue.academy}
-          onChange={handleChange}
-        />
-        <TextField
-          variant="outlined"
-          margin="normal"
-          sx={{ width: 300 }}
-          label="รายละเอียด"
-          name="detail"
-          value={formValue.detail}
-          onChange={handleChange}
-          multiline
-          rows={4}
-        />
-        </Box>  
-        <Box sx={{display:"flex",flexDirection:"column",ml:5}}>
-          {tags.map((data, index) => {
-            return (
-              <Chip key={index} label={data} onDelete={handleDeleteTag(data)} />
-            );
-          })}
-        <TextField
-          label="เพิ่ม tags"
-          value={addTag}
-          onChange={(event) => setAddTag(event.target.value)}
-          InputProps={{
-            endAdornment: <Button onClick={handleAddTag}>เพิ่ม</Button>,
+        <Paper
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            width: "80%",
+            m: "auto",
           }}
-        />
-        <TextField
-          variant="standard"
-          margin="normal"
-          sx={{ width: 300 }}
-          label="messagePrice"
-          name="messagePrice"
-          value={formValue.messagePrice}
-          onChange={handleChange}
-          type="number"
-        />
-        <TextField
-          variant="standard"
-          margin="normal"
-          sx={{ width: 300 }}
-          label="voiceCallPrice"
-          name="voiceCallPrice"
-          value={formValue.voiceCallPrice}
-          onChange={handleChange}
-          type="number"
-        />
-        <TextField
-          variant="standard"
-          margin="normal"
-          sx={{ width: 300 }}
-          label="videoCallPrice"
-          name="videoCallPrice"
-          value={formValue.videoCallPrice}
-          onChange={handleChange}
-          type="number"
-        />
-        {(formValue.detail != consultant.detail ||
-          formValue.messagePrice != consultant.messagePrice ||
-          formValue.voiceCallPrice != consultant.voiceCallPrice ||
-          formValue.videoCallPrice != consultant.videoCallPrice ||
-          formValue.tags != consultant.tags) && (
-          <Button
+        >
+          <Box
             sx={{
-              m: "auto",
-              background: pink[100],
-              fontWeight: 900,
-              fontSize: 20,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              mr: 8,
+              mt: 8,
             }}
-            onClick={handleSubmit}
           >
-            ยืนยัน
-          </Button>
-        )}
-      </Box>
-    </Paper>
-    </Box>
-    </Paper>
-    </Grid>
+            <Avatar
+              src={`data:image/png;base64, ${user.avatar}`}
+              sx={{ width: "7rem", height: "7rem" }}
+            />
+            <input
+              type="file"
+              name="media"
+              accept="image/png, image/jpeg"
+              ref={hiddenFileInput}
+              onChange={handleChangeAvatar}
+              hidden
+            />
+            <Button
+              onClick={() => {
+                hiddenFileInput.current.click();
+              }}
+            >
+              แก้ไขรูปภาพ
+            </Button>
+            <div style={{ display: "flex" }}>
+              <Switch
+                checked={checked}
+                onChange={handleChecked}
+                inputProps={{ "aria-label": "controlled" }}
+              />
+              <label>สถานะ: {formValue.onlineStatus} </label>
+            </div>
+          </Box>
+
+          <Box sx={{ mt: 3 }}>
+            <Box
+              sx={{
+                m: "auto",
+                width: "100%",
+                p: "1rem",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <label>คะแนนรีวิวเฉลี่ย : </label>
+              <StyledRating
+                readOnly
+                sx={{ color: pink[100], ml: "1rem" }}
+                name="highlight-selected-only"
+                value={formValue.rating}
+                IconContainerComponent={IconContainer}
+                highlightSelectedOnly
+              />
+            </Box>
+            <Paper sx={{ display: "flex", p: "2rem" }}>
+              <Box sx={{ display: "flex", flexDirection: "column" }}>
+                <CreateableAutoComplete
+                  label="แผนก"
+                  optionsData={departmentOptions}
+                  value={department}
+                  setValue={setDepartment}
+                  variant="standard"
+                />
+                <TextField
+                  variant="standard"
+                  margin="normal"
+                  sx={{ width: 300 }}
+                  required
+                  label="สถานพยาบาล/คลินิก"
+                  name="infirmary"
+                  value={formValue.infirmary}
+                  onChange={handleChange}
+                />
+                <TextField
+                  variant="standard"
+                  margin="normal"
+                  sx={{ width: 300 }}
+                  required
+                  label="สถานศึกษา"
+                  name="academy"
+                  value={formValue.academy}
+                  onChange={handleChange}
+                />
+                <TextField
+                  variant="outlined"
+                  margin="normal"
+                  sx={{ width: 300 }}
+                  label="รายละเอียด"
+                  name="detail"
+                  value={formValue.detail}
+                  onChange={handleChange}
+                  multiline
+                  rows={4}
+                />
+              </Box>
+              <Box sx={{ display: "flex", flexDirection: "column", ml: 5 }}>
+                {tags.map((data, index) => {
+                  return (
+                    <Chip
+                      key={index}
+                      label={data}
+                      onDelete={handleDeleteTag(data)}
+                    />
+                  );
+                })}
+                <TextField
+                  label="เพิ่ม tags"
+                  value={addTag}
+                  onChange={(event) => setAddTag(event.target.value)}
+                  InputProps={{
+                    endAdornment: <Button onClick={handleAddTag}>เพิ่ม</Button>,
+                  }}
+                />
+                <TextField
+                  variant="standard"
+                  margin="normal"
+                  sx={{ width: 300 }}
+                  label="messagePrice"
+                  name="messagePrice"
+                  value={formValue.messagePrice}
+                  onChange={handleChange}
+                  type="number"
+                />
+                <TextField
+                  variant="standard"
+                  margin="normal"
+                  sx={{ width: 300 }}
+                  label="voiceCallPrice"
+                  name="voiceCallPrice"
+                  value={formValue.voiceCallPrice}
+                  onChange={handleChange}
+                  type="number"
+                />
+                <TextField
+                  variant="standard"
+                  margin="normal"
+                  sx={{ width: 300 }}
+                  label="videoCallPrice"
+                  name="videoCallPrice"
+                  value={formValue.videoCallPrice}
+                  onChange={handleChange}
+                  type="number"
+                />
+                {(formValue.detail != consultant.detail ||
+                  formValue.messagePrice != consultant.messagePrice ||
+                  formValue.voiceCallPrice != consultant.voiceCallPrice ||
+                  formValue.videoCallPrice != consultant.videoCallPrice ||
+                  formValue.tags != consultant.tags) && (
+                  <Button
+                    sx={{
+                      m: "auto",
+                      background: pink[100],
+                      fontWeight: 900,
+                      fontSize: 20,
+                    }}
+                    onClick={handleSubmit}
+                  >
+                    ยืนยัน
+                  </Button>
+                )}
+              </Box>
+            </Paper>
+          </Box>
+        </Paper>
+      </Grid>
     </>
   );
 }
