@@ -65,6 +65,7 @@ exports.addProduct = async (req, res) => {
     );
 
     if (files) {
+      console.log("files", files);
       const { media } = await files;
       if (media.length) {
         console.log("files");

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Button, TextField } from "@mui/material";
 import { Box } from "@mui/system";
 import { IconButton } from "@mui/material";
@@ -14,17 +14,27 @@ import { useNavigate } from "react-router-dom";
 const height = "10rem";
 function AddProduct(props) {
   const navigate = useNavigate();
+  const hiddenFileInput = useRef(null);
   const [products, setProducts] = useState({
     productName: "",
     productPrice: 0,
     productDetail: "",
   });
+  const [files, setFiles] = useState(null);
   const handleChangeAddProduct = (e, field) => {
     setProducts({ ...products, [field]: e.target.value });
   };
   const handleSubmit = () => {
-    //props.actionEditProduct(products);
+    const formData = new FormData();
+    formData.append("media", files);
+    for (const [key, value] of Object.entries(products)) {
+      formData.append(key, value);
+    }
+    props.actionAddProduct(formData);
     navigate(`../complete-addproduct`);
+  };
+  const handleChangeFiles = (event) => {
+    setFiles(event.target.files[0]);
   };
   return (
     <div
@@ -72,8 +82,21 @@ function AddProduct(props) {
           width: "27rem",
         }}
       >
+        <input
+          type="file"
+          name="media"
+          accept="image/png, image/jpeg"
+          ref={hiddenFileInput}
+          onChange={handleChangeFiles}
+          hidden
+        />
         <Tooltip title="เพิ่มรูปภาพสินค้า" placement="top-start" arrow>
-          <IconButton aria-label="Add Product">
+          <IconButton
+            aria-label="Add Product"
+            onClick={() => {
+              hiddenFileInput.current.click();
+            }}
+          >
             <AddBoxIcon sx={{ fontSize: 100, color: grey[400] }} />
           </IconButton>
         </Tooltip>
