@@ -64,7 +64,8 @@ function ManageProduct(props) {
         }}
       >
         <Avatar
-          src={`data:image/png;base64, ${details.avatar}`}
+          //src={`data:image/png;base64, ${details.avatar}`}
+          src="https://scontent.fbkk5-7.fna.fbcdn.net/v/t1.6435-9/117554409_1585030948326266_4183901343872513839_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=09cbfe&_nc_eui2=AeGYX8oeFCON5EeosTaEXqNMGmNzk9kctFkaY3OT2Ry0WS0YTWdJLgV48k28mLXx0a31tP4FW_ILqH1LxutvZOvZ&_nc_ohc=aYT6I9PSy1gAX_TZd3Z&_nc_ht=scontent.fbkk5-7.fna&oh=00_AT_m0tmZ0d4wnCMN-5cmdzjBtAmtPqHSVn_NdDog2xe_Rw&oe=62B10AE5"
           sx={{ width: "4rem", height: "4rem" }}
         />
         <Button sx={{ fontSize: "x-small", fontWeight: 400 }} disabled>
