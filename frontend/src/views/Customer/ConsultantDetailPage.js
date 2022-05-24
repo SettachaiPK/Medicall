@@ -211,8 +211,8 @@ function ConsultantDetailPage() {
                     />}
                     secondary={
                       <React.Fragment>
-                        <Typography>reason: {review.reason}</Typography>
-                        create date: {review.createDate}
+                        <Typography>เหตุผล: {review.reason}</Typography>
+                        วันที่สร้าง: {review.createDate}
                       </React.Fragment>
                     }
                   />
