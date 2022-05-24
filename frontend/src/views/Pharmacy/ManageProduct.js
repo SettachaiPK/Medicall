@@ -50,7 +50,7 @@ function ManageProduct(props) {
     }
     fetchDetail();
     fetchProducts();
-  }, [actionGetProducts, actionGetStoreDetail]);
+  }, []);
 
   return (
     <div>

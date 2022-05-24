@@ -16,11 +16,17 @@ module.exports = function (app) {
     [authJwt.verifyToken, authJwt.isPharmacy],
     pharmacyController.getStoreDetail
   );
-  
+
   router.get(
     "/products",
     [authJwt.verifyToken, authJwt.isPharmacy],
     pharmacyController.getProducts
+  );
+
+  router.get(
+    "/product/:productID",
+    [authJwt.verifyToken, authJwt.isPharmacy],
+    pharmacyController.getSingleProduct
   );
 
   router.post(
@@ -40,19 +46,19 @@ module.exports = function (app) {
     [authJwt.verifyToken, authJwt.isPharmacy],
     pharmacyController.deleteProduct
   );
-  
+
   router.get(
     "/orders",
     [authJwt.verifyToken, authJwt.isPharmacy],
     pharmacyController.getOrders
   );
-  
+
   router.get(
     "/order/:orderID",
     [authJwt.verifyToken, authJwt.isPharmacy],
     pharmacyController.getOrderDetail
   );
-  
+
   router.post(
     "/order/confirm-delivery",
     [authJwt.verifyToken, authJwt.isPharmacy],

@@ -23,7 +23,7 @@ function AddProduct(props) {
     setProducts({ ...products, [field]: e.target.value });
   };
   const handleSubmit = () => {
-    props.actionEditProduct(products);
+    //props.actionEditProduct(products);
     navigate(`../complete-addproduct`);
   };
   return (

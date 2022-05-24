@@ -5,7 +5,11 @@ import { IconButton } from "@mui/material";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import { grey } from "@mui/material/colors";
 import { Tooltip } from "@mui/material";
-import { actionEditProduct } from "../../actions/pharmacy.actions";
+import {
+  actionEditProduct,
+  actionGetProducts,
+  actionGetProductSingle,
+} from "../../actions/pharmacy.actions";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { useState } from "react";
@@ -17,32 +21,51 @@ import { actionDeleteProduct } from "../../actions/pharmacy.actions";
 const height = "10rem";
 
 function EditProduct(props) {
-const navigate = useNavigate();
-const params = useParams();
-const [products, setProducts] = useState({
-  productID:"",
-  productName: "",
-  productPrice: 0,
-  productDetail: "",
-});
-const handleChangeEditProduct = (e, field) => {
-  setProducts({ ...products, [field]: e.target.value });
-};
-const handleSubmit = () => {
-  props.actionEditProduct(products);
-  navigate(`../complete-addproduct`);
-};
-const handleDelete = () => {
-  props.actionDeleteProduct(products.productID);
-  navigate(`../product/manage`);
-};
+  const navigate = useNavigate();
+  const params = useParams();
+  const [products, setProducts] = useState({
+    productID: "",
+    productName: "",
+    productPrice: 0,
+    productDetail: "",
+  });
+  const handleChangeEditProduct = (e, field) => {
+    setProducts({ ...products, [field]: e.target.value });
+  };
+  const handleSubmit = () => {
+    props.actionEditProduct(products);
+    navigate(`../product/manage`);
+  };
+  const handleDelete = () => {
+    props.actionDeleteProduct(products.productID);
+    async function fetchProducts() {
+      const res = await actionGetProducts();
+      setProducts(res);
+    }
+    fetchProducts();
+    navigate(`../product/manage`);
+  };
 
-useEffect(() => {
-  setProducts({ ...products, productID: params.productID });
-}, []);
+  useEffect(() => {
+    async function fetchProduct() {
+      const res = await props.actionGetProductSingle(params.productID);
+      if (res) {
+        setProducts(res);
+      } else {
+        setProducts({ ...products, productID: params.productID });
+      }
+    }
+    fetchProduct();
+  }, []);
   return (
     <div
-      style={{ display: "flex", flexDirection: "column", alignItems: "center", width:"fit-content",margin:"auto" }}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        width: "fit-content",
+        margin: "auto",
+      }}
     >
       <TextField
         required
@@ -91,17 +114,44 @@ useEffect(() => {
           </IconButton>
         </Tooltip>
       </Box>
-      <Box sx={{display:"flex",justifyContent: "space-between",width: "100%",p:"1.5rem"}}>
-        <Button sx={{backgroundColor: "#B5EEF9", color: grey[500]}} onClick={handleDelete}>ลบสินค้า</Button>
-      <Box sx={{display: "flex",justifyContent: "flex-end"}}>
-          <Button sx={{color:grey[400], textDecoration:"underline", fontWeight:400,mr:1}} onClick={() => {
-            navigate(`../product/manage`);
-          }}>ยกเลิก</Button>
-          <Button sx={{backgroundColor: "#FFC1C1", color: grey[500]}} onClick={handleSubmit} >ยืนยัน</Button>
-      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          width: "100%",
+          p: "1.5rem",
+        }}
+      >
+        <Button
+          sx={{ backgroundColor: "#B5EEF9", color: grey[500] }}
+          onClick={handleDelete}
+        >
+          ลบสินค้า
+        </Button>
+        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+          <Button
+            sx={{
+              color: grey[400],
+              textDecoration: "underline",
+              fontWeight: 400,
+              mr: 1,
+            }}
+            onClick={() => {
+              navigate(`../product/manage`);
+            }}
+          >
+            ยกเลิก
+          </Button>
+          <Button
+            sx={{ backgroundColor: "#FFC1C1", color: grey[500] }}
+            onClick={handleSubmit}
+          >
+            ยืนยัน
+          </Button>
+        </Box>
       </Box>
     </div>
-  )
+  );
 }
 EditProduct.defaultProps = {};
 EditProduct.propTypes = {
@@ -113,5 +163,7 @@ const mapStateToProps = (state) => ({});
 
 export default connect(mapStateToProps, {
   actionEditProduct: actionEditProduct,
-  actionDeleteProduct:actionDeleteProduct,
+  actionDeleteProduct: actionDeleteProduct,
+  actionGetProductSingle: actionGetProductSingle,
+  actionGetProducts: actionGetProducts,
 })(EditProduct);

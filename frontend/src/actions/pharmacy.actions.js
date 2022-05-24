@@ -9,6 +9,15 @@ export const actionGetProducts = () => async () => {
     return [];
   }
 };
+export const actionGetProductSingle = (payload) => async () => {
+  try {
+    const { data } = await pharmacyService.getProductSingle(payload);
+    return data;
+  } catch (error) {
+    console.log(error.response.data.message || error.message);
+    return {};
+  }
+};
 export const actionGetOrders = () => async () => {
   try {
     const { data } = await pharmacyService.getOrders();
@@ -36,42 +45,42 @@ export const actionGetStoreDetail = () => async () => {
     return [];
   }
 };
-  export const actionAddProduct = (payload) => async () => {
-    try {
-      const { data } = await pharmacyService.addProduct(payload);
-      return data;
-    } catch (error) {
-      console.log(error.response.data.message || error.message);
-      return [];
-    }
-  };
+export const actionAddProduct = (payload) => async () => {
+  try {
+    const { data } = await pharmacyService.addProduct(payload);
+    return data;
+  } catch (error) {
+    console.log(error.response.data.message || error.message);
+    return [];
+  }
+};
 
-  export const actionEditProduct = (payload) => async () => {
-    try {
-      const { data } = await pharmacyService.editProduct(payload);
-      return data;
-    } catch (error) {
-      console.log(error.response.data.message || error.message);
-      return [];
-    }
-  };
+export const actionEditProduct = (payload) => async () => {
+  try {
+    const { data } = await pharmacyService.editProduct(payload);
+    return data;
+  } catch (error) {
+    console.log(error.response.data.message || error.message);
+    return [];
+  }
+};
 
-  export const actionConfirmSend = (payload) => async () => {
-    try {
-      const { data } = await pharmacyService.confirmSend(payload);
-      return data;
-    } catch (error) {
-      console.log(error.response.data.message || error.message);
-      return [];
-    }
-  };
+export const actionConfirmSend = (payload) => async () => {
+  try {
+    const { data } = await pharmacyService.confirmSend(payload);
+    return data;
+  } catch (error) {
+    console.log(error.response.data.message || error.message);
+    return [];
+  }
+};
 
-  export const actionDeleteProduct = (payload) => async () => {
-    try {
-      const { data } = await pharmacyService.deleteProduct(payload);
-      return data;
-    } catch (error) {
-      console.log(error.response.data.message || error.message);
-      return [];
-    }
-  };
+export const actionDeleteProduct = (payload) => async () => {
+  try {
+    const { data } = await pharmacyService.deleteProduct(payload);
+    return data;
+  } catch (error) {
+    console.log(error.response.data.message || error.message);
+    return [];
+  }
+};
