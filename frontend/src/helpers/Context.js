@@ -24,7 +24,7 @@ if (process.env.NODE_ENV !== "production") {
   console.log("dev", process.env.REACT_APP_API_URL);
 } else {
   api_url =
-    "http://medicall2-env.eba-cyxritit.ap-southeast-1.elasticbeanstalk.com/backend";
+    "http://medicall2-env.eba-cyxritit.ap-southeast-1.elasticbeanstalk.com/backend/";
   console.log("production", api_url);
 }
 const socket = io(`${api_url}`, {
@@ -162,6 +162,9 @@ const ContextProvider = (props) => {
     }
     socket.on("connect", function () {
       console.log("check 2", socket.connected);
+    });
+    socket.on("connect_error", (err) => {
+      console.log(`connect_error due to ${err.message}`);
     });
   }, [props.user.userID]);
 
