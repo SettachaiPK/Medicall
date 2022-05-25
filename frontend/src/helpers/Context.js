@@ -21,10 +21,12 @@ const SocketContext = createContext();
 let api_url = "";
 if (process.env.NODE_ENV !== "production") {
   api_url = process.env.REACT_APP_API_URL;
+  console.log("dev", process.env.REACT_APP_API_URL);
 } else {
   api_url = process.env.REACT_APP_PRODUCTION_API_URL;
+  console.log("production", process.env.REACT_APP_PRODUCTION_API_URL);
 }
-const socket = io(`${api_url}/apis/`, {
+const socket = io(`${api_url}`, {
   autoConnect: false,
 });
 
@@ -34,7 +36,9 @@ const ContextProvider = (props) => {
   const connectionRef = useRef();
 
   const stream = props.consulting.stream;
-
+  useEffect(() => {
+    console.log("api", api_url);
+  }, []);
   /* Handle accept call button press */
   const socketAcceptCall = () => {
     /* Get media device resource */
