@@ -72,7 +72,11 @@ export const actionLeaveCall = () => async (dispatch, getState) => {
     });
     // submit recommend product
     consultantService.submitRecommendedProducts({
-      recommendedProducts: recommendedProducts.selectedProducts,
+      recommendedProducts: recommendedProducts.selectedProducts.map(
+        (product) => {
+          return { productID: product.productID, amount: product.amount };
+        }
+      ),
       jobID: consulting.jobID,
     });
     dispatch(reducerLeaveCall());
