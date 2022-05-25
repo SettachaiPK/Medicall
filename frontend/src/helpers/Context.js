@@ -24,7 +24,7 @@ if (process.env.NODE_ENV !== "production") {
   console.log("dev", process.env.REACT_APP_API_URL);
 } else {
   api_url =
-    "http://medicall2-env.eba-cyxritit.ap-southeast-1.elasticbeanstalk.com/backend/";
+    "http://medicall2-env.eba-cyxritit.ap-southeast-1.elasticbeanstalk.com";
   console.log("production", api_url);
 }
 const socket = io(`${api_url}`, {
