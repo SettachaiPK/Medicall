@@ -63,19 +63,21 @@ export const actionGetCustomerDetail = (jobID) => async (dispatch) => {
   }
 };
 
-export const actionSubmitAdvice = (payload) => async (dispatch) => {
+export const actionSubmitAdvice = (payload) => async () => {
   try {
-    console.log(payload)
     const { data } = await consultantService.submitAdvice(payload);
+    console.log("advice sent: ", data);
     return data;
   } catch (error) {
     console.log(error.response.data.message || error.message);
     return [];
   }
 };
-export const actionSubmitRecommendedProducts = (payload) => () => {
+export const actionSubmitRecommendedProducts = (payload) => async () => {
   try {
-    consultantService.submitRecommendedProducts(payload);
+    const res = await consultantService.submitRecommendedProducts(payload);
+    console.log("recommend product sent: ", res);
+    return res;
   } catch (error) {
     console.log(error.response.data.message || error.message);
   }

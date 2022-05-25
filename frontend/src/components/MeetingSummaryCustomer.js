@@ -28,8 +28,8 @@ function MeetingSummaryCustomer(props) {
   useEffect(() => {
     async function fetch(jobID) {
       const data = await actionGetJobSummary(jobID);
-      //setSummary(data); // Uncomment this
-      setSummary({
+      setSummary(data); // Uncomment this
+      /*setSummary({
         ...data,
         recommendedProducts: [
           {
@@ -40,7 +40,7 @@ function MeetingSummaryCustomer(props) {
           },
         ],
         advice: "Paracetamol หลังอาหารเช้า-เย็น ครั้งละ 1 เม็ด",
-      });
+      });*/
     }
     fetch(jobID);
   }, [jobID, actionGetJobSummary]);
