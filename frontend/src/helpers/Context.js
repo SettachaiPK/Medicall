@@ -24,7 +24,7 @@ if (process.env.NODE_ENV !== "production") {
 } else {
   api_url = process.env.REACT_APP_PRODUCTION_API_URL;
 }
-const socket = io(`${api_url}/apis`, {
+const socket = io(`${api_url}/apis/`, {
   autoConnect: false,
 });
 
