@@ -61,10 +61,13 @@ export const actionStartMeeting = (jobID) => async (dispatch) => {
   }
 };
 
-export const actionLeaveCall = (role) => async (dispatch) => {
-  if (role === "consultant") {
+export const actionLeaveCall = () => async (dispatch, getState) => {
+  const { consulting } = getState();
+  if (consulting.role === "consultant") {
+    console.log("consultant");
     dispatch(reducerLeaveCall());
-  } else if (role === "customer") {
+    console.log("customer");
+  } else if (consulting.role === "customer") {
     dispatch(reducerLeaveCallCustomer());
   }
 };
@@ -78,6 +81,7 @@ export const actionEndMeeting = (jobID) => async () => {
 };
 
 export const actionChangeAdvice = (payload) => (dispatch) => {
+  console.log("actionChangeAdvice", payload);
   dispatch(reducerChangeAdvice(payload));
 };
 
