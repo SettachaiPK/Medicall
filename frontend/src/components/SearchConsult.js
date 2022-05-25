@@ -12,9 +12,10 @@ const selectFormStyles = {
 };
 
 function SearchConsult(props) {
-  const [occupation, setOccupation] = useState("");
-  const [department, setDepartment] = useState("");
-  const handleChange = () => {};
+  const [form, setForm] = useState({ department: "", occupation: "" });
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
   return (
     <form action="/" method="get">
       <div className="search-container">
@@ -34,7 +35,8 @@ function SearchConsult(props) {
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            value={occupation}
+            value={form.occupation}
+            name="occupation"
             label="อาชีพ"
             onChange={handleChange}
           >
@@ -48,7 +50,8 @@ function SearchConsult(props) {
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            value={department}
+            value={form.department}
+            name="department"
             label="แผนก"
             onChange={handleChange}
           >
