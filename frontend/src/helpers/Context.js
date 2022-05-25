@@ -156,9 +156,13 @@ const ContextProvider = (props) => {
     if (props.user.userID) {
       socket.auth = { userID: props.user.userID };
       socket.connect();
+      console.log("check 1", socket.connected);
     } else {
       socket.disconnect();
     }
+    socket.on("connect", function () {
+      console.log("check 2", socket.connected);
+    });
   }, [props.user.userID]);
 
   useEffect(() => {
