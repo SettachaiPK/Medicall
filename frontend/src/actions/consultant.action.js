@@ -65,6 +65,7 @@ export const actionGetCustomerDetail = (jobID) => async (dispatch) => {
 
 export const actionSubmitAdvice = (payload) => async (dispatch) => {
   try {
+    console.log(payload)
     const { data } = await consultantService.submitAdvice(payload);
     return data;
   } catch (error) {

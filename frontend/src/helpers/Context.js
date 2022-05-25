@@ -92,8 +92,11 @@ const ContextProvider = (props) => {
           }
         ),
       });
+      await props.actionLeaveCall();
+    } else {
+      /* If user is customer */
+      await props.actionLeaveCall();
     }
-    await props.actionLeaveCall(props.consulting.role);
   };
 
   const startStream = () => {
