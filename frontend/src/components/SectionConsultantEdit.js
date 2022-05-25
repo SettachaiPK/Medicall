@@ -8,7 +8,7 @@ import {
 } from "../actions/consultant.action";
 import { actionChangeAvatar } from "../actions/auth.actions";
 import CreateableAutoComplete from "./CreateableAutoComplete";
-import { pink } from "@mui/material/colors";
+import { pink,grey } from "@mui/material/colors";
 import { styled } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import Switch from "@mui/material/Switch";
@@ -299,7 +299,8 @@ function SectionConsultantEdit({ consultant, user }) {
                     sx={{
                       m: "auto",
                       background: pink[100],
-                      fontWeight: 900,
+                      color: grey[100],
+                      fontWeight: 500,
                       fontSize: 20,
                     }}
                     onClick={handleSubmit}

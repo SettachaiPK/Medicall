@@ -35,25 +35,19 @@ function PolicyPopup(props) {
         <Box
           sx={{
             width: 300,
-            height: 300,
+            height: "fit-content",
             overflow: "auto",
             whiteSpace: "normal",
           }}
         >
           <fieldset>
             <div
-              style={{ height: "280px", overflow: "auto", color: "#616161" }}
+              style={{ height: 300, overflow: "auto", color: "#616161" }}
             >
               <label>
-                This policy has been established to ensure consistency of all
-                external advertisement of university positions. External
-                advertisements are supplemental to internal postings and
-                recruitment/hiring policy requirements. Recruitment resources
-                such as businesses, organizations, professional associations,
-                alumni groups, listservs and trade journals can be utilized by
-                departments to aid in the search process. S/C/Ds needing
-                assistance in identifying other potential recruitment resources
-                may contact Human Resources Client Services.
+              Policy is a deliberate system of guidelines to guide decisions and achieve rational outcomes. A policy is a statement of intent and is implemented as a procedure or protocol. Policies are generally adopted by a governance body within an organization. Policies can assist in both subjective and objective decision making. Policies used in subjective decision-making usually assist senior management with decisions that must be based on the relative merits of a number of factors, and as a result, are often hard to test objectively, e.g. work–life balance policy... Moreover, Governments and other institutions have policies in the form of laws, regulations, procedures, administrative actions, incentives and voluntary practices. Frequently, resource allocations mirror policy decisions.
+In contrast, policies to assist in objective decision-making are usually operational in nature and can be objectively tested, e.g. password policy.[1]
+The term may apply to government, public sector organizations and groups, as well as individuals, Presidential executive orders, corporate privacy policies, and parliamentary rules of order are all examples of policy. Policy differs from rules or law. While the law can compel or prohibit behaviors (e.g. a law requiring the payment of taxes on income), policy merely guides actions toward those that are most likely to achieve the desired
               </label>
             </div>
           </fieldset>
