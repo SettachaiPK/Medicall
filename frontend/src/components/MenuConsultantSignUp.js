@@ -106,7 +106,7 @@ function MenuConsultantSignUp() {
       <div
         style={{
           display: "flex",
-          justifyContent: "flex-start",
+          justifyContent: "space-evenly",
         }}
       >
         {loading && <>loading</>}
@@ -122,12 +122,14 @@ function MenuConsultantSignUp() {
                   }}
                 >
                   <CreateableAutoComplete
+                  margin="normal"
                     label="อาชีพ"
                     optionsData={ocupationOptions}
                     value={ocupation}
                     setValue={setOcupation}
                   />
                   <CreateableAutoComplete
+                  margin="normal"
                     label="แผนก"
                     optionsData={departmentOptions}
                     value={department}
@@ -203,7 +205,8 @@ function MenuConsultantSignUp() {
                       background: pink[100],
                       color: grey[50],
                       fontWeight: 900,
-                      fontSize: 12,
+                      fontSize: 15,
+                      width: 15,
                     }}
                   >
                     สมัคร

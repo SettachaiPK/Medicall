@@ -39,12 +39,17 @@ function EditProduct(props) {
   };
   const handleSubmit = () => {
     const formData = new FormData();
-    formData.append("media", files);
+    if (files) {
+      formData.append("media", files);
+    }
     for (const [key, value] of Object.entries(products)) {
       formData.append(key, value);
     }
-    props.actionEditProduct(formData);
-    navigate(`../product/manage`);
+    async function editAndRedirect() {
+      await props.actionEditProduct(formData);
+      await navigate(`../product/manage`);
+    }
+    editAndRedirect()
   };
   const handleDelete = () => {
     props.actionDeleteProduct(products.productID);

@@ -30,8 +30,11 @@ function AddProduct(props) {
     for (const [key, value] of Object.entries(products)) {
       formData.append(key, value);
     }
-    props.actionAddProduct(formData);
-    navigate(`../complete-addproduct`);
+    async function addAndRedirect() {
+      await props.actionAddProduct(formData);
+      await navigate(`../complete-addproduct`);
+    }
+    addAndRedirect()
   };
   const handleChangeFiles = (event) => {
     setFiles(event.target.files[0]);

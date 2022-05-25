@@ -65,7 +65,7 @@ export default function CreateableAutoComplete({
         return option.title;
       }}
       renderOption={(props, option) => <li {...props}>{option.title}</li>}
-      sx={{ width: 300 }}
+      sx={{ width: 300,mt:2,mb:2 }}
       freeSolo
       renderInput={(params) => (
         <TextField {...params} label={label} variant={variant} />

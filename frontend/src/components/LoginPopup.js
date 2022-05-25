@@ -49,7 +49,7 @@ function LoginPopup({ onSubmit }) {
         />
       </DialogContent>
       <DialogActions
-        sx={{ m: "auto", pb: 10, maxWidth: "lg", fullWidth: true }}
+        sx={{ m: "auto", pb: 5, maxWidth: "lg", fullWidth: true }}
       >
         <div
           style={{

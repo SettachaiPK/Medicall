@@ -66,7 +66,7 @@ function MenuPhamarcySignUp() {
       <div
         style={{
           display: "flex",
-          justifyContent:"flex-start"
+          justifyContent:"space-evenly"
         }}
       >
         {loading && <>loading</>}
@@ -150,7 +150,8 @@ function MenuPhamarcySignUp() {
                       background: pink[100],
                       color: grey[50],
                       fontWeight: 900,
-                      fontSize: 12,
+                      fontSize: 15,
+                      width: 15,
                     }}
                   >
                     สมัคร
