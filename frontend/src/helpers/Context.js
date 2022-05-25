@@ -11,10 +11,6 @@ import {
   actionEndMeeting,
   actionChangeStream,
 } from "../actions/consulting.action";
-import {
-  actionSubmitAdvice,
-  actionSubmitRecommendedProducts,
-} from "../actions/consultant.action";
 
 const SocketContext = createContext();
 
@@ -70,7 +66,7 @@ const ContextProvider = (props) => {
     await leaveCall();
   };
 
-  const leaveCall = async () => {
+  const leaveCall = () => {
     console.log("myVideo", myVideo.current);
     /* After calling */
     /* If cam still active */
@@ -80,28 +76,8 @@ const ContextProvider = (props) => {
         track.stop();
       });
     }
-
-    /* If user is consultant */
-    if (props.consulting.role === "consultant") {
-      /* Save advice to server */
-      await props.actionSubmitAdvice({
-        jobID: props.consulting.jobID,
-        advice: props.consulting.advice,
-      });
-      /* Save recommend product to server */
-      await props.actionSubmitRecommendedProducts({
-        jobID: props.consulting.jobID,
-        recommendedProducts: props.recommendedProducts.selectedProducts.map(
-          (product) => {
-            return { productID: product.productID, amount: product.amount };
-          }
-        ),
-      });
-      await props.actionLeaveCall();
-    } else {
-      /* If user is customer */
-      await props.actionLeaveCall();
-    }
+    // Process to leave call
+    props.actionLeaveCall();
   };
 
   const startStream = () => {
@@ -245,8 +221,6 @@ export default connect(mapStateToProps, {
   actionStartMeeting: actionStartMeeting,
   actionEndMeeting: actionEndMeeting,
   actionLeaveCall: actionLeaveCall,
-  actionSubmitAdvice: actionSubmitAdvice,
-  actionSubmitRecommendedProducts: actionSubmitRecommendedProducts,
   actionChangeStream: actionChangeStream,
 })(ContextProvider);
 

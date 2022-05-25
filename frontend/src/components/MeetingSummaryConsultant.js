@@ -24,11 +24,12 @@ function MeetingSummaryConsultant(props) {
     async function fetch(jobID) {
       const data = await actionGetSummaryConsultant(jobID);
       console.log(data);
-      // setSummary(data); //Uncomment this
-      setSummary({
+      setSummary(data);
+      // Uncomment this if advice gone wrong
+      /*setSummary({
         ...data,
         advice: "Paracetamol หลังอาหารเช้า-เย็น ครั้งละ 1 เม็ด",
-      });
+      });*/
     }
     fetch(jobID);
   }, [jobID, actionGetSummaryConsultant]);
