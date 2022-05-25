@@ -10,6 +10,7 @@ import {
   ON_CHANG_STREAM,
 } from "./types";
 import * as customerService from "../service/customer.service";
+import * as consultantService from "../service/consultant.service";
 import moment from "moment";
 
 export const actionIncomingCall = (data) => async (dispatch) => {
@@ -62,12 +63,21 @@ export const actionStartMeeting = (jobID) => async (dispatch) => {
 };
 
 export const actionLeaveCall = () => async (dispatch, getState) => {
-  const { consulting } = getState();
+  const { consulting, recommendedProducts } = getState();
   if (consulting.role === "consultant") {
-    console.log("consultant");
+    // Submit advice
+    consultantService.submitAdvice({
+      advice: consulting.advice,
+      jobID: consulting.jobID,
+    });
+    // submit recommend product
+    consultantService.submitRecommendedProducts({
+      recommendedProducts: recommendedProducts.selectedProducts,
+      jobID: consulting.jobID,
+    });
     dispatch(reducerLeaveCall());
-    console.log("customer");
   } else if (consulting.role === "customer") {
+    console.log("customer leave call");
     dispatch(reducerLeaveCallCustomer());
   }
 };
