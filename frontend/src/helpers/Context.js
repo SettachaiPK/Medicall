@@ -54,15 +54,15 @@ const ContextProvider = (props) => {
       });
   };
 
-  const handleLeaveCall = () => {
+  const handleLeaveCall = async () => {
+    /* Call api to confirm call ended */
+    await props.actionEndMeeting(props.consulting.jobID);
     /* Emit leave call to server */
-    socket.emit("leaveCall", {
+    await socket.emit("leaveCall", {
       to: props.consulting.destination,
     });
-    /* Call api to confirm call ended */
-    props.actionEndMeeting(props.consulting.jobID);
     /* Ahead to leave call process */
-    leaveCall();
+    await leaveCall();
   };
 
   const leaveCall = async () => {
